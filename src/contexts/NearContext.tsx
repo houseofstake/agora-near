@@ -30,6 +30,7 @@ import {
   useState,
 } from "react";
 import { generateNonce } from "@/lib/api/nonce/requests";
+import { signAndSendTransactionsWithFireblocksCompat, getTransactionResults } from "@/lib/wallets/fireblocks-compat";
 
 // Default to max Tgas since it gets refunded if not used
 const DEFAULT_GAS = convertUnit("30 Tgas");
@@ -414,9 +415,14 @@ export const NearProvider: React.FC<NearProviderProps> = ({
           );
 
           const w = await nearConnector.wallet();
-          const outcomes = await w.signAndSendTransactions({
+          const walletAccounts = await w.getAccounts();
+          const signerId = walletAccounts[0]?.accountId || signedAccountId || "";
+
+          // Use Fireblocks-compatible transaction signing
+          const outcomes = await signAndSendTransactionsWithFireblocksCompat(w, {
             transactions: Object.keys(contractCalls).map((contractId) => {
               return {
+                signerId,
                 receiverId: contractId,
                 actions: contractCalls[contractId].map(
                   ({ methodName, args, gas, deposit }) => ({
@@ -432,13 +438,11 @@ export const NearProvider: React.FC<NearProviderProps> = ({
               };
             }),
             callbackUrl,
-          } as any);
+          });
 
           if (!outcomes) return null;
 
-          const results = outcomes.map((outcome: any) =>
-            providers.getTransactionLastResult(outcome)
-          );
+          const results = getTransactionResults(outcomes);
 
           debugLog(`[Contract Calls res]: ${JSON.stringify(results, null, 2)}`);
 
@@ -559,7 +563,8 @@ export const NearProvider: React.FC<NearProviderProps> = ({
       if (useNearConnect) {
         if (!nearConnector) return null;
         const w = await nearConnector.wallet();
-        return w.signAndSendTransactions({ transactions } as any);
+        // Use Fireblocks-compatible transaction signing
+        return signAndSendTransactionsWithFireblocksCompat(w, { transactions });
       }
       if (!selector) return null;
       const selectedWallet = await selector.wallet();
