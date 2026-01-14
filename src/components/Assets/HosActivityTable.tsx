@@ -30,6 +30,8 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
       case "initial_registration":
         return "Registration";
       case "staking_pool_withdraw":
+        return "Withdraw from Pool";
+      case "withdraw":
         return "Withdraw";
       case "unstake":
         return "Unstake";
@@ -49,6 +51,7 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
       case "unlock":
       case "outbound_delegation":
       case "staking_pool_withdraw":
+      case "withdraw":
       case "unstake":
         return "text-red-600";
       default:
@@ -67,6 +70,7 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
       case "unlock":
       case "outbound_delegation":
       case "staking_pool_withdraw":
+      case "withdraw":
       case "unstake":
         return "-";
       default:

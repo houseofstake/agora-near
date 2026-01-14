@@ -16,6 +16,8 @@ type UnstakeDialogProps = {
   closeDialog: () => void;
 };
 
+import { useUnstakedBalance } from "@/hooks/useUnstakedBalance";
+
 export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
   const [amount, setAmount] = useState("");
   const [amountError, setAmountError] = useState<string | null>(null);
@@ -33,6 +35,13 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
   const { unstakeNear, isUnstakingNear, unstakingNearError } = useStakeNear({
     lockupAccountId: lockupAccountId ?? "",
   });
+
+  const { unstakedBalance, isAvailable: isUnstakedBalanceAvailable } =
+    useUnstakedBalance({
+      stakingPoolId,
+      accountId: lockupAccountId,
+    });
+  const [showWarning, setShowWarning] = useState(false);
 
   const validateAmount = (value: string) => {
     if (!value) {
@@ -59,13 +68,10 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
 
   const hasInsufficientBalance = !!amountError;
 
-  const handleUnstake = async () => {
+  const proceedWithUnstake = async () => {
     if (!amount || !lockupAccountId || amountError) return;
     try {
-      // Convert to yoctoNEAR (assuming input is in NEAR)
-      // Note: useStakeNear expects yoctoNEAR string
       const amountYocto = Big(amount).mul(Big(10).pow(24)).toFixed(0);
-
       await unstakeNear(amountYocto);
       closeDialog();
       toast.success("Unstake transaction submitted");
@@ -78,6 +84,22 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
     }
   };
 
+  const handleUnstakeClick = async () => {
+    if (!amount || !lockupAccountId || amountError) return;
+
+    // Check if there are funds available to withdraw
+    if (
+      isUnstakedBalanceAvailable &&
+      unstakedBalance &&
+      Big(unstakedBalance).gt(0)
+    ) {
+      setShowWarning(true);
+      return;
+    }
+
+    await proceedWithUnstake();
+  };
+
   const handleMaxClick = () => {
     if (stakedBalance) {
       // Format to NEAR for display/input
@@ -88,6 +110,46 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
   };
 
   const isLoading = isUnstakingNear;
+
+  if (showWarning) {
+    return (
+      <div className="flex flex-col gap-4 w-full">
+        <UnstakeDialogHeader />
+        <div className="flex flex-col gap-4 mb-6">
+          <div className="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+            <h3 className="text-yellow-500 font-bold mb-2">
+              Warning: Reset Timer
+            </h3>
+            <p className="text-sm text-secondary">
+              You have funds ready to withdraw. If you unstake more now, ALL
+              your pending funds (including the ones ready now) will be locked
+              for another ~52-65 hours.
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          <UpdatedButton
+            onClick={closeDialog} // Or ideally redirect to Withdraw flow, but keeping it simple for now as requested
+            type="secondary"
+            className="w-full"
+            variant="rounded"
+          >
+            Cancel & Withdraw First
+          </UpdatedButton>
+          <UpdatedButton
+            onClick={proceedWithUnstake}
+            type="primary"
+            disabled={isLoading}
+            loading={isLoading}
+            className="w-full bg-red-500 hover:bg-red-600 border-none text-white"
+            variant="rounded"
+          >
+            I understand, Proceed
+          </UpdatedButton>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -143,7 +205,7 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
 
       <div className="flex-1 flex flex-col justify-end gap-2 mt-4">
         <UpdatedButton
-          onClick={handleUnstake}
+          onClick={handleUnstakeClick}
           type={
             !amount || Big(amount ?? 0).eq(0) || hasInsufficientBalance
               ? "disabled"
