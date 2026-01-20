@@ -51,8 +51,8 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
       case "unlock":
       case "outbound_delegation":
       case "withdraw":
-      case "unstake":
         return "text-red-600";
+      case "unstake":
       case "staking_pool_withdraw":
         return "text-gray-900";
       default:
@@ -71,8 +71,8 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
       case "unlock":
       case "outbound_delegation":
       case "withdraw":
-      case "unstake":
         return "-";
+      case "unstake":
       case "staking_pool_withdraw":
         return "";
       default:
@@ -102,7 +102,8 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
             : "text-gray-500"
         )}
       >
-        {activity.transactionType === "staking_pool_withdraw" ? (
+        {activity.transactionType === "staking_pool_withdraw" ||
+        activity.transactionType === "unstake" ? (
           <span className="text-gray-500">-</span>
         ) : activity.nearAmount ? (
           <span>
