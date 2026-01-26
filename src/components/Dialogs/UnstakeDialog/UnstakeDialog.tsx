@@ -71,8 +71,14 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
   const proceedWithUnstake = async () => {
     if (!amount || !lockupAccountId || amountError) return;
     try {
-      const amountYocto = Big(amount).mul(Big(10).pow(24)).toFixed(0);
-      await unstakeNear(amountYocto);
+      let amountYocto = Big(amount).mul(Big(10).pow(24));
+      // Safety check
+      const currentBalance = Big(stakedBalance ?? "0");
+      if (amountYocto.gt(currentBalance)) {
+        amountYocto = currentBalance;
+      }
+
+      await unstakeNear(amountYocto.toFixed(0));
       closeDialog();
       toast.success("Unstake transaction submitted");
     } catch (e: any) {
@@ -102,8 +108,8 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
 
   const handleMaxClick = () => {
     if (stakedBalance) {
-      // Format to NEAR for display/input
-      const maxVal = Big(stakedBalance).div(Big(10).pow(24)).toFixed();
+      // Format to NEAR for display/input: Use 24 decimal places and Round Down (0)
+      const maxVal = Big(stakedBalance).div(Big(10).pow(24)).toFixed(24, 0);
       setAmount(maxVal);
       setAmountError(null);
     }
