@@ -10,6 +10,7 @@ import { CONTRACTS } from "@/lib/contractConstants";
 import { yoctoNearToUsdFormatted } from "@/lib/utils";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { useQueryClient } from "@tanstack/react-query";
+import Big from "big.js";
 import Image from "next/image";
 import { memo, useCallback, useMemo, useState } from "react";
 import TokenAmount from "../../shared/TokenAmount";
@@ -35,6 +36,7 @@ export const ReviewStep = memo(
       nearAmount,
       lockupAccountId,
       formattedUnlockDuration,
+      maxAmountToUnlock,
     } = useUnlockProviderContext();
 
     const queryClient = useQueryClient();
@@ -57,10 +59,19 @@ export const ReviewStep = memo(
         setIsSubmitting(true);
         setError(null);
 
-        const amountInYocto = parseNearAmount(enteredAmount);
+        let amountInYocto = parseNearAmount(enteredAmount);
 
         if (!amountInYocto) {
           throw new Error("Invalid unlock amount");
+        }
+
+        // Safety check
+        if (maxAmountToUnlock) {
+          const maxVal = Big(maxAmountToUnlock);
+          const currentVal = Big(amountInYocto);
+          if (currentVal.gt(maxVal)) {
+            amountInYocto = maxVal.toFixed(0);
+          }
         }
 
         await beginUnlockNear({ amount: amountInYocto });
@@ -75,7 +86,7 @@ export const ReviewStep = memo(
       } finally {
         setIsSubmitting(false);
       }
-    }, [enteredAmount, beginUnlockNear]);
+    }, [enteredAmount, beginUnlockNear, maxAmountToUnlock]);
 
     const { price, isLoading: isLoadingNearPrice } = usePrice();
 
