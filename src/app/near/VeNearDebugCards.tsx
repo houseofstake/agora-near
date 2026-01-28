@@ -37,7 +37,7 @@ import {
 import { CONTRACTS } from "@/lib/contractConstants";
 import { ProposalInfo } from "@/lib/contracts/types/voting";
 import { convertUnit } from "@fastnear/utils";
-import { Transaction } from "@hot-labs/near-connect/build/types/transactions";
+import { SignAndSendTransactionParams } from "@hot-labs/near-connect/build/types";
 import Big from "big.js";
 import { utils } from "near-api-js";
 import { useCallback, useState } from "react";
@@ -393,7 +393,7 @@ export default function VeNearDebugCards() {
         | null
         | undefined;
 
-      const ftTransferTransactions: Transaction[] = [
+      const ftTransferTransactions: SignAndSendTransactionParams[] = [
         {
           signerId: signedAccountId ?? "",
           receiverId: LINEAR_TOKEN_CONTRACT,

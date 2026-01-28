@@ -5,8 +5,10 @@ import {
 import { useNear } from "@/contexts/NearContext";
 import { CONTRACTS } from "@/lib/contractConstants";
 import { convertUnit } from "@fastnear/utils";
-import { Transaction } from "@hot-labs/near-connect/build/types/transactions";
-import { Optional } from "@hot-labs/near-connect/build/types/wallet";
+import {
+  SignAndSendTransactionParams,
+  Optional,
+} from "@hot-labs/near-connect/build/types";
 import { useCallback, useState } from "react";
 
 export const useDeployLockupAndLockV2 = () => {
@@ -33,8 +35,8 @@ export const useDeployLockupAndLockV2 = () => {
   const buildTransactions = useCallback(
     async (
       transactions: LockTransaction[]
-    ): Promise<Optional<Transaction, "signerId">[]> => {
-      const txns: Optional<Transaction, "signerId">[] = [];
+    ): Promise<Optional<SignAndSendTransactionParams, "signerId">[]> => {
+      const txns: Optional<SignAndSendTransactionParams, "signerId">[] = [];
 
       if (transactions.includes("deploy_lockup")) {
         txns.push({

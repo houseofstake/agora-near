@@ -30,7 +30,11 @@ import {
   useState,
 } from "react";
 import { generateNonce } from "@/lib/api/nonce/requests";
-import { signAndSendTransactionsWithFireblocksCompat, getTransactionResults } from "@/lib/wallets/fireblocks-compat";
+import {
+  signAndSendTransactionsWithFireblocksCompat,
+  getTransactionResults,
+} from "@/lib/wallets/fireblocks-compat";
+import { SignClient } from "@walletconnect/sign-client";
 
 // Default to max Tgas since it gets refunded if not used
 const DEFAULT_GAS = convertUnit("30 Tgas");
@@ -163,6 +167,16 @@ export const NearProvider: React.FC<NearProviderProps> = ({
         const nearConnectNetwork: "mainnet" | "testnet" =
           networkId === "mainnet" ? "mainnet" : "testnet";
 
+        const walletConnect = SignClient.init({
+          projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
+          metadata: {
+            name: "Agora NEAR",
+            description: "The on-chain governance company",
+            url: "https://gov.houseofstake.org/",
+            icons: ["https://avatars.githubusercontent.com/u/37784886"],
+          },
+        });
+
         const connector = new NearConnector({
           network: nearConnectNetwork,
           autoConnect: true,
@@ -170,16 +184,7 @@ export const NearProvider: React.FC<NearProviderProps> = ({
           // Do not filter by features to not hide wallets from the manifest
           logger: console,
           walletConnect: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
-            ? {
-                projectId: process.env
-                  .NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
-                metadata: {
-                  name: "Agora NEAR",
-                  description: "The on-chain governance company",
-                  url: "https://gov.houseofstake.org/",
-                  icons: ["https://avatars.githubusercontent.com/u/37784886"],
-                },
-              }
+            ? walletConnect
             : undefined,
         });
 
@@ -416,29 +421,35 @@ export const NearProvider: React.FC<NearProviderProps> = ({
 
           const w = await nearConnector.wallet();
           const walletAccounts = await w.getAccounts();
-          const signerId = walletAccounts[0]?.accountId || signedAccountId || "";
+          const signerId =
+            walletAccounts[0]?.accountId || signedAccountId || "";
 
           // Use Fireblocks-compatible transaction signing
-          const outcomes = await signAndSendTransactionsWithFireblocksCompat(w, {
-            transactions: Object.keys(contractCalls).map((contractId) => {
-              return {
-                signerId,
-                receiverId: contractId,
-                actions: contractCalls[contractId].map(
-                  ({ methodName, args, gas, deposit }) => ({
-                    type: "FunctionCall",
-                    params: {
-                      methodName,
-                      args: args ?? {},
-                      gas: gas ? convertUnit(gas) : DEFAULT_GAS,
-                      deposit: deposit ? convertUnit(deposit) : DEFAULT_DEPOSIT,
-                    },
-                  })
-                ),
-              };
-            }),
-            callbackUrl,
-          });
+          const outcomes = await signAndSendTransactionsWithFireblocksCompat(
+            w,
+            {
+              transactions: Object.keys(contractCalls).map((contractId) => {
+                return {
+                  signerId,
+                  receiverId: contractId,
+                  actions: contractCalls[contractId].map(
+                    ({ methodName, args, gas, deposit }) => ({
+                      type: "FunctionCall",
+                      params: {
+                        methodName,
+                        args: args ?? {},
+                        gas: gas ? convertUnit(gas) : DEFAULT_GAS,
+                        deposit: deposit
+                          ? convertUnit(deposit)
+                          : DEFAULT_DEPOSIT,
+                      },
+                    })
+                  ),
+                };
+              }),
+              callbackUrl,
+            }
+          );
 
           if (!outcomes) return null;
 
