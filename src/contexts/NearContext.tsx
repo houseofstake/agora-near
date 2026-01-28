@@ -800,7 +800,8 @@ export const NearProvider: React.FC<NearProviderProps> = ({
           memo,
         });
 
-        return w.signAndSendTransactions({ transactions } as any);
+        // Use Fireblocks-compatible transaction signing
+        return signAndSendTransactionsWithFireblocksCompat(w, { transactions });
       }
       if (!selector) return null;
       const selectedWallet = await selector.wallet();

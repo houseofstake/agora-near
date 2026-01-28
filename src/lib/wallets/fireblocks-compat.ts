@@ -6,16 +6,20 @@
  * layer that detects WalletConnect wallets and handles transactions individually.
  */
 
-import { NearWallet } from "@hot-labs/near-connect/build/wallets/near-wallets/NearWallet";
+import { NearWalletBase } from "@hot-labs/near-connect";
 import { providers } from "near-api-js";
 
 /**
  * Check if a wallet is a WalletConnect-based wallet
  */
-export function isWalletConnectWallet(wallet: NearWallet): boolean {
-  const walletId = wallet.manifest?.id?.toLowerCase() || "";
+export function isWalletConnectWallet(wallet: NearWalletBase): boolean {
+  // Primary check: manifest permissions flag (most reliable)
+  if (wallet.manifest?.permissions?.walletConnect === true) {
+    return true;
+  }
 
-  // Check for known WalletConnect wallet IDs
+  // Fallback: check wallet ID for known WalletConnect wallet patterns
+  const walletId = wallet.manifest?.id?.toLowerCase() || "";
   const walletConnectIds = ["wallet-connect", "walletconnect", "fireblocks"];
 
   return walletConnectIds.some((id) => walletId.includes(id));
@@ -30,7 +34,7 @@ export function isWalletConnectWallet(wallet: NearWallet): boolean {
  * 3. If no, uses the standard signAndSendTransactions method
  */
 export async function signAndSendTransactionsWithFireblocksCompat(
-  wallet: NearWallet,
+  wallet: NearWalletBase,
   params: {
     transactions: any[];
     callbackUrl?: string;
