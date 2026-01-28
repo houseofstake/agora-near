@@ -14,7 +14,8 @@ import { SignedMessage } from "@near-wallet-selector/core/src/lib/wallet";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupHotWallet } from "@near-wallet-selector/hot-wallet";
 import { setupUnityWallet } from "@near-wallet-selector/unity-wallet";
-import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+// Using proximity-wallet-connect (fork with Fireblocks transaction fixes)
+import { setupWalletConnect } from "proximity-wallet-connect";
 import { setupIntearWallet } from "@near-wallet-selector/intear-wallet";
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import "@near-wallet-selector/modal-ui/styles.css";
@@ -232,6 +233,16 @@ export const NearProvider: React.FC<NearProviderProps> = ({
                 url: "https://gov.houseofstake.org/",
                 icons: ["https://avatars.githubusercontent.com/u/37784886"],
               },
+              chainId: `near:${networkId}`,
+              methods: [
+                "near_signIn",
+                "near_signOut",
+                "near_getAccounts",
+                "near_signTransaction",
+                "near_signTransactions",
+                "near_signAndSendTransaction",
+                "near_signAndSendTransactions",
+              ],
             }) as WalletModuleFactory,
             setupIntearWallet() as WalletModuleFactory,
           ],

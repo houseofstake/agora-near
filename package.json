@@ -61,6 +61,7 @@
     "@vercel/analytics": "^1.1.1",
     "@vercel/otel": "^1.13.0",
     "@vercel/speed-insights": "^1.0.2",
+    "@walletconnect/sign-client": "^2.21.8",
     "autoprefixer": "10.4.14",
     "axios": "^1.9.0",
     "big.js": "^7.0.1",
@@ -88,6 +89,7 @@
     "nuqs": "^2.3.1",
     "pino-pretty": "^10.0.1",
     "postcss": "8.4.23",
+    "proximity-wallet-connect": "^7.9.8-proximity.34",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.48.2",
@@ -108,8 +110,7 @@
     "uuid": "^9.0.1",
     "yargs": "^17.7.2",
     "zod": "^3.22.4",
-    "zustand": "^5.0.3",
-    "@walletconnect/sign-client": "^2.21.8"
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@aws-sdk/client-dynamodb": "^3.454.0",
