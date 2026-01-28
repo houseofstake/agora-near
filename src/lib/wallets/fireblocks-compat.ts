@@ -3,35 +3,20 @@
  *
  * Fireblocks only supports the singular `near_signTransaction` method,
  * not the plural `near_signTransactions`. This module provides a compatibility
- * layer that detects WalletConnect wallets and handles transactions individually.
+ * layer that attempts batch signing first, then falls back to individual
+ * transaction signing if batch fails (e.g., for Fireblocks).
  */
 
 import { NearWalletBase } from "@hot-labs/near-connect";
 import { providers } from "near-api-js";
 
 /**
- * Check if a wallet is a WalletConnect-based wallet
- */
-export function isWalletConnectWallet(wallet: NearWalletBase): boolean {
-  // Primary check: manifest permissions flag (most reliable)
-  if (wallet.manifest?.permissions?.walletConnect === true) {
-    return true;
-  }
-
-  // Fallback: check wallet ID for known WalletConnect wallet patterns
-  const walletId = wallet.manifest?.id?.toLowerCase() || "";
-  const walletConnectIds = ["wallet-connect", "walletconnect", "fireblocks"];
-
-  return walletConnectIds.some((id) => walletId.includes(id));
-}
-
-/**
- * Sign and send transactions with Fireblocks compatibility
+ * Sign and send transactions with automatic Fireblocks fallback
  *
- * This function:
- * 1. Checks if the wallet is WalletConnect-based
- * 2. If yes, signs each transaction individually (Fireblocks compatibility)
- * 3. If no, uses the standard signAndSendTransactions method
+ * Strategy:
+ * 1. Try signAndSendTransactions (batch) first - works for most wallets
+ * 2. If batch fails, fall back to signing each transaction individually
+ *    (required for Fireblocks which only supports near_signTransaction)
  */
 export async function signAndSendTransactionsWithFireblocksCompat(
   wallet: NearWalletBase,
@@ -42,23 +27,32 @@ export async function signAndSendTransactionsWithFireblocksCompat(
 ): Promise<any[]> {
   const { transactions, callbackUrl } = params;
 
-  // For non-WalletConnect wallets, use the standard method
-  if (!isWalletConnectWallet(wallet)) {
-    console.log("[Fireblocks Compat] Using standard signAndSendTransactions");
-    return wallet.signAndSendTransactions({
+  // Try batch signing first (works for most wallets)
+  try {
+    const outcomes = await wallet.signAndSendTransactions({
       transactions,
       callbackUrl,
     } as any);
+
+    return outcomes;
+  } catch (batchError: any) {
+    const errorMessage = batchError?.message?.toLowerCase() || "";
+    const isUnsupportedMethod =
+      errorMessage.includes("unsupported") ||
+      errorMessage.includes("not supported") ||
+      errorMessage.includes("method not found") ||
+      errorMessage.includes("near_signtransactions");
+
+    if (!isUnsupportedMethod) {
+      throw batchError;
+    }
+
+    console.log(
+      "[Fireblocks Compat] Batch signing not supported, falling back to individual transactions"
+    );
   }
 
-  console.log(
-    `[Fireblocks Compat] Detected WalletConnect wallet: ${wallet.manifest?.id}`
-  );
-  console.log(
-    `[Fireblocks Compat] Signing ${transactions.length} transaction(s) individually for Fireblocks compatibility`
-  );
-
-  // For WalletConnect wallets, sign each transaction individually
+  // Fallback: sign each transaction individually (for Fireblocks)
   const outcomes: any[] = [];
 
   for (let i = 0; i < transactions.length; i++) {
@@ -68,12 +62,8 @@ export async function signAndSendTransactionsWithFireblocksCompat(
     );
 
     try {
-      // Use signAndSendTransaction (singular) instead of signAndSendTransactions (plural)
       const outcome = await wallet.signAndSendTransaction(transaction as any);
       outcomes.push(outcome);
-      console.log(
-        `[Fireblocks Compat] Transaction ${i + 1} signed and sent successfully`
-      );
     } catch (error) {
       console.error(
         `[Fireblocks Compat] Failed to sign transaction ${i + 1}:`,
@@ -83,9 +73,6 @@ export async function signAndSendTransactionsWithFireblocksCompat(
     }
   }
 
-  console.log(
-    `[Fireblocks Compat] All ${outcomes.length} transaction(s) completed`
-  );
   return outcomes;
 }
 
