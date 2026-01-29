@@ -20,6 +20,7 @@ export async function signAndSendTransactionsWithFireblocksCompat(
   for (let txIndex = 0; txIndex < params.transactions.length; txIndex++) {
     const tx = params.transactions[txIndex];
     const actionCount = tx.actions.length;
+    let lastOutcome: any = null;
 
     for (let actionIndex = 0; actionIndex < actionCount; actionIndex++) {
       const action = tx.actions[actionIndex];
@@ -27,12 +28,12 @@ export async function signAndSendTransactionsWithFireblocksCompat(
         `[Fireblocks] Signing ${txIndex + 1}/${params.transactions.length} (action ${actionIndex + 1}/${actionCount})...`
       );
 
-      const outcome = await wallet.signAndSendTransaction({
+      lastOutcome = await wallet.signAndSendTransaction({
         receiverId: tx.receiverId,
         actions: [action],
       });
-      outcomes.push(outcome);
     }
+    if (lastOutcome != null) outcomes.push(lastOutcome);
   }
 
   return outcomes;
