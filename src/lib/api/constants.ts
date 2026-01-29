@@ -1,7 +1,7 @@
 const getApiUrl = () => {
   switch (process.env.NEXT_PUBLIC_AGORA_ENV) {
     case "prod":
-      return "https://near-api-641188643433.us-west1.run.app/api"; // agora-near-25q4-prd
+      return "https://near-api-fdj2gc3hbq-uw.a.run.app/api"; // hos-gov-prd
     case "august-prod":
       return "https://near-api-237405837378.us-west1.run.app/api"; // agora-near-25q2
     case "staging":
