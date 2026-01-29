@@ -220,7 +220,7 @@
       "description": "Wallet Connect is a protocol for connecting wallets to dapps.",
       "website": "https://reown.com",
       "version": "1.0.0",
-      "executor": "https://raw.githubusercontent.com/hot-dao/near-selector/refs/heads/main/repository/wallet-connect.js",
+      "executor": "https://raw.githubusercontent.com/pedrohasf/hot-connector/refs/heads/main/repository/wallet-connect.js",
       "type": "sandbox",
       "platform": {},
       "permissions": {
