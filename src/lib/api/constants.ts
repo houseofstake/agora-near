@@ -7,7 +7,7 @@ const getApiUrl = () => {
     case "staging":
       return "https://near-api-174260176421.us-west1.run.app/api"; // agora-near-25q4
     case "dev":
-      return "https://near-api-158107670134.us-west1.run.app/api";
+      return "https://near-api-g4qvzlnzwq-uw.a.run.app/api"; // hos-gov-dev
     case "local":
       return "http://localhost:8080/api";
     default:
