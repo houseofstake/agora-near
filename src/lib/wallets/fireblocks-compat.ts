@@ -5,18 +5,36 @@
  */
 
 import { NearWalletBase } from "@hot-labs/near-connect";
+import { Optional, Transaction } from "@near-wallet-selector/core";
 import { providers } from "near-api-js";
 
 export async function signAndSendTransactionsWithFireblocksCompat(
   wallet: NearWalletBase,
-  params: { transactions: any[]; callbackUrl?: string }
+  params: {
+    transactions: Array<Optional<Transaction, "signerId">>;
+    callbackUrl?: string;
+  }
 ): Promise<any[]> {
   const outcomes: any[] = [];
-  for (let i = 0; i < params.transactions.length; i++) {
-    console.log(`[Fireblocks] Signing ${i + 1}/${params.transactions.length}...`);
-    const outcome = await wallet.signAndSendTransaction(params.transactions[i] as any);
-    outcomes.push(outcome);
+
+  for (let txIndex = 0; txIndex < params.transactions.length; txIndex++) {
+    const tx = params.transactions[txIndex];
+    const actionCount = tx.actions.length;
+
+    for (let actionIndex = 0; actionIndex < actionCount; actionIndex++) {
+      const action = tx.actions[actionIndex];
+      console.log(
+        `[Fireblocks] Signing ${txIndex + 1}/${params.transactions.length} (action ${actionIndex + 1}/${actionCount})...`
+      );
+
+      const outcome = await wallet.signAndSendTransaction({
+        receiverId: tx.receiverId,
+        actions: [action],
+      });
+      outcomes.push(outcome);
+    }
   }
+
   return outcomes;
 }
 

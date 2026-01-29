@@ -168,15 +168,20 @@ export const NearProvider: React.FC<NearProviderProps> = ({
         const nearConnectNetwork: "mainnet" | "testnet" =
           networkId === "mainnet" ? "mainnet" : "testnet";
 
-        const walletConnect = SignClient.init({
-          projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
-          metadata: {
-            name: "Agora NEAR",
-            description: "The on-chain governance company",
-            url: "https://gov.houseofstake.org/",
-            icons: ["https://avatars.githubusercontent.com/u/37784886"],
-          },
-        });
+        // Initialize SignClient for WalletConnect if configured
+        let walletConnect: any = undefined;
+        if (process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID) {
+          walletConnect = SignClient.init({
+            projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
+            metadata: {
+              name: "Agora NEAR",
+              description: "The on-chain governance company",
+              url: "https://gov.houseofstake.org/",
+              icons: ["https://avatars.githubusercontent.com/u/37784886"],
+            },
+            relayUrl: "wss://relay.walletconnect.com",
+          });
+        }
 
         const connector = new NearConnector({
           network: nearConnectNetwork,
@@ -184,9 +189,7 @@ export const NearProvider: React.FC<NearProviderProps> = ({
           manifest: defaultManifestUrl,
           // Do not filter by features to not hide wallets from the manifest
           logger: console,
-          walletConnect: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
-            ? walletConnect
-            : undefined,
+          walletConnect,
         });
 
         // Connection/disconnection events
