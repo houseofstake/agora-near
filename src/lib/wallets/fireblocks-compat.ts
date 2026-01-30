@@ -8,6 +8,16 @@ import { NearWalletBase } from "@hot-labs/near-connect";
 import { Optional, Transaction } from "@near-wallet-selector/core";
 import { providers } from "near-api-js";
 
+/**
+ * Detects if a NearWalletBase is WalletConnect (Fireblocks)
+ * @param wallet - The wallet to check (from NearConnect)
+ * @returns true if the wallet is WalletConnect/Fireblocks
+ */
+export function isNearConnectWalletConnect(wallet: NearWalletBase): boolean {
+  // NearConnect wallets are identified by their manifest.id
+  return wallet.manifest?.id === "wallet-connect";
+}
+
 export async function signAndSendTransactionsWithFireblocksCompat(
   wallet: NearWalletBase,
   params: {

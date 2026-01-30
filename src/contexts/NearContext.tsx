@@ -34,6 +34,7 @@ import { generateNonce } from "@/lib/api/nonce/requests";
 import {
   signAndSendTransactionsWithFireblocksCompat,
   getTransactionResults,
+  isNearConnectWalletConnect,
 } from "@/lib/wallets/fireblocks-compat";
 import { SignClient } from "@walletconnect/sign-client";
 
@@ -106,6 +107,7 @@ interface NearContextType {
     amount: string;
     memo?: string;
   }) => Promise<Transaction[]>;
+  isUsingFireblocksWallet: () => Promise<boolean>;
 }
 
 export const NearContext = createContext<NearContextType>({
@@ -125,6 +127,7 @@ export const NearContext = createContext<NearContextType>({
   transferNear: async () => null,
   transferFungibleToken: async () => null,
   buildTransferFungibleTokenTransaction: async () => [],
+  isUsingFireblocksWallet: async () => false,
 });
 
 export const useNear = () => useContext(NearContext);
@@ -438,32 +441,38 @@ export const NearProvider: React.FC<NearProviderProps> = ({
           const signerId =
             walletAccounts[0]?.accountId || signedAccountId || "";
 
-          // Use Fireblocks-compatible transaction signing
-          const outcomes = await signAndSendTransactionsWithFireblocksCompat(
-            w,
-            {
-              transactions: Object.keys(contractCalls).map((contractId) => {
-                return {
-                  signerId,
-                  receiverId: contractId,
-                  actions: contractCalls[contractId].map(
-                    ({ methodName, args, gas, deposit }) => ({
-                      type: "FunctionCall",
-                      params: {
-                        methodName,
-                        args: args ?? {},
-                        gas: gas ? convertUnit(gas) : DEFAULT_GAS,
-                        deposit: deposit
-                          ? convertUnit(deposit)
-                          : DEFAULT_DEPOSIT,
-                      },
-                    })
-                  ),
-                };
-              }),
-              callbackUrl,
-            }
-          );
+          const transactions = Object.keys(contractCalls).map((contractId) => {
+            return {
+              signerId,
+              receiverId: contractId,
+              actions: contractCalls[contractId].map(
+                ({ methodName, args, gas, deposit }) => ({
+                  type: "FunctionCall" as const,
+                  params: {
+                    methodName,
+                    args: args ?? {},
+                    gas: gas ? convertUnit(gas) : DEFAULT_GAS,
+                    deposit: deposit
+                      ? convertUnit(deposit)
+                      : DEFAULT_DEPOSIT,
+                  },
+                })
+              ),
+            };
+          });
+
+          // Detect if this is a WalletConnect wallet (Fireblocks)
+          // Fireblocks doesn't support batching, so sign actions individually
+          let outcomes: any;
+          if (isNearConnectWalletConnect(w)) {
+            outcomes = await signAndSendTransactionsWithFireblocksCompat(
+              w,
+              { transactions }
+            );
+          } else {
+            // For other NearConnect wallets, use standard batched transaction signing
+            outcomes = await w.signAndSendTransactions({ transactions });
+          }
 
           if (!outcomes) return null;
 
@@ -588,9 +597,17 @@ export const NearProvider: React.FC<NearProviderProps> = ({
       if (useNearConnect) {
         if (!nearConnector) return null;
         const w = await nearConnector.wallet();
-        // Use Fireblocks-compatible transaction signing
-        return signAndSendTransactionsWithFireblocksCompat(w, { transactions });
+
+        // Detect if this is a WalletConnect wallet (Fireblocks)
+        // Fireblocks doesn't support batching, so sign actions individually
+        if (isNearConnectWalletConnect(w)) {
+          return signAndSendTransactionsWithFireblocksCompat(w, { transactions });
+        }
+
+        // For other NearConnect wallets, use standard batched transaction signing
+        return w.signAndSendTransactions({ transactions });
       }
+
       if (!selector) return null;
       const selectedWallet = await selector.wallet();
       return selectedWallet.signAndSendTransactions({ transactions });
@@ -853,6 +870,19 @@ export const NearProvider: React.FC<NearProviderProps> = ({
     return () => unsubscribeRef.current?.();
   }, []);
 
+  const isUsingFireblocksWallet = useCallback(async (): Promise<boolean> => {
+    try {
+      // Fireblocks only works with useNearConnect path, not with selector
+      if (useNearConnect && nearConnector) {
+        const w = await nearConnector.wallet();
+        return isNearConnectWalletConnect(w);
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  }, [useNearConnect, nearConnector]);
+
   return (
     <NearContext.Provider
       value={{
@@ -872,6 +902,7 @@ export const NearProvider: React.FC<NearProviderProps> = ({
         transferNear,
         transferFungibleToken,
         buildTransferFungibleTokenTransaction,
+        isUsingFireblocksWallet,
       }}
     >
       {children}

@@ -9,7 +9,7 @@ import {
   SignAndSendTransactionParams,
   Optional,
 } from "@hot-labs/near-connect/build/types";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 
 export const useDeployLockupAndLockV2 = () => {
   const {
@@ -25,12 +25,36 @@ export const useDeployLockupAndLockV2 = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isFireblocksWallet, setIsFireblocksWallet] = useState(false);
+  const [transactionStep, setTransactionStep] = useState<number>(0);
+  const [numTransactions, setNumTransactions] = useState<number>(0);
+  const [transactionText, setTransactionText] = useState<string>("");
 
   const {
     signedAccountId,
     signAndSendTransactions,
     buildTransferFungibleTokenTransaction,
+    isUsingFireblocksWallet,
   } = useNear();
+
+  const getTransactionText = useCallback(
+    (step: LockTransaction) => {
+      switch (step) {
+        case "deploy_lockup":
+          return "Deploying lockup contract...";
+        case "transfer_near":
+        case "transfer_ft":
+          return "Transferring tokens...";
+        case "select_staking_pool":
+          return "Selecting staking pool...";
+        case "refresh_balance":
+          return "Refreshing balance...";
+        case "lock_near":
+          return `Locking ${selectedToken?.metadata?.name}...`;
+      }
+    },
+    [selectedToken?.metadata?.name]
+  );
 
   const buildTransactions = useCallback(
     async (
@@ -158,29 +182,74 @@ export const useDeployLockupAndLockV2 = () => {
     ]
   );
 
-  const executeTransactions = useCallback(async () => {
-    try {
-      setIsSubmitting(true);
-      setError(null);
+  const executeTransactions = useCallback(
+    async (startAt: number = 0) => {
+      try {
+        setIsSubmitting(true);
+        setError(null);
 
-      const txns = await buildTransactions(requiredTransactions);
+        if (isFireblocksWallet) {
+          // For Fireblocks: execute transactions sequentially with progress tracking
+          setNumTransactions(requiredTransactions.length);
 
-      await signAndSendTransactions({
-        transactions: txns,
-      });
+          for (let i = startAt; i < requiredTransactions.length; i++) {
+            const txnType = requiredTransactions[i];
+            setTransactionStep(i);
+            setTransactionText(getTransactionText(txnType));
 
-      setIsCompleted(true);
-    } catch {
-      setError("Something went wrong, please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [buildTransactions, requiredTransactions, signAndSendTransactions]);
+            // Build and send only the current transaction
+            const txns = await buildTransactions([txnType]);
+            await signAndSendTransactions({
+              transactions: txns,
+            });
+          }
+        } else {
+          // For regular wallets: batch all transactions
+          const txns = await buildTransactions(requiredTransactions);
+          await signAndSendTransactions({
+            transactions: txns,
+          });
+        }
+
+        setIsCompleted(true);
+      } catch {
+        setError("Something went wrong, please try again.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [
+      buildTransactions,
+      isFireblocksWallet,
+      requiredTransactions,
+      signAndSendTransactions,
+      getTransactionText,
+    ]
+  );
+
+  const retryFromCurrentStep = useCallback(() => {
+    executeTransactions(transactionStep);
+  }, [executeTransactions, transactionStep]);
+
+  // Detect wallet type when component mounts or when wallet changes
+  useEffect(() => {
+    const detectWallet = async () => {
+      const isFireblocks = await isUsingFireblocksWallet();
+      setIsFireblocksWallet(isFireblocks);
+    };
+
+    detectWallet();
+  }, [isUsingFireblocksWallet]);
 
   return {
     isSubmitting,
     isCompleted,
     error,
     executeTransactions,
+    isFireblocksWallet,
+    transactionStep,
+    numTransactions,
+    transactionText,
+    retryFromCurrentStep,
   };
 };

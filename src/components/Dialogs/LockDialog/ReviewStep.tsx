@@ -68,8 +68,17 @@ export const ReviewStep = memo(
       }
     }, [depositTotal, lockedAmountYocto, selectedToken?.type]);
 
-    const { isSubmitting, isCompleted, executeTransactions, error } =
-      useDeployLockupAndLockV2();
+    const {
+      isSubmitting,
+      isCompleted,
+      executeTransactions,
+      error,
+      isFireblocksWallet,
+      transactionStep,
+      numTransactions,
+      transactionText,
+      retryFromCurrentStep,
+    } = useDeployLockupAndLockV2();
 
     const handleShowDisclosures = useCallback(() => {
       setShowDisclosures(true);
@@ -224,7 +233,9 @@ export const ReviewStep = memo(
             <Image src={LockOpenIcon} alt="coin" width={300} height={300} />
             <div className="flex flex-col">
               <p className="text-md text-[#9D9FA1] text-center">
-                {`Locking ${selectedToken?.metadata?.name}...`}
+                {isFireblocksWallet && transactionText
+                  ? transactionText
+                  : `Locking ${selectedToken?.metadata?.name}...`}
               </p>
               <div className="text-4xl font-bold text-gray-900 text-center">
                 <TokenAmount
@@ -242,14 +253,17 @@ export const ReviewStep = memo(
               </div>
               <div className="flex flex-row w-full justify-center items-center gap-2">
                 <span className="text-sm font-medium">
-                  Pending wallet signature
+                  {isFireblocksWallet && numTransactions > 0
+                    ? `Pending ${transactionStep + 1} of ${numTransactions} wallet signatures`
+                    : "Pending wallet signature"}
                 </span>
                 <TooltipWithTap
                   content={
                     <div className="max-w-[300px] flex flex-col text-left p-3">
                       <h4 className="text-lg font-bold mb-2">
-                        You&apos;ll need to sign several transactions to
-                        complete the lockup process.
+                        {isFireblocksWallet && numTransactions > 0
+                          ? "You'll need to complete a few wallet signatures to complete setup."
+                          : "You'll need to sign several transactions to complete the lockup process."}
                       </h4>
                       <p className="text-sm">
                         Depending on what you&apos;re locking, this may include:
@@ -285,7 +299,7 @@ export const ReviewStep = memo(
       return (
         <TransactionError
           message={error}
-          onRetry={executeTransactions}
+          onRetry={isFireblocksWallet ? retryFromCurrentStep : executeTransactions}
           onGoBack={handleEdit}
         />
       );

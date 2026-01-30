@@ -149,6 +149,7 @@ describe("useDeployLockupAndLock", () => {
       buildTransferFungibleTokenTransaction: vi.fn(),
       networkId: "testnet",
       isInitialized: true,
+      isUsingFireblocksWallet: vi.fn().mockResolvedValue(false),
     });
 
     mockUseRegisterLockup.mockReturnValue({
