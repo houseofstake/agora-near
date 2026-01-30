@@ -2,6 +2,7 @@
 import { CONTRACTS } from "@/lib/contractConstants";
 import { getRpcUrl } from "@/lib/utils";
 import { convertUnit } from "@fastnear/utils";
+import toast from "react-hot-toast";
 import {
   NetworkId,
   Optional,
@@ -663,6 +664,13 @@ export const NearProvider: React.FC<NearProviderProps> = ({
       if (useNearConnect) {
         if (!nearConnector) return;
         const w = await nearConnector.wallet();
+
+        // Check if this is a WalletConnect wallet (Fireblocks)
+        if (isNearConnectWalletConnect(w)) {
+          toast.error("This is not supported with WalletConnect");
+          return;
+        }
+
         return (w as any).signMessage({
           message,
           recipient,
