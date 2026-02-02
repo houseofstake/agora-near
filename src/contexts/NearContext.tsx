@@ -2,7 +2,11 @@
 import { getRpcUrl } from "@/lib/utils";
 import { convertUnit } from "@fastnear/utils";
 import toast from "react-hot-toast";
-import { NearConnector, SignAndSendTransactionParams, SignedMessage } from "@hot-labs/near-connect";
+import {
+  NearConnector,
+  SignAndSendTransactionParams,
+  SignedMessage,
+} from "@hot-labs/near-connect";
 import {
   createContext,
   ReactNode,
@@ -145,54 +149,53 @@ export const NearProvider: React.FC<NearProviderProps> = ({
    */
   const init = useCallback(async () => {
     try {
-        const defaultManifestUrl = "/near-connect-manifest.json";
-        const nearConnectNetwork: "mainnet" | "testnet" =
-          networkId === "mainnet" ? "mainnet" : "testnet";
+      const defaultManifestUrl = "/near-connect-manifest.json";
+      const nearConnectNetwork: "mainnet" | "testnet" =
+        networkId === "mainnet" ? "mainnet" : "testnet";
 
-        // Initialize SignClient for WalletConnect if configured
-        let walletConnect: any = undefined;
-        if (process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID) {
-          walletConnect = SignClient.init({
-            projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
-            metadata: {
-              name: "Agora NEAR",
-              description: "The on-chain governance company",
-              url: "https://gov.houseofstake.org/",
-              icons: ["https://avatars.githubusercontent.com/u/37784886"],
-            },
-            relayUrl: "wss://relay.walletconnect.com",
-          });
-        }
-
-        const connector = new NearConnector({
-          network: nearConnectNetwork,
-          autoConnect: true,
-          manifest: defaultManifestUrl,
-          // Do not filter by features to not hide wallets from the manifest
-          logger: console,
-          walletConnect,
+      // Initialize SignClient for WalletConnect if configured
+      let walletConnect: any = undefined;
+      if (process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID) {
+        walletConnect = SignClient.init({
+          projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
+          metadata: {
+            name: "Agora NEAR",
+            description: "The on-chain governance company",
+            url: "https://gov.houseofstake.org/",
+            icons: ["https://avatars.githubusercontent.com/u/37784886"],
+          },
+          relayUrl: "wss://relay.walletconnect.com",
         });
+      }
 
-        // Connection/disconnection events
-        connector.on("wallet:signIn", (payload) => {
-          const nextAccountId = payload?.accounts?.[0]?.accountId;
-          setSignedAccountId(nextAccountId);
-        });
-        connector.on("wallet:signOut", () => {
-          setSignedAccountId(undefined);
-        });
+      const connector = new NearConnector({
+        network: nearConnectNetwork,
+        autoConnect: true,
+        manifest: defaultManifestUrl,
+        // Do not filter by features to not hide wallets from the manifest
+        logger: console,
+        walletConnect,
+      });
 
-        // Try existing session
-        try {
-          const connected = await connector.getConnectedWallet();
-          const nextAccountId = connected?.accounts?.[0]?.accountId;
-          setSignedAccountId(nextAccountId);
-        } catch (_) {
-          // No previous session
-        }
+      // Connection/disconnection events
+      connector.on("wallet:signIn", (payload) => {
+        const nextAccountId = payload?.accounts?.[0]?.accountId;
+        setSignedAccountId(nextAccountId);
+      });
+      connector.on("wallet:signOut", () => {
+        setSignedAccountId(undefined);
+      });
 
-        setNearConnector(connector);
-      
+      // Try existing session
+      try {
+        const connected = await connector.getConnectedWallet();
+        const nextAccountId = connected?.accounts?.[0]?.accountId;
+        setSignedAccountId(nextAccountId);
+      } catch (_) {
+        // No previous session
+      }
+
+      setNearConnector(connector);
     } catch (error) {
       console.error("Error initializing wallet selector:", error);
     } finally {
@@ -204,22 +207,22 @@ export const NearProvider: React.FC<NearProviderProps> = ({
    * Displays a modal to login the user
    */
   const signIn = useCallback(async () => {
-      if (!nearConnector) return;
-      // Show wallet selector and connect with the chosen one
-      const id = await nearConnector.selectWallet();
-      if (id) {
-        await nearConnector.connect(id);
-      }
-      return;
+    if (!nearConnector) return;
+    // Show wallet selector and connect with the chosen one
+    const id = await nearConnector.selectWallet();
+    if (id) {
+      await nearConnector.connect(id);
+    }
+    return;
   }, [nearConnector]);
 
   /**
    * Logout the user
    */
   const signOut = useCallback(async () => {
-      if (!nearConnector) return;
-      await nearConnector.disconnect();
-      return;
+    if (!nearConnector) return;
+    await nearConnector.disconnect();
+    return;
   }, [nearConnector]);
 
   /**
@@ -293,26 +296,25 @@ export const NearProvider: React.FC<NearProviderProps> = ({
       deposit = DEFAULT_DEPOSIT,
     }: CallMethodProps) => {
       // Sign a transaction with the "FunctionCall" action
-        if (!nearConnector) return null;
-        const w = await nearConnector.wallet();
-        const outcome = await w.signAndSendTransaction({
-          receiverId: contractId,
-          actions: [
-            {
-              type: "FunctionCall",
-              params: {
-                methodName: method,
-                args,
-                gas,
-                deposit,
-              },
+      if (!nearConnector) return null;
+      const w = await nearConnector.wallet();
+      const outcome = await w.signAndSendTransaction({
+        receiverId: contractId,
+        actions: [
+          {
+            type: "FunctionCall",
+            params: {
+              methodName: method,
+              args,
+              gas,
+              deposit,
             },
-          ],
-        } as any);
+          },
+        ],
+      } as any);
 
-        if (!outcome) return null;
-        return getTransactionLastResult(outcome as any);
-
+      if (!outcome) return null;
+      return getTransactionLastResult(outcome as any);
     },
     [nearConnector]
   );
@@ -320,57 +322,53 @@ export const NearProvider: React.FC<NearProviderProps> = ({
   const callContracts = useCallback(
     async ({ contractCalls, callbackUrl }: CallContractsProps) => {
       try {
-          if (!nearConnector) return null;
+        if (!nearConnector) return null;
 
-          debugLog(
-            `[Contract Calls req]: ${JSON.stringify(contractCalls, null, 2)}`
-          );
+        debugLog(
+          `[Contract Calls req]: ${JSON.stringify(contractCalls, null, 2)}`
+        );
 
-          const w = await nearConnector.wallet();
-          const walletAccounts = await w.getAccounts();
-          const signerId =
-            walletAccounts[0]?.accountId || signedAccountId || "";
+        const w = await nearConnector.wallet();
+        const walletAccounts = await w.getAccounts();
+        const signerId = walletAccounts[0]?.accountId || signedAccountId || "";
 
-          const transactions = Object.keys(contractCalls).map((contractId) => {
-            return {
-              signerId,
-              receiverId: contractId,
-              actions: contractCalls[contractId].map(
-                ({ methodName, args, gas, deposit }) => ({
-                  type: "FunctionCall" as const,
-                  params: {
-                    methodName,
-                    args: args ?? {},
-                    gas: gas ? convertUnit(gas) : DEFAULT_GAS,
-                    deposit: deposit
-                      ? convertUnit(deposit)
-                      : DEFAULT_DEPOSIT,
-                  },
-                })
-              ),
-            };
+        const transactions = Object.keys(contractCalls).map((contractId) => {
+          return {
+            signerId,
+            receiverId: contractId,
+            actions: contractCalls[contractId].map(
+              ({ methodName, args, gas, deposit }) => ({
+                type: "FunctionCall" as const,
+                params: {
+                  methodName,
+                  args: args ?? {},
+                  gas: gas ? convertUnit(gas) : DEFAULT_GAS,
+                  deposit: deposit ? convertUnit(deposit) : DEFAULT_DEPOSIT,
+                },
+              })
+            ),
+          };
+        });
+
+        // Detect if this is a WalletConnect wallet (Fireblocks)
+        // Fireblocks doesn't support batching, so sign actions individually
+        let outcomes: any;
+        if (isNearConnectWalletConnect(w)) {
+          outcomes = await signAndSendTransactionsWithFireblocksCompat(w, {
+            transactions,
           });
+        } else {
+          // For other NearConnect wallets, use standard batched transaction signing
+          outcomes = await w.signAndSendTransactions({ transactions });
+        }
 
-          // Detect if this is a WalletConnect wallet (Fireblocks)
-          // Fireblocks doesn't support batching, so sign actions individually
-          let outcomes: any;
-          if (isNearConnectWalletConnect(w)) {
-            outcomes = await signAndSendTransactionsWithFireblocksCompat(
-              w,
-              { transactions }
-            );
-          } else {
-            // For other NearConnect wallets, use standard batched transaction signing
-            outcomes = await w.signAndSendTransactions({ transactions });
-          }
+        if (!outcomes) return null;
 
-          if (!outcomes) return null;
+        const results = getTransactionResults(outcomes);
 
-          const results = getTransactionResults(outcomes);
+        debugLog(`[Contract Calls res]: ${JSON.stringify(results, null, 2)}`);
 
-          debugLog(`[Contract Calls res]: ${JSON.stringify(results, null, 2)}`);
-
-          return results;
+        return results;
       } catch (e) {
         console.error("Error calling methods:", e);
         throw e;
@@ -387,7 +385,9 @@ export const NearProvider: React.FC<NearProviderProps> = ({
   const getTransactionResult = useCallback(
     async (txhash: string) => {
       if (!nearConnector) return null;
-      const provider = new JsonRpcProvider({ url: getRpcUrl(networkId, { useArchivalNode: true }) });
+      const provider = new JsonRpcProvider({
+        url: getRpcUrl(networkId, { useArchivalNode: true }),
+      });
       const transaction = await provider.txStatus(txhash, "unnused");
       return getTransactionLastResult(transaction);
     },
@@ -403,7 +403,9 @@ export const NearProvider: React.FC<NearProviderProps> = ({
   const getBalance = useCallback(
     async (accountId: string) => {
       if (!nearConnector) return "";
-      const provider = new JsonRpcProvider({ url: getRpcUrl(networkId, { useArchivalNode: true }) });
+      const provider = new JsonRpcProvider({
+        url: getRpcUrl(networkId, { useArchivalNode: true }),
+      });
 
       // Retrieve account state from the network
       const account = await provider.query({
@@ -426,17 +428,17 @@ export const NearProvider: React.FC<NearProviderProps> = ({
    */
   const signAndSendTransactions = useCallback(
     async ({ transactions }: TransactionsProps) => {
-        if (!nearConnector) return null;
-        const w = await nearConnector.wallet();
+      if (!nearConnector) return null;
+      const w = await nearConnector.wallet();
 
-        // Detect if this is a WalletConnect wallet (Fireblocks)
-        // Fireblocks doesn't support batching, so sign actions individually
-        if (isNearConnectWalletConnect(w)) {
-          return signAndSendTransactionsWithFireblocksCompat(w, { transactions });
-        }
+      // Detect if this is a WalletConnect wallet (Fireblocks)
+      // Fireblocks doesn't support batching, so sign actions individually
+      if (isNearConnectWalletConnect(w)) {
+        return signAndSendTransactionsWithFireblocksCompat(w, { transactions });
+      }
 
-        // For other NearConnect wallets, use standard batched transaction signing
-        return w.signAndSendTransactions({ transactions });
+      // For other NearConnect wallets, use standard batched transaction signing
+      return w.signAndSendTransactions({ transactions });
     },
     [nearConnector]
   );
@@ -449,7 +451,9 @@ export const NearProvider: React.FC<NearProviderProps> = ({
   const getAccessKeys = useCallback(
     async (accountId: string) => {
       if (!nearConnector) return [];
-      const provider = new JsonRpcProvider({ url: getRpcUrl(networkId, { useArchivalNode: true }) });
+      const provider = new JsonRpcProvider({
+        url: getRpcUrl(networkId, { useArchivalNode: true }),
+      });
 
       // Retrieve account state from the network
       const keys = await provider.query({
@@ -479,20 +483,20 @@ export const NearProvider: React.FC<NearProviderProps> = ({
       const nonce = Buffer.from(nonceResponse.nonce, "hex");
 
       // Don't sanitize the message - sign it exactly as provided - it would break the signature verification
-        if (!nearConnector) return;
-        const w = await nearConnector.wallet();
+      if (!nearConnector) return;
+      const w = await nearConnector.wallet();
 
-        // Check if this is a WalletConnect wallet (Fireblocks)
-        if (isNearConnectWalletConnect(w)) {
-          toast.error("This is not supported with WalletConnect");
-          return;
-        }
+      // Check if this is a WalletConnect wallet (Fireblocks)
+      if (isNearConnectWalletConnect(w)) {
+        toast.error("This is not supported with WalletConnect");
+        return;
+      }
 
-        return (w as any).signMessage({
-          message,
-          recipient,
-          nonce,
-        });
+      return (w as any).signMessage({
+        message,
+        recipient,
+        nonce,
+      });
     },
     [nearConnector, signedAccountId]
   );
@@ -506,19 +510,19 @@ export const NearProvider: React.FC<NearProviderProps> = ({
    */
   const transferNear = useCallback(
     async ({ receiverId, amount }: { receiverId: string; amount: string }) => {
-        if (!nearConnector) return null;
-        const w = await nearConnector.wallet();
-        return w.signAndSendTransaction({
-          receiverId,
-          actions: [
-            {
-              type: "Transfer",
-              params: {
-                deposit: amount,
-              },
+      if (!nearConnector) return null;
+      const w = await nearConnector.wallet();
+      return w.signAndSendTransaction({
+        receiverId,
+        actions: [
+          {
+            type: "Transfer",
+            params: {
+              deposit: amount,
             },
-          ],
-        } as any);
+          },
+        ],
+      } as any);
     },
     [nearConnector]
   );
@@ -615,32 +619,27 @@ export const NearProvider: React.FC<NearProviderProps> = ({
       amount: string;
       memo?: string;
     }) => {
-        if (!nearConnector) return null;
-        const w = await nearConnector.wallet();
+      if (!nearConnector) return null;
+      const w = await nearConnector.wallet();
 
-        // Get the current account ID
-        const accountId = signedAccountId;
-        if (!accountId) {
-          throw new Error("No account selected");
-        }
+      // Get the current account ID
+      const accountId = signedAccountId;
+      if (!accountId) {
+        throw new Error("No account selected");
+      }
 
-        const transactions = await buildTransferFungibleTokenTransaction({
-          accountId,
-          tokenContractId,
-          receiverId,
-          amount,
-          memo,
-        });
+      const transactions = await buildTransferFungibleTokenTransaction({
+        accountId,
+        tokenContractId,
+        receiverId,
+        amount,
+        memo,
+      });
 
-        // Use Fireblocks-compatible transaction signing
-        return signAndSendTransactionsWithFireblocksCompat(w, { transactions });
-
+      // Use Fireblocks-compatible transaction signing
+      return signAndSendTransactionsWithFireblocksCompat(w, { transactions });
     },
-    [
-      buildTransferFungibleTokenTransaction,
-      nearConnector,
-      signedAccountId,
-    ]
+    [buildTransferFungibleTokenTransaction, nearConnector, signedAccountId]
   );
 
   useEffect(() => {

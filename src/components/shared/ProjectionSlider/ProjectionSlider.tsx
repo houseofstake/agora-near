@@ -110,10 +110,7 @@ export const ProjectionSlider = memo(
           </h3>
           <div className="text-6xl font-bold text-primary mb-8 tabular-nums">
             <TokenAmount
-              amount={
-                parseNearAmount(currentProjection.toString()) ??
-                "0"
-              }
+              amount={parseNearAmount(currentProjection.toString()) ?? "0"}
               compact={false}
               hideCurrency={true}
               minimumFractionDigits={shouldShowDecimals ? 4 : 0}

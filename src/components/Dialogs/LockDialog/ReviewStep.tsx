@@ -299,7 +299,9 @@ export const ReviewStep = memo(
       return (
         <TransactionError
           message={error}
-          onRetry={isFireblocksWallet ? retryFromCurrentStep : executeTransactions}
+          onRetry={
+            isFireblocksWallet ? retryFromCurrentStep : executeTransactions
+          }
           onGoBack={handleEdit}
         />
       );
@@ -339,10 +341,7 @@ export const ReviewStep = memo(
               {selectedToken?.type === "lst" && lstPriceYocto && (
                 <span className="text-secondary text-xs">
                   {(() => {
-                    const nearPerLst = formatNearAmount(
-                      lstPriceYocto,
-                      4
-                    );
+                    const nearPerLst = formatNearAmount(lstPriceYocto, 4);
                     return `1 ${selectedToken?.metadata?.symbol} ≈ ${nearPerLst} NEAR`;
                   })()}
                 </span>

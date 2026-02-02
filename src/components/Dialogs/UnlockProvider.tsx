@@ -100,9 +100,7 @@ export const UnlockProvider = ({ children }: UnlockProviderProps) => {
         if (!isValidNearAmount(amount)) {
           setAmountError("Please enter a valid amount");
         } else if (
-          Big(parseNearAmount(amount) ?? "0").gt(
-            Big(maxAmountToUnlock)
-          )
+          Big(parseNearAmount(amount) ?? "0").gt(Big(maxAmountToUnlock))
         ) {
           setAmountError("Not enough veNEAR available to unlock");
         } else if (Big(amount).lte(0)) {

@@ -528,9 +528,7 @@ export default function VeNearDebugCards() {
           <div className="space-y-4">
             <InfoItem
               label="Total veNEAR Supply"
-              value={formatNearAmount(
-                contractInfo?.totalSupply || "0"
-              )}
+              value={formatNearAmount(contractInfo?.totalSupply || "0")}
               unit="veNEAR"
             />
             <Separator />
@@ -615,23 +613,17 @@ export default function VeNearDebugCards() {
             <Separator />
             <InfoItem
               label="veNEAR Total Balance (Principal + Earned)"
-              value={formatNearAmount(
-                accountInfo.veNearBalance || "0"
-              )}
+              value={formatNearAmount(accountInfo.veNearBalance || "0")}
               unit="veNEAR"
             />
             <InfoItem
               label="Principal Balance"
-              value={formatNearAmount(
-                accountInfo.totalBalance.near
-              )}
+              value={formatNearAmount(accountInfo.totalBalance.near)}
               unit="veNEAR"
             />
             <InfoItem
               label="Earned veNEAR"
-              value={formatNearAmount(
-                accountInfo.totalBalance.extraBalance
-              )}
+              value={formatNearAmount(accountInfo.totalBalance.extraBalance)}
               unit="veNEAR"
             />
 
@@ -640,9 +632,7 @@ export default function VeNearDebugCards() {
               <CardTitle>Delegation</CardTitle>
               <InfoItem
                 label="Delegated NEAR Balance"
-                value={formatNearAmount(
-                  accountInfo.delegatedBalance.near
-                )}
+                value={formatNearAmount(accountInfo.delegatedBalance.near)}
                 unit="NEAR"
               />
               <InfoItem
@@ -712,9 +702,7 @@ export default function VeNearDebugCards() {
                 {accountInfo.veNearLiquidBalance && (
                   <InfoItem
                     label="Available to lock"
-                    value={formatNearAmount(
-                      accountInfo.veNearLiquidBalance
-                    )}
+                    value={formatNearAmount(accountInfo.veNearLiquidBalance)}
                     unit="NEAR"
                   />
                 )}
@@ -722,9 +710,7 @@ export default function VeNearDebugCards() {
                 {accountInfo.veNearLockedBalance && (
                   <InfoItem
                     label="veNEAR Locked Balance"
-                    value={formatNearAmount(
-                      accountInfo.veNearLockedBalance
-                    )}
+                    value={formatNearAmount(accountInfo.veNearLockedBalance)}
                     unit="veNEAR"
                   />
                 )}
@@ -763,9 +749,7 @@ export default function VeNearDebugCards() {
                 {accountInfo.veNearPendingBalance && (
                   <InfoItem
                     label="Pending to unlock"
-                    value={formatNearAmount(
-                      accountInfo.veNearPendingBalance
-                    )}
+                    value={formatNearAmount(accountInfo.veNearPendingBalance)}
                     unit="veNEAR"
                   />
                 )}
@@ -846,9 +830,7 @@ export default function VeNearDebugCards() {
                 <h3 className="font-semibold">Stake NEAR</h3>
                 <InfoItem
                   label="Available to stake balance"
-                  value={formatNearAmount(
-                    accountInfo.liquidBalance || "0"
-                  )}
+                  value={formatNearAmount(accountInfo.liquidBalance || "0")}
                   unit="NEAR"
                 />
                 {accountInfo.stakingPool && (
@@ -883,9 +865,7 @@ export default function VeNearDebugCards() {
                 <h3 className="font-semibold">Unstake NEAR</h3>
                 <InfoItem
                   label="Known deposited balance"
-                  value={formatNearAmount(
-                    knownDepositedBalance || "0"
-                  )}
+                  value={formatNearAmount(knownDepositedBalance || "0")}
                   unit="NEAR"
                 />
                 <Input
@@ -993,16 +973,12 @@ export default function VeNearDebugCards() {
                   <div className="grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">
                     <InfoItem
                       label="Base Proposal Fee"
-                      value={formatNearAmount(
-                        config.base_proposal_fee
-                      )}
+                      value={formatNearAmount(config.base_proposal_fee)}
                       unit="NEAR"
                     />
                     <InfoItem
                       label="Vote Storage Fee"
-                      value={formatNearAmount(
-                        config.vote_storage_fee
-                      )}
+                      value={formatNearAmount(config.vote_storage_fee)}
                       unit="NEAR"
                     />
                     <InfoItem
@@ -1202,8 +1178,7 @@ export default function VeNearDebugCards() {
                           <div className="space-x-4">
                             <span>{vote.total_votes} votes</span>
                             <span>
-                              {formatNearAmount(vote.total_venear)}{" "}
-                              veNEAR
+                              {formatNearAmount(vote.total_venear)} veNEAR
                             </span>
                           </div>
                         </div>

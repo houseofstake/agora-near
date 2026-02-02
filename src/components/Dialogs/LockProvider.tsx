@@ -482,9 +482,7 @@ export const LockProvider = ({
         if (!isValidNearAmount(amount)) {
           setAmountError("Please enter a valid amount");
         } else if (
-          Big(parseNearAmount(amount) ?? "0").gt(
-            Big(maxAmountToLock ?? "0")
-          )
+          Big(parseNearAmount(amount) ?? "0").gt(Big(maxAmountToLock ?? "0"))
         ) {
           setAmountError("Not enough funds in this account");
         } else if (
