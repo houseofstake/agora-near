@@ -1,27 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CONTRACTS } from "@/lib/contractConstants";
 import { getRpcUrl } from "@/lib/utils";
 import { convertUnit } from "@fastnear/utils";
 import toast from "react-hot-toast";
-import {
-  NetworkId,
-  Optional,
-  setupWalletSelector,
-  Transaction,
-  WalletModuleFactory,
-  WalletSelector,
-} from "@near-wallet-selector/core";
-import { SignedMessage } from "@near-wallet-selector/core/src/lib/wallet";
-import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
-import { setupHotWallet } from "@near-wallet-selector/hot-wallet";
-import { setupUnityWallet } from "@near-wallet-selector/unity-wallet";
-// Using proximity-wallet-connect (fork with Fireblocks transaction fixes)
-import { setupWalletConnect } from "proximity-wallet-connect";
-import { setupIntearWallet } from "@near-wallet-selector/intear-wallet";
-import { setupModal } from "@near-wallet-selector/modal-ui";
-import "@near-wallet-selector/modal-ui/styles.css";
-import { providers } from "near-api-js";
-import { NearConnector } from "@hot-labs/near-connect";
+import { NearConnector, SignAndSendTransactionParams, SignedMessage } from "@hot-labs/near-connect";
 import {
   createContext,
   ReactNode,
@@ -38,6 +19,8 @@ import {
   isNearConnectWalletConnect,
 } from "@/lib/wallets/fireblocks-compat";
 import { SignClient } from "@walletconnect/sign-client";
+import { getTransactionLastResult } from "@near-js/utils";
+import { JsonRpcProvider } from "@near-js/providers";
 
 // Default to max Tgas since it gets refunded if not used
 const DEFAULT_GAS = convertUnit("30 Tgas");
@@ -70,7 +53,7 @@ type CallContractsProps = {
 };
 
 interface TransactionsProps {
-  transactions: Array<Optional<Transaction, "signerId">>;
+  transactions: Array<SignAndSendTransactionParams>;
 }
 
 interface NearContextType {
@@ -89,7 +72,7 @@ interface NearContextType {
     recipient?: string;
     nonce?: Buffer;
   }) => Promise<SignedMessage | void>;
-  networkId: NetworkId;
+  networkId: string;
   isInitialized: boolean;
   transferNear: (options: {
     receiverId: string;
@@ -107,7 +90,7 @@ interface NearContextType {
     receiverId: string;
     amount: string;
     memo?: string;
-  }) => Promise<Transaction[]>;
+  }) => Promise<SignAndSendTransactionParams[]>;
   isUsingFireblocksWallet: () => Promise<boolean>;
 }
 
@@ -123,7 +106,7 @@ export const NearContext = createContext<NearContextType>({
   getAccessKeys: async () => [],
   callContracts: async () => null,
   signMessage: async () => {},
-  networkId: "mainnet" as NetworkId,
+  networkId: "mainnet",
   isInitialized: false,
   transferNear: async () => null,
   transferFungibleToken: async () => null,
@@ -135,7 +118,7 @@ export const useNear = () => useContext(NearContext);
 
 interface NearProviderProps {
   children: ReactNode;
-  networkId: NetworkId;
+  networkId: string;
   createAccessKeyFor?: string;
 }
 
@@ -149,17 +132,12 @@ export const NearProvider: React.FC<NearProviderProps> = ({
   children,
   networkId,
 }) => {
-  const [selector, setSelector] = useState<WalletSelector | undefined>();
   const [nearConnector, setNearConnector] = useState<
     NearConnector | undefined
   >();
   const [signedAccountId, setSignedAccountId] = useState<string | undefined>();
   const unsubscribeRef = useRef<() => void>();
   const [isInitialized, setIsInitialized] = useState(false);
-  const useNearConnect =
-    (process.env.NEXT_PUBLIC_NEAR_CONNECT_ENABLED || "false").toLowerCase() ===
-    "true";
-
   /**
    * To be called when the website loads
    * @param {Function} accountChangeHook - a function that is called when the user signs in or out
@@ -167,7 +145,6 @@ export const NearProvider: React.FC<NearProviderProps> = ({
    */
   const init = useCallback(async () => {
     try {
-      if (useNearConnect) {
         const defaultManifestUrl = "/near-connect-manifest.json";
         const nearConnectNetwork: "mainnet" | "testnet" =
           networkId === "mainnet" ? "mainnet" : "testnet";
@@ -215,74 +192,18 @@ export const NearProvider: React.FC<NearProviderProps> = ({
         }
 
         setNearConnector(connector);
-      } else {
-        const selector = await setupWalletSelector({
-          network: networkId,
-          modules: [
-            setupMeteorWallet() as WalletModuleFactory,
-            setupHotWallet() as WalletModuleFactory,
-            setupUnityWallet({
-              projectId: process.env
-                .NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
-              metadata: {
-                name: "Agora NEAR",
-                description: "The on-chain governance company",
-                url: "https://gov.houseofstake.org/",
-                icons: ["https://avatars.githubusercontent.com/u/37784886"],
-              },
-            }) as WalletModuleFactory,
-            setupWalletConnect({
-              projectId: process.env
-                .NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
-              metadata: {
-                name: "Agora NEAR",
-                description: "The on-chain governance company",
-                url: "https://gov.houseofstake.org/",
-                icons: ["https://avatars.githubusercontent.com/u/37784886"],
-              },
-              chainId: `near:${networkId}`,
-              methods: [
-                "near_signIn",
-                "near_signOut",
-                "near_getAccounts",
-                "near_signTransaction",
-                "near_signTransactions",
-                "near_signAndSendTransaction",
-                "near_signAndSendTransactions",
-              ],
-            }) as WalletModuleFactory,
-            setupIntearWallet() as WalletModuleFactory,
-          ],
-        });
-
-        const isSignedIn = selector.isSignedIn();
-        const accountId = isSignedIn
-          ? selector.store.getState().accounts[0]?.accountId
-          : undefined;
-        setSignedAccountId(accountId);
-        setSelector(selector);
-
-        unsubscribeRef.current = selector.store.observable.subscribe(
-          async (state) => {
-            const signedAccount = state?.accounts.find(
-              (account) => account.active
-            )?.accountId;
-            setSignedAccountId(signedAccount);
-          }
-        ).unsubscribe;
-      }
+      
     } catch (error) {
       console.error("Error initializing wallet selector:", error);
     } finally {
       setIsInitialized(true);
     }
-  }, [networkId, useNearConnect]);
+  }, [networkId]);
 
   /**
    * Displays a modal to login the user
    */
   const signIn = useCallback(async () => {
-    if (useNearConnect) {
       if (!nearConnector) return;
       // Show wallet selector and connect with the chosen one
       const id = await nearConnector.selectWallet();
@@ -290,27 +211,16 @@ export const NearProvider: React.FC<NearProviderProps> = ({
         await nearConnector.connect(id);
       }
       return;
-    }
-    if (!selector) return;
-    const modal = setupModal(selector, {
-      contractId: CONTRACTS.VENEAR_CONTRACT_ID,
-    });
-    modal.show();
-  }, [nearConnector, selector, useNearConnect]);
+  }, [nearConnector]);
 
   /**
    * Logout the user
    */
   const signOut = useCallback(async () => {
-    if (useNearConnect) {
       if (!nearConnector) return;
       await nearConnector.disconnect();
       return;
-    }
-    if (!selector) return;
-    const selectedWallet = await selector.wallet();
-    selectedWallet.signOut();
-  }, [nearConnector, selector, useNearConnect]);
+  }, [nearConnector]);
 
   /**
    * Makes a read-only call to a contract
@@ -332,7 +242,7 @@ export const NearProvider: React.FC<NearProviderProps> = ({
         useArchivalNode,
       });
 
-      const provider = new providers.JsonRpcProvider({ url });
+      const provider = new JsonRpcProvider({ url });
 
       debugLog(
         `viewMethod [req - ${contractId}.${method}]: ${JSON.stringify(args, null, 2)} blockId: ${blockId}`
@@ -383,7 +293,6 @@ export const NearProvider: React.FC<NearProviderProps> = ({
       deposit = DEFAULT_DEPOSIT,
     }: CallMethodProps) => {
       // Sign a transaction with the "FunctionCall" action
-      if (useNearConnect) {
         if (!nearConnector) return null;
         const w = await nearConnector.wallet();
         const outcome = await w.signAndSendTransaction({
@@ -402,35 +311,15 @@ export const NearProvider: React.FC<NearProviderProps> = ({
         } as any);
 
         if (!outcome) return null;
-        return providers.getTransactionLastResult(outcome as any);
-      }
-      if (!selector) return null;
-      const selectedWallet = await selector.wallet();
-      const outcome = await selectedWallet.signAndSendTransaction({
-        receiverId: contractId,
-        actions: [
-          {
-            type: "FunctionCall",
-            params: {
-              methodName: method,
-              args,
-              gas,
-              deposit,
-            },
-          },
-        ],
-      });
+        return getTransactionLastResult(outcome as any);
 
-      if (!outcome) return null;
-      return providers.getTransactionLastResult(outcome);
     },
-    [nearConnector, selector, useNearConnect]
+    [nearConnector]
   );
 
   const callContracts = useCallback(
     async ({ contractCalls, callbackUrl }: CallContractsProps) => {
       try {
-        if (useNearConnect) {
           if (!nearConnector) return null;
 
           debugLog(
@@ -482,53 +371,12 @@ export const NearProvider: React.FC<NearProviderProps> = ({
           debugLog(`[Contract Calls res]: ${JSON.stringify(results, null, 2)}`);
 
           return results;
-        }
-
-        if (!selector) return null;
-
-        const selectedWallet = await selector.wallet();
-
-        debugLog(
-          `[Contract Calls req]: ${JSON.stringify(contractCalls, null, 2)}`
-        );
-
-        const outcomes = await selectedWallet.signAndSendTransactions({
-          transactions: Object.keys(contractCalls).map((contractId) => {
-            return {
-              receiverId: contractId,
-              // Putting all the transactions for a given contract into the actions prop means it will
-              // rollback if one of the transactions fail.
-              actions: contractCalls[contractId].map(
-                ({ methodName, args, gas, deposit }) => ({
-                  type: "FunctionCall",
-                  params: {
-                    methodName,
-                    args: args ?? {},
-                    gas: gas ? convertUnit(gas) : DEFAULT_GAS,
-                    deposit: deposit ? convertUnit(deposit) : DEFAULT_DEPOSIT,
-                  },
-                })
-              ),
-            };
-          }),
-          callbackUrl,
-        });
-
-        if (!outcomes) return null;
-
-        const results = outcomes.map((outcome) =>
-          providers.getTransactionLastResult(outcome)
-        );
-
-        debugLog(`[Contract Calls res]: ${JSON.stringify(results, null, 2)}`);
-
-        return results;
       } catch (e) {
         console.error("Error calling methods:", e);
         throw e;
       }
     },
-    [nearConnector, selector, useNearConnect]
+    [nearConnector]
   );
 
   /**
@@ -538,22 +386,12 @@ export const NearProvider: React.FC<NearProviderProps> = ({
    */
   const getTransactionResult = useCallback(
     async (txhash: string) => {
-      if (!selector && !nearConnector) return null;
-      const { network } = selector
-        ? selector.options
-        : { network: { networkId } as any };
-
-      const provider = new providers.JsonRpcProvider({
-        url: getRpcUrl(network.networkId, {
-          useArchivalNode: true,
-        }),
-      });
-
-      // Retrieve transaction result from the network
+      if (!nearConnector) return null;
+      const provider = new JsonRpcProvider({ url: getRpcUrl(networkId, { useArchivalNode: true }) });
       const transaction = await provider.txStatus(txhash, "unnused");
-      return providers.getTransactionLastResult(transaction);
+      return getTransactionLastResult(transaction);
     },
-    [nearConnector, networkId, selector]
+    [nearConnector, networkId]
   );
 
   /**
@@ -564,15 +402,8 @@ export const NearProvider: React.FC<NearProviderProps> = ({
    */
   const getBalance = useCallback(
     async (accountId: string) => {
-      if (!selector && !nearConnector) return "";
-      const { network } = selector
-        ? selector.options
-        : { network: { networkId } as any };
-      const provider = new providers.JsonRpcProvider({
-        url: getRpcUrl(network.networkId, {
-          useArchivalNode: true,
-        }),
-      });
+      if (!nearConnector) return "";
+      const provider = new JsonRpcProvider({ url: getRpcUrl(networkId, { useArchivalNode: true }) });
 
       // Retrieve account state from the network
       const account = await provider.query({
@@ -584,7 +415,7 @@ export const NearProvider: React.FC<NearProviderProps> = ({
       const accountAmount = (account as any).amount;
       return accountAmount ?? "0";
     },
-    [nearConnector, networkId, selector]
+    [nearConnector, networkId]
   );
 
   /**
@@ -595,7 +426,6 @@ export const NearProvider: React.FC<NearProviderProps> = ({
    */
   const signAndSendTransactions = useCallback(
     async ({ transactions }: TransactionsProps) => {
-      if (useNearConnect) {
         if (!nearConnector) return null;
         const w = await nearConnector.wallet();
 
@@ -607,13 +437,8 @@ export const NearProvider: React.FC<NearProviderProps> = ({
 
         // For other NearConnect wallets, use standard batched transaction signing
         return w.signAndSendTransactions({ transactions });
-      }
-
-      if (!selector) return null;
-      const selectedWallet = await selector.wallet();
-      return selectedWallet.signAndSendTransactions({ transactions });
     },
-    [nearConnector, selector, useNearConnect]
+    [nearConnector]
   );
 
   /**
@@ -623,15 +448,8 @@ export const NearProvider: React.FC<NearProviderProps> = ({
    */
   const getAccessKeys = useCallback(
     async (accountId: string) => {
-      if (!selector && !nearConnector) return [];
-      const { network } = selector
-        ? selector.options
-        : { network: { networkId } as any };
-      const provider = new providers.JsonRpcProvider({
-        url: getRpcUrl(network.networkId, {
-          useArchivalNode: true,
-        }),
-      });
+      if (!nearConnector) return [];
+      const provider = new JsonRpcProvider({ url: getRpcUrl(networkId, { useArchivalNode: true }) });
 
       // Retrieve account state from the network
       const keys = await provider.query({
@@ -641,7 +459,7 @@ export const NearProvider: React.FC<NearProviderProps> = ({
       });
       return (keys as any).keys || [];
     },
-    [nearConnector, networkId, selector]
+    [nearConnector, networkId]
   );
 
   const signMessage = useCallback(
@@ -652,7 +470,7 @@ export const NearProvider: React.FC<NearProviderProps> = ({
       message: string;
       recipient?: string;
     }) => {
-      if (!selector && !nearConnector) return;
+      if (!nearConnector) return;
 
       const nonceResponse = await generateNonce({
         account_id: signedAccountId ?? "",
@@ -661,7 +479,6 @@ export const NearProvider: React.FC<NearProviderProps> = ({
       const nonce = Buffer.from(nonceResponse.nonce, "hex");
 
       // Don't sanitize the message - sign it exactly as provided - it would break the signature verification
-      if (useNearConnect) {
         if (!nearConnector) return;
         const w = await nearConnector.wallet();
 
@@ -676,15 +493,8 @@ export const NearProvider: React.FC<NearProviderProps> = ({
           recipient,
           nonce,
         });
-      }
-      const selectedWallet = await selector!.wallet();
-      return selectedWallet!.signMessage({
-        message,
-        recipient,
-        nonce,
-      });
     },
-    [nearConnector, selector, signedAccountId, useNearConnect]
+    [nearConnector, signedAccountId]
   );
 
   /**
@@ -696,7 +506,6 @@ export const NearProvider: React.FC<NearProviderProps> = ({
    */
   const transferNear = useCallback(
     async ({ receiverId, amount }: { receiverId: string; amount: string }) => {
-      if (useNearConnect) {
         if (!nearConnector) return null;
         const w = await nearConnector.wallet();
         return w.signAndSendTransaction({
@@ -710,23 +519,8 @@ export const NearProvider: React.FC<NearProviderProps> = ({
             },
           ],
         } as any);
-      }
-      if (!selector) return null;
-      const selectedWallet = await selector.wallet();
-
-      return selectedWallet.signAndSendTransaction({
-        receiverId,
-        actions: [
-          {
-            type: "Transfer",
-            params: {
-              deposit: amount,
-            },
-          },
-        ],
-      });
     },
-    [nearConnector, selector, useNearConnect]
+    [nearConnector]
   );
 
   const buildTransferFungibleTokenTransaction = useCallback(
@@ -755,7 +549,7 @@ export const NearProvider: React.FC<NearProviderProps> = ({
         | null
         | undefined;
 
-      const transactions: Transaction[] = [
+      const transactions: SignAndSendTransactionParams[] = [
         {
           signerId: accountId,
           receiverId: tokenContractId,
@@ -821,7 +615,6 @@ export const NearProvider: React.FC<NearProviderProps> = ({
       amount: string;
       memo?: string;
     }) => {
-      if (useNearConnect) {
         if (!nearConnector) return null;
         const w = await nearConnector.wallet();
 
@@ -841,29 +634,9 @@ export const NearProvider: React.FC<NearProviderProps> = ({
 
         // Use Fireblocks-compatible transaction signing
         return signAndSendTransactionsWithFireblocksCompat(w, { transactions });
-      }
-      if (!selector) return null;
-      const selectedWallet = await selector.wallet();
 
-      // Get the current account ID
-      const accountId = selector.store.getState().accounts[0]?.accountId;
-      if (!accountId) {
-        throw new Error("No account selected");
-      }
-
-      const transactions = await buildTransferFungibleTokenTransaction({
-        accountId,
-        tokenContractId,
-        receiverId,
-        amount,
-        memo,
-      });
-
-      return selectedWallet.signAndSendTransactions({ transactions });
     },
     [
-      useNearConnect,
-      selector,
       buildTransferFungibleTokenTransaction,
       nearConnector,
       signedAccountId,
@@ -880,8 +653,7 @@ export const NearProvider: React.FC<NearProviderProps> = ({
 
   const isUsingFireblocksWallet = useCallback(async (): Promise<boolean> => {
     try {
-      // Fireblocks only works with useNearConnect path, not with selector
-      if (useNearConnect && nearConnector) {
+      if (nearConnector) {
         const w = await nearConnector.wallet();
         return isNearConnectWalletConnect(w);
       }
@@ -889,7 +661,7 @@ export const NearProvider: React.FC<NearProviderProps> = ({
     } catch {
       return false;
     }
-  }, [useNearConnect, nearConnector]);
+  }, [nearConnector]);
 
   return (
     <NearContext.Provider

@@ -21,7 +21,6 @@ import {
   isValidNearAmount,
 } from "@/lib/utils";
 import Big from "big.js";
-import { utils } from "near-api-js";
 import {
   createContext,
   useCallback,
@@ -30,6 +29,7 @@ import {
   useState,
 } from "react";
 import { StakingSource } from "./StakingDialog/StakingDialog";
+import { parseNearAmount } from "@near-js/utils";
 
 const getSupportedPools = (): StakingPool[] => {
   return [LINEAR_POOL, STNEAR_POOL, RNEAR_POOL];
@@ -189,7 +189,7 @@ export const StakingProvider = ({
       return "0";
     }
 
-    return utils.format.parseNearAmount(enteredAmount) || "0";
+    return parseNearAmount(enteredAmount) || "0";
   }, [enteredAmount, isStakingMax, maxStakingAmount]);
 
   const totalAvailableToStake = useMemo(() => {

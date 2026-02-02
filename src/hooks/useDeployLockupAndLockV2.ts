@@ -37,25 +37,6 @@ export const useDeployLockupAndLockV2 = () => {
     isUsingFireblocksWallet,
   } = useNear();
 
-  const getTransactionText = useCallback(
-    (step: LockTransaction) => {
-      switch (step) {
-        case "deploy_lockup":
-          return "Deploying lockup contract...";
-        case "transfer_near":
-        case "transfer_ft":
-          return "Transferring tokens...";
-        case "select_staking_pool":
-          return "Selecting staking pool...";
-        case "refresh_balance":
-          return "Refreshing balance...";
-        case "lock_near":
-          return `Locking ${selectedToken?.metadata?.name}...`;
-      }
-    },
-    [selectedToken?.metadata?.name]
-  );
-
   const buildTransactions = useCallback(
     async (
       transactions: LockTransaction[]
@@ -188,26 +169,53 @@ export const useDeployLockupAndLockV2 = () => {
         setIsSubmitting(true);
         setError(null);
 
+        // Build all transactions upfront to get the actual count
+        const allTxns = await buildTransactions(requiredTransactions);
+
         if (isFireblocksWallet) {
           // For Fireblocks: execute transactions sequentially with progress tracking
-          setNumTransactions(requiredTransactions.length);
+          setNumTransactions(allTxns.length);
 
-          for (let i = startAt; i < requiredTransactions.length; i++) {
-            const txnType = requiredTransactions[i];
+          for (let i = startAt; i < allTxns.length; i++) {
+            const txn = allTxns[i];
             setTransactionStep(i);
-            setTransactionText(getTransactionText(txnType));
 
-            // Build and send only the current transaction
-            const txns = await buildTransactions([txnType]);
+            let txnText = "Processing transaction...";
+            if (txn.actions && txn.actions.length > 0) {
+              const action = txn.actions[0];
+              if ("params" in action && "methodName" in action.params) {
+                const methodName = action.params.methodName;
+                if (methodName === "storage_deposit") {
+                  txnText = "Storing account in veNEAR contract...";
+                } else if (methodName === "deploy_lockup") {
+                  txnText = "Deploying lockup contract...";
+                } else if (methodName === "select_staking_pool") {
+                  txnText = "Selecting staking pool...";
+                } else if (methodName === "refresh_staking_pool_balance") {
+                  txnText = "Refreshing balance...";
+                } else if (methodName === "lock_near") {
+                  txnText = `Locking ${selectedToken?.metadata?.name}...`;
+                } else if (
+                  methodName === "ft_transfer_call" ||
+                  methodName === "ft_transfer"
+                ) {
+                  txnText = "Transferring tokens...";
+                }
+              } else if ("deposit" in action) {
+                txnText = "Transferring NEAR...";
+              }
+            }
+
+            setTransactionText(txnText);
+
             await signAndSendTransactions({
-              transactions: txns,
+              transactions: [txn],
             });
           }
         } else {
           // For regular wallets: batch all transactions
-          const txns = await buildTransactions(requiredTransactions);
           await signAndSendTransactions({
-            transactions: txns,
+            transactions: allTxns,
           });
         }
 
@@ -223,7 +231,7 @@ export const useDeployLockupAndLockV2 = () => {
       isFireblocksWallet,
       requiredTransactions,
       signAndSendTransactions,
-      getTransactionText,
+      selectedToken?.metadata?.name,
     ]
   );
 

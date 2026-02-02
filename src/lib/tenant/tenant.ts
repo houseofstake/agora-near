@@ -1,7 +1,7 @@
 import { TenantUI } from "@/lib/tenant/tenantUI";
 import { type TenantNamespace, type TenantToken } from "../types";
 import { nearTenantUIConfig } from "./configs/ui/near";
-import { NEAR_NOMINATION_EXP } from "near-api-js/lib/utils/format";
+import { NEAR_NOMINATION_EXP } from "@near-js/utils";
 
 export const BRAND_NAME_MAPPINGS: Record<string, string> = {
   near: "NEAR",

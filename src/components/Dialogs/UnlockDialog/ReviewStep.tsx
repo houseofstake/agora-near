@@ -10,7 +10,6 @@ import { CONTRACTS } from "@/lib/contractConstants";
 import { yoctoNearToUsdFormatted } from "@/lib/utils";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { useQueryClient } from "@tanstack/react-query";
-import { utils } from "near-api-js";
 import Image from "next/image";
 import { memo, useCallback, useMemo, useState } from "react";
 import TokenAmount from "../../shared/TokenAmount";
@@ -18,6 +17,7 @@ import { useUnlockProviderContext } from "../UnlockProvider";
 import { UnlockWarning } from "./UnlockWarning";
 import { MixpanelEvents } from "@/lib/analytics/mixpanel";
 import { trackEvent } from "@/lib/analytics";
+import { parseNearAmount } from "@near-js/utils";
 
 type ReviewStepProps = {
   handleEdit: () => void;
@@ -57,7 +57,7 @@ export const ReviewStep = memo(
         setIsSubmitting(true);
         setError(null);
 
-        const amountInYocto = utils.format.parseNearAmount(enteredAmount);
+        const amountInYocto = parseNearAmount(enteredAmount);
 
         if (!amountInYocto) {
           throw new Error("Invalid unlock amount");
@@ -129,7 +129,7 @@ export const ReviewStep = memo(
               </p>
               <div className="text-4xl font-bold text-gray-900 text-center">
                 <TokenAmount
-                  amount={utils.format.parseNearAmount(enteredAmount) ?? "0"}
+                  amount={parseNearAmount(enteredAmount) ?? "0"}
                   minimumFractionDigits={4}
                   currency="veNEAR"
                 />
@@ -205,7 +205,7 @@ export const ReviewStep = memo(
               <span className="font-bold text-primary">Amount unlocking</span>
             </div>
             <TokenAmount
-              amount={utils.format.parseNearAmount(enteredAmount) ?? "0"}
+              amount={parseNearAmount(enteredAmount) ?? "0"}
               currency="veNEAR"
               className="font-bold"
             />

@@ -6,8 +6,8 @@ import {
   formatNanoSecondsToTimeUnit,
   isValidNearAmount,
 } from "@/lib/utils";
+import { parseNearAmount } from "@near-js/utils";
 import Big from "big.js";
-import { utils } from "near-api-js";
 import {
   createContext,
   useCallback,
@@ -91,7 +91,7 @@ export const UnlockProvider = ({ children }: UnlockProviderProps) => {
       return "0";
     }
 
-    return utils.format.parseNearAmount(enteredAmount) || "0";
+    return parseNearAmount(enteredAmount) || "0";
   }, [enteredAmount, isUnlockingMax, maxAmountToUnlock]);
 
   const validateAmount = useCallback(
@@ -100,7 +100,7 @@ export const UnlockProvider = ({ children }: UnlockProviderProps) => {
         if (!isValidNearAmount(amount)) {
           setAmountError("Please enter a valid amount");
         } else if (
-          Big(utils.format.parseNearAmount(amount) ?? "0").gt(
+          Big(parseNearAmount(amount) ?? "0").gt(
             Big(maxAmountToUnlock)
           )
         ) {

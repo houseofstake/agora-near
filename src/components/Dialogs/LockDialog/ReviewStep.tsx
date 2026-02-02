@@ -12,7 +12,6 @@ import { MixpanelEvents } from "@/lib/analytics/mixpanel";
 import { MIN_VERSION_FOR_LST_LOCKUP } from "@/lib/constants";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import Big from "big.js";
-import { utils } from "near-api-js";
 import Image from "next/image";
 import { memo, useCallback, useMemo, useState } from "react";
 import TokenAmount from "../../shared/TokenAmount";
@@ -20,6 +19,7 @@ import { useLockProviderContext } from "../LockProvider";
 import { DepositTooltip } from "./DepositTooltip";
 import { DisclosuresContent } from "./DisclosuresContent";
 import { LiquidStakingTokenLockWarning } from "./LiquidStakingTokenLockWarning";
+import { formatNearAmount, parseNearAmount } from "@near-js/utils";
 
 type ReviewStepProps = {
   handleEdit: () => void;
@@ -56,7 +56,7 @@ export const ReviewStep = memo(
     // Determine if the just-locked amount leaves any liquid NEAR available to stake.
     // If the user only covered the required deposits, there will be nothing to stake.
     const lockedAmountYocto = useMemo(() => {
-      return utils.format.parseNearAmount(enteredAmount) ?? "0";
+      return parseNearAmount(enteredAmount) ?? "0";
     }, [enteredAmount]);
 
     const hasStakeableAfterLock = useMemo(() => {
@@ -108,7 +108,7 @@ export const ReviewStep = memo(
         event_data: {
           token: selectedToken?.metadata?.symbol,
           type: selectedToken?.type,
-          amountYocto: utils.format.parseNearAmount(enteredAmount) ?? "0",
+          amountYocto: parseNearAmount(enteredAmount) ?? "0",
         },
       });
       executeTransactions();
@@ -186,7 +186,7 @@ export const ReviewStep = memo(
               </p>
               <div className="text-4xl font-bold text-gray-900 text-center">
                 <TokenAmount
-                  amount={utils.format.parseNearAmount(enteredAmount) ?? "0"}
+                  amount={parseNearAmount(enteredAmount) ?? "0"}
                   minimumFractionDigits={4}
                   currency={selectedToken?.metadata?.symbol}
                 />
@@ -239,7 +239,7 @@ export const ReviewStep = memo(
               </p>
               <div className="text-4xl font-bold text-gray-900 text-center">
                 <TokenAmount
-                  amount={utils.format.parseNearAmount(enteredAmount) ?? "0"}
+                  amount={parseNearAmount(enteredAmount) ?? "0"}
                   minimumFractionDigits={4}
                   currency={selectedToken?.metadata?.symbol}
                 />
@@ -339,7 +339,7 @@ export const ReviewStep = memo(
               {selectedToken?.type === "lst" && lstPriceYocto && (
                 <span className="text-secondary text-xs">
                   {(() => {
-                    const nearPerLst = utils.format.formatNearAmount(
+                    const nearPerLst = formatNearAmount(
                       lstPriceYocto,
                       4
                     );
@@ -349,7 +349,7 @@ export const ReviewStep = memo(
               )}
             </div>
             <TokenAmount
-              amount={utils.format.parseNearAmount(enteredAmount) ?? "0"}
+              amount={parseNearAmount(enteredAmount) ?? "0"}
               minimumFractionDigits={4}
               currency={selectedToken?.metadata?.symbol}
               className="font-bold"

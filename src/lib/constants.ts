@@ -1,4 +1,3 @@
-import { NEAR_NOMINATION_EXP } from "near-api-js/lib/utils/format";
 import { StakingPool, TenantToken, TokenMetadata } from "./types";
 import nearAssetIcon from "@/assets/near_icon.jpg";
 import linearAssetIcon from "@/assets/linear.svg";
@@ -6,6 +5,7 @@ import stnearAssetIcon from "@/assets/stnear.svg";
 import veNearAssetIcon from "@/assets/venear.svg";
 import rnearAssetIcon from "@/assets/rnear.svg";
 import Big from "big.js";
+import { NEAR_NOMINATION_EXP } from "@near-js/utils";
 
 export const SECONDS_IN_HOUR = 3600;
 

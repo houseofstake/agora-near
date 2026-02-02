@@ -5,8 +5,12 @@
  */
 
 import { NearWalletBase } from "@hot-labs/near-connect";
-import { Optional, Transaction } from "@near-wallet-selector/core";
-import { providers } from "near-api-js";
+import {
+  Optional,
+  SignAndSendTransactionParams,
+} from "@hot-labs/near-connect/build/types";
+import { Transaction } from "@near-js/transactions";
+import { getTransactionLastResult } from "@near-js/utils";
 
 /**
  * Detects if a NearWalletBase is WalletConnect (Fireblocks)
@@ -21,7 +25,7 @@ export function isNearConnectWalletConnect(wallet: NearWalletBase): boolean {
 export async function signAndSendTransactionsWithFireblocksCompat(
   wallet: NearWalletBase,
   params: {
-    transactions: Array<Optional<Transaction, "signerId">>;
+    transactions: Array<SignAndSendTransactionParams>;
     callbackUrl?: string;
   }
 ): Promise<any[]> {
@@ -50,5 +54,5 @@ export async function signAndSendTransactionsWithFireblocksCompat(
 }
 
 export function getTransactionResults(outcomes: any[]): any[] {
-  return outcomes.map((outcome) => providers.getTransactionLastResult(outcome));
+  return outcomes.map((outcome) => getTransactionLastResult(outcome));
 }
