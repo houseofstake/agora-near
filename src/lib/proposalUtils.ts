@@ -4,21 +4,16 @@ import {
 } from "@/lib/utils";
 import Big from "big.js";
 import { format } from "date-fns";
-import { parseNearAmount } from "near-api-js/lib/utils/format";
 import {
   ProposalDisplayStatus,
   ProposalStatus,
 } from "./contracts/types/voting";
-import {
-  decodeMetadata,
-  ProposalMetadata,
-  ProposalType,
-} from "./proposalMetadata";
+import { decodeMetadata, ProposalMetadata } from "./proposalMetadata";
 import {
   DEFAULT_QUORUM_FLOOR_VENEAR,
   DEFAULT_QUORUM_THRESHOLD_PERCENTAGE_BPS,
 } from "./constants";
-import { Metadata } from "next";
+import { parseNearAmount } from "@near-js/utils";
 
 export const isApprovalThresholdMet = ({
   forVotingPower,

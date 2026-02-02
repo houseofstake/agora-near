@@ -5,9 +5,11 @@ import {
 import { useNear } from "@/contexts/NearContext";
 import { CONTRACTS } from "@/lib/contractConstants";
 import { convertUnit } from "@fastnear/utils";
-import { Transaction } from "@hot-labs/near-connect/build/types/transactions";
-import { Optional } from "@hot-labs/near-connect/build/types/wallet";
-import { useCallback, useState } from "react";
+import {
+  SignAndSendTransactionParams,
+  Optional,
+} from "@hot-labs/near-connect/build/types";
+import { useCallback, useState, useEffect } from "react";
 
 export const useDeployLockupAndLockV2 = () => {
   const {
@@ -23,18 +25,23 @@ export const useDeployLockupAndLockV2 = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isFireblocksWallet, setIsFireblocksWallet] = useState(false);
+  const [transactionStep, setTransactionStep] = useState<number>(0);
+  const [numTransactions, setNumTransactions] = useState<number>(0);
+  const [transactionText, setTransactionText] = useState<string>("");
 
   const {
     signedAccountId,
     signAndSendTransactions,
     buildTransferFungibleTokenTransaction,
+    isUsingFireblocksWallet,
   } = useNear();
 
   const buildTransactions = useCallback(
     async (
       transactions: LockTransaction[]
-    ): Promise<Optional<Transaction, "signerId">[]> => {
-      const txns: Optional<Transaction, "signerId">[] = [];
+    ): Promise<Optional<SignAndSendTransactionParams, "signerId">[]> => {
+      const txns: Optional<SignAndSendTransactionParams, "signerId">[] = [];
 
       if (transactions.includes("deploy_lockup")) {
         txns.push({
@@ -156,29 +163,109 @@ export const useDeployLockupAndLockV2 = () => {
     ]
   );
 
-  const executeTransactions = useCallback(async () => {
-    try {
-      setIsSubmitting(true);
-      setError(null);
+  const executeTransactions = useCallback(
+    async (startAt: number = 0) => {
+      try {
+        setIsSubmitting(true);
+        setError(null);
 
-      const txns = await buildTransactions(requiredTransactions);
+        // Build all transactions upfront to get the actual count
+        const allTxns = await buildTransactions(requiredTransactions);
 
-      await signAndSendTransactions({
-        transactions: txns,
-      });
+        if (isFireblocksWallet) {
+          // For Fireblocks: execute transactions sequentially with progress tracking
+          const flattenedTxns = allTxns.flatMap((txn) => {
+            return txn.actions.map((action) => {
+              return {
+                receiverId: txn.receiverId,
+                actions: [action],
+              };
+            });
+          });
+          setNumTransactions(flattenedTxns.length);
 
-      setIsCompleted(true);
-    } catch {
-      setError("Something went wrong, please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [buildTransactions, requiredTransactions, signAndSendTransactions]);
+          for (let i = startAt; i < flattenedTxns.length; i++) {
+            const txn = flattenedTxns[i];
+            setTransactionStep(i);
+
+            let txnText = "Processing transaction...";
+            if (txn.actions && txn.actions.length > 0) {
+              const action = txn.actions[0];
+              if ("params" in action && "methodName" in action.params) {
+                const methodName = action.params.methodName;
+                if (methodName === "storage_deposit") {
+                  txnText = "Storing account in veNEAR contract...";
+                } else if (methodName === "deploy_lockup") {
+                  txnText = "Deploying lockup contract...";
+                } else if (methodName === "select_staking_pool") {
+                  txnText = "Selecting staking pool...";
+                } else if (methodName === "refresh_staking_pool_balance") {
+                  txnText = "Refreshing balance...";
+                } else if (methodName === "lock_near") {
+                  txnText = `Locking ${selectedToken?.metadata?.name}...`;
+                } else if (
+                  methodName === "ft_transfer_call" ||
+                  methodName === "ft_transfer"
+                ) {
+                  txnText = "Transferring tokens...";
+                }
+              } else if ("deposit" in action) {
+                txnText = "Transferring NEAR...";
+              }
+            }
+
+            setTransactionText(txnText);
+
+            await signAndSendTransactions({
+              transactions: [txn],
+            });
+          }
+        } else {
+          // For regular wallets: batch all transactions
+          await signAndSendTransactions({
+            transactions: allTxns,
+          });
+        }
+
+        setIsCompleted(true);
+      } catch {
+        setError("Something went wrong, please try again.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [
+      buildTransactions,
+      isFireblocksWallet,
+      requiredTransactions,
+      signAndSendTransactions,
+      selectedToken?.metadata?.name,
+    ]
+  );
+
+  const retryFromCurrentStep = useCallback(() => {
+    executeTransactions(transactionStep);
+  }, [executeTransactions, transactionStep]);
+
+  // Detect wallet type when component mounts or when wallet changes
+  useEffect(() => {
+    const detectWallet = async () => {
+      const isFireblocks = await isUsingFireblocksWallet();
+      setIsFireblocksWallet(isFireblocks);
+    };
+
+    detectWallet();
+  }, [isUsingFireblocksWallet]);
 
   return {
     isSubmitting,
     isCompleted,
     error,
     executeTransactions,
+    isFireblocksWallet,
+    transactionStep,
+    numTransactions,
+    transactionText,
+    retryFromCurrentStep,
   };
 };

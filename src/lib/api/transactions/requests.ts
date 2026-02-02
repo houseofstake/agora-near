@@ -1,13 +1,12 @@
 import axios from "axios";
 import { Endpoint } from "../constants";
-import { NetworkId } from "@near-wallet-selector/core";
 import { GetTransactionHashResponse } from "./types";
 
 export const getTransactionHash = async ({
   networkId,
   receiptId,
 }: {
-  networkId: NetworkId;
+  networkId: string;
   receiptId: string;
 }) => {
   const response = await axios.get<GetTransactionHashResponse>(

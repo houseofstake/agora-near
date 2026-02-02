@@ -1,8 +1,8 @@
 import { CONTRACTS } from "@/lib/contractConstants";
-import { providers } from "near-api-js";
 import { useCallback, useEffect, useState } from "react";
 import { useReadHOSContract } from "./useReadHOSContract";
 import { useRpcUrl } from "./useRpcUrl";
+import { JsonRpcProvider } from "@near-js/providers";
 
 export const useTotalSupply = () => {
   const [isLoadingTotalSupply, setIsLoadingTotalSupply] = useState(true);
@@ -20,7 +20,7 @@ export const useTotalSupply = () => {
     ]);
 
   const init = useCallback(async () => {
-    const provider = new providers.JsonRpcProvider({ url: rpcUrl });
+    const provider = new JsonRpcProvider({ url: rpcUrl });
     const block = await provider.block({ finality: "final" });
     setTotalSupply(block.header.total_supply);
 

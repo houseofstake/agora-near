@@ -20,7 +20,6 @@ import { getAPYFromGrowthRate } from "@/lib/lockUtils";
 import { TokenWithBalance } from "@/lib/types";
 import { convertYoctoToNear, isValidNearAmount } from "@/lib/utils";
 import Big from "big.js";
-import { utils } from "near-api-js";
 import {
   createContext,
   useCallback,
@@ -34,6 +33,7 @@ import { useLockupAccount } from "../../hooks/useLockupAccount";
 import { useVenearAccountInfo } from "../../hooks/useVenearAccountInfo";
 import { useVenearConfig } from "../../hooks/useVenearConfig";
 import { LockDialogSource } from "./LockDialog/index";
+import { formatNearAmount, parseNearAmount } from "@near-js/utils";
 
 export type LockTransaction =
   | "deploy_lockup"
@@ -219,7 +219,7 @@ export const LockProvider = ({
 
     try {
       if (selectedToken.type !== "lst") {
-        return utils.format.parseNearAmount(enteredAmount) || "0";
+        return parseNearAmount(enteredAmount) || "0";
       }
 
       // stNEAR → NEAR
@@ -482,17 +482,15 @@ export const LockProvider = ({
         if (!isValidNearAmount(amount)) {
           setAmountError("Please enter a valid amount");
         } else if (
-          Big(utils.format.parseNearAmount(amount) ?? "0").gt(
-            Big(maxAmountToLock ?? "0")
-          )
+          Big(parseNearAmount(amount) ?? "0").gt(Big(maxAmountToLock ?? "0"))
         ) {
           setAmountError("Not enough funds in this account");
         } else if (
           selectedToken?.type === "near" &&
-          Big(utils.format.parseNearAmount(amount) ?? "0").lt(depositTotal)
+          Big(parseNearAmount(amount) ?? "0").lt(depositTotal)
         ) {
           setAmountError(
-            `You must lock at least ${utils.format.formatNearAmount(depositTotal)} NEAR`
+            `You must lock at least ${formatNearAmount(depositTotal)} NEAR`
           );
         } else {
           setAmountError(null);
@@ -516,7 +514,7 @@ export const LockProvider = ({
 
     if (Big(maxAmountToLock ?? "0").lt(depositTotal)) {
       setAmountError(
-        `You must lock at least ${utils.format.formatNearAmount(depositTotal)} NEAR`
+        `You must lock at least ${formatNearAmount(depositTotal)} NEAR`
       );
     } else {
       setAmountError(null);
@@ -542,7 +540,7 @@ export const LockProvider = ({
       return "0";
     }
 
-    return utils.format.parseNearAmount(enteredAmount) || "0";
+    return parseNearAmount(enteredAmount) || "0";
   }, [enteredAmount, isLockingMax, maxAmountToLock]);
 
   const transferAmountYocto = useMemo(() => {

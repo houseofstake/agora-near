@@ -3,8 +3,8 @@ import { twMerge } from "tailwind-merge";
 import Tenant from "./tenant/tenant";
 import { NANO_SECONDS_IN_DAY } from "./constants";
 import Big from "big.js";
-import { NEAR_NOMINATION_EXP } from "near-api-js/lib/utils/format";
 import { baseApiUrl } from "./api/constants";
+import { NEAR_NOMINATION_EXP } from "@near-js/utils";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

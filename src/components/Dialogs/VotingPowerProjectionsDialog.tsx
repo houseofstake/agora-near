@@ -2,7 +2,7 @@ import { memo, useMemo } from "react";
 import { ProjectionSlider } from "../shared/ProjectionSlider/ProjectionSlider";
 import { useVenearSnapshot } from "@/hooks/useVenearSnapshot";
 import { getAPYFromGrowthRate } from "@/lib/lockUtils";
-import { utils } from "near-api-js";
+import { formatNearAmount } from "@near-js/utils";
 
 interface VotingPowerProjectionsDialogProps {
   closeDialog: () => void;
@@ -29,7 +29,7 @@ export const VotingPowerProjectionsDialog = memo(
     // Convert voting power from yoctoNEAR to NEAR
     const startingAmount = useMemo(() => {
       try {
-        const nearAmount = utils.format.formatNearAmount(votingPower);
+        const nearAmount = formatNearAmount(votingPower);
         return parseFloat(nearAmount || "0");
       } catch {
         return 0;

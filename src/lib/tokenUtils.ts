@@ -1,7 +1,7 @@
 import Big from "big.js";
-import { NEAR_NOMINATION } from "near-api-js/lib/utils/format";
 
 import { LOCKUP_MIN_STORAGE_DEPOSIT } from "./constants";
+import { NEAR_NOMINATION } from "@near-js/utils";
 
 export const filterDust = ({
   amount,
