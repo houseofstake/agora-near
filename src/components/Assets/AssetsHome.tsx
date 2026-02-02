@@ -3,7 +3,6 @@
 import { useNear } from "@/contexts/NearContext";
 import { useVenearAccountInfo } from "@/hooks/useVenearAccountInfo";
 import { useVenearConfig } from "@/hooks/useVenearConfig";
-import { useLockupAccount } from "@/hooks/useLockupAccount";
 import { MIN_VERSION_FOR_LST_LOCKUP } from "@/lib/constants";
 import { memo, useMemo } from "react";
 import { LiquidStakingTokenLockWarning } from "../Dialogs/LockDialog/LiquidStakingTokenLockWarning";
@@ -19,9 +18,6 @@ export const AssetsHome = memo(() => {
   const { data: accountInfo, isLoading: isLoadingAccount } =
     useVenearAccountInfo(signedAccountId);
 
-  const { lockupAccountId, isLoading: isLoadingLockupAccountId } =
-    useLockupAccount();
-
   const { lockupVersion, isLoading: isLoadingVenearConfig } = useVenearConfig({
     enabled: true,
   });
@@ -36,7 +32,7 @@ export const AssetsHome = memo(() => {
     return lockupVersionToCheck < MIN_VERSION_FOR_LST_LOCKUP;
   }, [signedAccountId, accountInfo, lockupVersion]);
 
-  if (isLoadingAccount || isLoadingVenearConfig || isLoadingLockupAccountId) {
+  if (isLoadingAccount || isLoadingVenearConfig) {
     return (
       <div className="flex flex-col w-full h-full justify-center items-center">
         <AgoraLoader />
@@ -44,7 +40,7 @@ export const AssetsHome = memo(() => {
     );
   }
 
-  if (!accountInfo && !lockupAccountId) {
+  if (!accountInfo) {
     return (
       <div className="flex flex-col w-full min-h-screen">
         <AssetsLandingPage shouldShowLSTWarning={shouldShowLSTWarning} />
