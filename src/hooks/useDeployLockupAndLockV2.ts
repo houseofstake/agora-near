@@ -174,10 +174,18 @@ export const useDeployLockupAndLockV2 = () => {
 
         if (isFireblocksWallet) {
           // For Fireblocks: execute transactions sequentially with progress tracking
-          setNumTransactions(allTxns.length);
+          const flattenedTxns = allTxns.flatMap((txn) => {
+            return txn.actions.map((action) => {
+              return {
+                receiverId: txn.receiverId,
+                actions: [action],
+              };
+            });
+          });
+          setNumTransactions(flattenedTxns.length);
 
-          for (let i = startAt; i < allTxns.length; i++) {
-            const txn = allTxns[i];
+          for (let i = startAt; i < flattenedTxns.length; i++) {
+            const txn = flattenedTxns[i];
             setTransactionStep(i);
 
             let txnText = "Processing transaction...";
