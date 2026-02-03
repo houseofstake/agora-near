@@ -767,7 +767,7 @@ const walletFaqs: FAQ[] = [
               className="text-primary underline hover:text-secondary font-medium"
               href="/assets"
             >
-              learn more here
+              connect your wallet and follow the process to lock
             </Link>
             )
           </li>
@@ -936,60 +936,64 @@ const InfoFAQ = () => {
 
         <section className="mb-16">
           <h3 className="text-3xl font-black text-primary mb-10">
-            FAQs | Wallets
+            FAQs | Voting
           </h3>
-          <Accordion
-            type="single"
-            collapsible
-            className="space-y-4"
-            value={openItem}
-            onValueChange={handleToggle}
-          >
-            {walletFaqs.map((faq) => (
-              <AccordionItem
-                key={faq.id}
-                value={faq.id}
-                id={faq.id}
-                className="w-full border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow data-[state=open]:shadow-md"
-              >
-                <AccordionTrigger className="w-full text-left text-primary hover:text-secondary text-base font-semibold px-8 py-6 hover:no-underline">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="w-full text-base leading-relaxed px-8 pb-8 pt-2">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </section>
 
-        <section>
-          <h3 className="text-3xl font-black text-primary mb-10">
-            FAQs | General
-          </h3>
-          <Accordion
-            type="single"
-            collapsible
-            className="space-y-4"
-            value={openItem}
-            onValueChange={handleToggle}
-          >
-            {generalFaqs.map((faq) => (
-              <AccordionItem
-                key={faq.id}
-                value={faq.id}
-                id={faq.id}
-                className="w-full border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow data-[state=open]:shadow-md"
+          <div className="space-y-8">
+            <div>
+              <h4 className="text-xl font-bold text-primary mb-6">Wallets</h4>
+              <Accordion
+                type="single"
+                collapsible
+                className="space-y-4"
+                value={openItem}
+                onValueChange={handleToggle}
               >
-                <AccordionTrigger className="w-full text-left text-primary hover:text-secondary text-base font-semibold px-8 py-6 hover:no-underline">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="w-full text-base leading-relaxed px-8 pb-8 pt-2">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+                {walletFaqs.map((faq) => (
+                  <AccordionItem
+                    key={faq.id}
+                    value={faq.id}
+                    id={faq.id}
+                    className="w-full border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow data-[state=open]:shadow-md"
+                  >
+                    <AccordionTrigger className="w-full text-left text-primary hover:text-secondary text-base font-semibold px-8 py-6 hover:no-underline">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="w-full text-base leading-relaxed px-8 pb-8 pt-2">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+
+            <div>
+              <h4 className="text-xl font-bold text-primary mb-6">General</h4>
+              <Accordion
+                type="single"
+                collapsible
+                className="space-y-4"
+                value={openItem}
+                onValueChange={handleToggle}
+              >
+                {generalFaqs.map((faq) => (
+                  <AccordionItem
+                    key={faq.id}
+                    value={faq.id}
+                    id={faq.id}
+                    className="w-full border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow data-[state=open]:shadow-md"
+                  >
+                    <AccordionTrigger className="w-full text-left text-primary hover:text-secondary text-base font-semibold px-8 py-6 hover:no-underline">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="w-full text-base leading-relaxed px-8 pb-8 pt-2">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          </div>
 
           <div className="mt-12 text-base text-tertiary bg-gray-50 rounded-lg p-6">
             <Text>
