@@ -1,13 +1,13 @@
 const getApiUrl = () => {
   switch (process.env.NEXT_PUBLIC_AGORA_ENV) {
     case "prod":
-      return "https://near-api-641188643433.us-west1.run.app/api"; // agora-near-25q4-prd
+      return "https://near-api-fdj2gc3hbq-uw.a.run.app/api"; // hos-gov-prd
     case "august-prod":
       return "https://near-api-237405837378.us-west1.run.app/api"; // agora-near-25q2
     case "staging":
-      return "https://near-api-174260176421.us-west1.run.app/api"; // agora-near-25q4
+      return "https://near-api-bherpz2buq-uw.a.run.app/api"; // hos-gov-stg
     case "dev":
-      return "https://near-api-158107670134.us-west1.run.app/api";
+      return "https://near-api-g4qvzlnzwq-uw.a.run.app/api"; // hos-gov-dev
     case "local":
       return "http://localhost:8080/api";
     default:
