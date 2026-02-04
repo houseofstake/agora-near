@@ -6,6 +6,7 @@ import InfiniteScroll from "react-infinite-scroller";
 import DelegateCard from "./DelegateCard";
 import { EncourageDelegationBanner } from "./EncourageDelegationBanner";
 import Tenant from "@/lib/tenant/tenant";
+import { useNearSocialProfiles } from "@/hooks/useNearSocialProfiles";
 
 interface Props {
   delegates?: DelegateProfile[];
@@ -28,6 +29,9 @@ export default function DelegateCardList({
   const isDelegationEncouragementEnabled = ui.toggle(
     "delegation-encouragement"
   )?.enabled;
+  const { data: nearSocialNames } = useNearSocialProfiles(
+    delegates?.map((delegate) => delegate.address) ?? []
+  );
 
   return (
     <DialogProvider>
@@ -50,11 +54,12 @@ export default function DelegateCardList({
         }
         element="div"
       >
-        {delegates?.map((delegate, idx) => {
+        {delegates?.map((delegate) => {
           return (
             <DelegateCard
-              key={idx}
+              key={delegate.address}
               delegate={delegate}
+              displayName={nearSocialNames?.[delegate.address]}
               isDelegatesFiltering={isDelegatesFiltering}
             />
           );

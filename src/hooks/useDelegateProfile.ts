@@ -2,14 +2,17 @@ import { getDelegate } from "@/lib/api/delegates/requests";
 import { fetchVoteHistory } from "@/lib/api/delegates/requests";
 import { useQuery } from "@tanstack/react-query";
 import { DelegateProfile } from "@/lib/api/delegates/types";
+import { CACHE_TTL } from "@/lib/constants";
+import { useNear } from "@/contexts/NearContext";
 
 export const QK_DELEGATE_PROFILE = "delegateProfile";
 
 export const useDelegateProfile = ({ accountId }: { accountId?: string }) => {
+  const { networkId } = useNear();
   return useQuery({
-    queryKey: [QK_DELEGATE_PROFILE, accountId],
+    queryKey: [QK_DELEGATE_PROFILE, accountId, networkId],
     queryFn: async () => {
-      const delegate = await getDelegate(accountId ?? "");
+      const delegate = await getDelegate(accountId ?? "", networkId);
       if (!delegate) {
         return delegate;
       }
@@ -44,5 +47,6 @@ export const useDelegateProfile = ({ accountId }: { accountId?: string }) => {
       }
     },
     enabled: !!accountId,
+    staleTime: CACHE_TTL.SHORT,
   });
 };

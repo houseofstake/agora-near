@@ -81,6 +81,7 @@ export const MixpanelEvents = {
   UnlockedNEAR: "Unlocked NEAR",
   Delegated: "Delegated",
   CreatedDelegateStatement: "Created Delegate Statement",
+  SavedNearSocialProfile: "Saved Near Social Profile",
   ProposalCreated: "Proposal Created",
   VotedOnProposal: "Voted on Proposal",
   FAQExpanded: "FAQ Expanded",

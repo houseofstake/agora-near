@@ -1,11 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import DelegateStatementForm from "@/components/DelegateStatement/DelegateStatementForm";
 import AgoraLoader from "@/components/shared/AgoraLoader/AgoraLoader";
 import { useNear } from "@/contexts/NearContext";
 import { useDelegateProfile } from "@/hooks/useDelegateProfile";
+import { useNearSocialProfile } from "@/hooks/useNearSocialProfile";
 import Tenant from "@/lib/tenant/tenant";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -18,18 +19,28 @@ import {
 
 export type DelegateStatementFormValues = z.infer<typeof formSchema>;
 
+export const DELEGATE_PROFILE_LIMITS = {
+  displayName: 80,
+  delegateStatement: 4000,
+  handle: 50,
+  email: 254,
+  topIssueType: 50,
+  topIssueValue: 280,
+} as const;
+
 const formSchema = z.object({
   agreeCodeConduct: z.boolean(),
-  discord: z.string(),
-  delegateStatement: z.string(),
-  email: z.string(),
-  twitter: z.string(),
-  warpcast: z.string(),
+  discord: z.string().max(DELEGATE_PROFILE_LIMITS.handle),
+  delegateStatement: z.string().max(DELEGATE_PROFILE_LIMITS.delegateStatement),
+  displayName: z.string().max(DELEGATE_PROFILE_LIMITS.displayName).optional(),
+  email: z.string().max(DELEGATE_PROFILE_LIMITS.email),
+  twitter: z.string().max(DELEGATE_PROFILE_LIMITS.handle),
+  warpcast: z.string().max(DELEGATE_PROFILE_LIMITS.handle),
   topIssues: z.array(
     z
       .object({
-        type: z.string(),
-        value: z.string(),
+        type: z.string().max(DELEGATE_PROFILE_LIMITS.topIssueType),
+        value: z.string().max(DELEGATE_PROFILE_LIMITS.topIssueValue),
       })
       .strict()
   ),
@@ -48,6 +59,8 @@ export default function CurrentDelegateStatement() {
   const { data: delegate, isLoading } = useDelegateProfile({
     accountId: signedAccountId,
   });
+
+  const { data: nearSocialProfile } = useNearSocialProfile(signedAccountId);
 
   const topIssues = ui.governanceIssues;
   const defaultIssues = useMemo(
@@ -71,6 +84,7 @@ export default function CurrentDelegateStatement() {
         agreeCodeConduct: !requireCodeOfConduct,
         discord: delegateProfile?.discord || "",
         delegateStatement: delegateProfile?.statement || "",
+        displayName: "",
         email: delegateProfile?.email || "",
         twitter: delegateProfile?.twitter || "",
         warpcast: delegateProfile?.warpcast || "",
@@ -102,6 +116,22 @@ export default function CurrentDelegateStatement() {
   useEffect(() => {
     form.reset(getDefaultValues(delegate));
   }, [form, getDefaultValues, delegate]);
+
+  // Set display name from Near Social only once when it loads
+  const displayNameInitialized = useRef(false);
+  useEffect(() => {
+    displayNameInitialized.current = false;
+  }, [signedAccountId]);
+  useEffect(() => {
+    if (
+      nearSocialProfile?.name &&
+      !displayNameInitialized.current &&
+      !form.formState.isDirty
+    ) {
+      form.setValue("displayName", nearSocialProfile.name);
+      displayNameInitialized.current = true;
+    }
+  }, [nearSocialProfile, form]);
 
   if (isLoading || !isInitialized) {
     return <AgoraLoader />;

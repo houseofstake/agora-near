@@ -9,8 +9,10 @@ import { EndorsedTooltip } from "./EndorsedTooltip";
 
 export default function DelegateTableRow({
   delegate,
+  displayName,
 }: {
   delegate: DelegateProfile;
+  displayName?: string;
 }) {
   const router = useRouter();
   const endorsed = delegate.endorsed;
@@ -23,11 +25,20 @@ export default function DelegateTableRow({
       }}
     >
       <TableCell className="hidden sm:flex gap-2 items-center">
-        <DelegateAddress address={delegate.address} shouldTruncate={true} />
+        <DelegateAddress
+          address={delegate.address}
+          shouldTruncate={true}
+          displayName={displayName}
+          fetchDisplayName={false}
+        />
         {endorsed && <EndorsedTooltip />}
       </TableCell>
       <TableCell className="flex sm:hidden gap-2 items-center">
-        <DelegateAddress address={delegate.address} />
+        <DelegateAddress
+          address={delegate.address}
+          displayName={displayName}
+          fetchDisplayName={false}
+        />
         {endorsed && <EndorsedTooltip />}
       </TableCell>
       <TableCell>

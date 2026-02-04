@@ -28,14 +28,14 @@ export default function TopIssues({ topIssues }: Props) {
 
           return issueDefinition ? (
             <Issue
-              key={idx}
+              key={`${issue.type}-${idx}`}
               value={issue.value}
               title={issueDefinition.title}
               icon={issueDefinition.icon}
             />
           ) : (
             <Issue
-              key={idx}
+              key={`${issue.type}-${idx}`}
               value={issue.value}
               title={issue.type}
               icon={"ballot"}
