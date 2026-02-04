@@ -164,6 +164,7 @@ export const mergeNearSocialProfile = (
   // Only overwrite keys that are explicitly provided in update
   if (update.name !== undefined) merged.name = update.name;
   if (update.statement !== undefined) merged.statement = update.statement;
+  // topIssues: stored as JSON string, replaces entirely (array preserves all items)
   if (update.topIssues !== undefined) merged.topIssues = update.topIssues;
   if (update.codeOfConductSigned !== undefined) {
     merged.codeOfConductSigned = update.codeOfConductSigned;
@@ -208,4 +209,30 @@ export const extractNearSocialDisplayNames = (
     },
     {}
   );
+};
+
+/**
+ * Calculate the byte size of a Near Social profile payload.
+ * Uses TextEncoder to accurately measure UTF-8 byte length.
+ */
+export const calculatePayloadSize = (payload: unknown): number => {
+  return new TextEncoder().encode(JSON.stringify(payload)).length;
+};
+
+/**
+ * Validate that a Near Social profile payload is within size limits.
+ * @param payload - The profile payload to validate
+ * @param maxBytes - Maximum allowed size in bytes (default: 10000, fits 0.1 NEAR deposit)
+ * @returns Object with isValid boolean and current size in bytes
+ */
+export const validatePayloadSize = (
+  payload: unknown,
+  maxBytes: number = 10000
+): { isValid: boolean; size: number; maxBytes: number } => {
+  const size = calculatePayloadSize(payload);
+  return {
+    isValid: size <= maxBytes,
+    size,
+    maxBytes,
+  };
 };

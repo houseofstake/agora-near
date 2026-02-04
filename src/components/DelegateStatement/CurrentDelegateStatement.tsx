@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 
 import DelegateStatementForm from "@/components/DelegateStatement/DelegateStatementForm";
 import AgoraLoader from "@/components/shared/AgoraLoader/AgoraLoader";
@@ -26,6 +26,13 @@ export const DELEGATE_PROFILE_LIMITS = {
   email: 254,
   topIssueType: 50,
   topIssueValue: 280,
+  /**
+   * Max size in bytes for on-chain Near Social payload.
+   * Note: Near Social has no hard value limit (only MAX_KEY_LENGTH=256).
+   * Limit set to 10KB to stay within the 0.1 NEAR default storage deposit
+   * (~0.00001 NEAR/byte × 10,000 bytes = 0.1 NEAR).
+   */
+  nearSocialMaxBytes: 10000,
 } as const;
 
 const formSchema = z.object({
@@ -113,25 +120,10 @@ export default function CurrentDelegateStatement() {
     mode: "onChange",
   });
 
+  // Reset form when off-chain delegate data changes
   useEffect(() => {
     form.reset(getDefaultValues(delegate));
   }, [form, getDefaultValues, delegate]);
-
-  // Set display name from Near Social only once when it loads
-  const displayNameInitialized = useRef(false);
-  useEffect(() => {
-    displayNameInitialized.current = false;
-  }, [signedAccountId]);
-  useEffect(() => {
-    if (
-      nearSocialProfile?.name &&
-      !displayNameInitialized.current &&
-      !form.formState.isDirty
-    ) {
-      form.setValue("displayName", nearSocialProfile.name);
-      displayNameInitialized.current = true;
-    }
-  }, [nearSocialProfile, form]);
 
   if (isLoading || !isInitialized) {
     return <AgoraLoader />;
@@ -141,5 +133,14 @@ export default function CurrentDelegateStatement() {
     return <ResourceNotFound message="Oops! Nothing's here" />;
   }
 
-  return <DelegateStatementForm form={form} delegate={delegate} />;
+  return (
+    <DelegateStatementForm
+      form={form}
+      delegate={delegate}
+      nearSocialProfile={nearSocialProfile}
+      onResetToOffChain={() => {
+        form.reset(getDefaultValues(delegate));
+      }}
+    />
+  );
 }
