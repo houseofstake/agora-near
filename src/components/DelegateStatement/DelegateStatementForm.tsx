@@ -8,9 +8,12 @@ import { createDelegateStatement } from "@/lib/api/delegates/requests";
 import Tenant from "@/lib/tenant/tenant";
 import { useDelegateStatementStore } from "@/stores/delegateStatement";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type UseFormReturn, useWatch } from "react-hook-form";
-import { type DelegateStatementFormValues } from "./CurrentDelegateStatement";
+import {
+  type DelegateStatementFormValues,
+  DELEGATE_PROFILE_LIMITS,
+} from "./CurrentDelegateStatement";
 import DelegateStatementFormSection from "./DelegateStatementFormSection";
 import OtherInfoFormSection from "./OtherInfoFormSection";
 import TopIssuesFormSection from "./TopIssuesFormSection";
@@ -21,14 +24,20 @@ import { trackEvent } from "@/lib/analytics";
 import { sanitizeString } from "@/lib/sanitizationUtils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useWriteNearSocialProfile } from "@/hooks/useWriteNearSocialProfile";
+import { validatePayloadSize } from "@/lib/nearSocial";
 import toast from "react-hot-toast";
+import { NearSocialProfile } from "@/lib/nearSocial/types";
 
 export default function DelegateStatementForm({
   form,
   delegate,
+  nearSocialProfile,
+  onResetToOffChain,
 }: {
   form: UseFormReturn<DelegateStatementFormValues>;
   delegate?: DelegateProfileType;
+  nearSocialProfile?: NearSocialProfile | null;
+  onResetToOffChain?: () => void;
 }) {
   const router = useRouter();
   const { ui } = Tenant.current();
@@ -36,6 +45,7 @@ export default function DelegateStatementForm({
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [saveToNearSocial, setSaveToNearSocial] = useState(false);
   const writeNearSocial = useWriteNearSocialProfile();
+  const offChainSnapshotRef = useRef<DelegateStatementFormValues | null>(null);
 
   const hasTopIssues = Boolean(
     ui.governanceIssues && ui.governanceIssues.length > 0
@@ -52,6 +62,51 @@ export default function DelegateStatementForm({
   const setNearSocialSaveSuccess = useDelegateStatementStore(
     (state) => state.setNearSocialSaveSuccess
   );
+
+  useEffect(() => {
+    if (!saveToNearSocial || !nearSocialProfile) {
+      return;
+    }
+
+    const dirtyFields = form.formState.dirtyFields;
+
+    if (!dirtyFields.displayName && nearSocialProfile.name) {
+      form.setValue("displayName", nearSocialProfile.name, {
+        shouldDirty: false,
+      });
+    }
+
+    if (!dirtyFields.delegateStatement && nearSocialProfile.statement) {
+      form.setValue("delegateStatement", nearSocialProfile.statement, {
+        shouldDirty: false,
+      });
+    }
+
+    if (
+      !dirtyFields.agreeCodeConduct &&
+      nearSocialProfile.codeOfConductSigned === "Signed"
+    ) {
+      form.setValue("agreeCodeConduct", true, { shouldDirty: false });
+    }
+
+    const onChainTopIssues = Array.isArray(nearSocialProfile.topIssues)
+      ? nearSocialProfile.topIssues.filter((issue) => issue.value)
+      : [];
+
+    if (!dirtyFields.topIssues && onChainTopIssues.length > 0) {
+      const currentTopIssues = form.getValues("topIssues");
+      if (currentTopIssues.length > 0) {
+        const byType = new Map(
+          onChainTopIssues.map((issue) => [issue.type, issue.value])
+        );
+        const merged = currentTopIssues.map((issue) => ({
+          ...issue,
+          value: byType.get(issue.type) ?? issue.value ?? "",
+        }));
+        form.setValue("topIssues", merged, { shouldDirty: false });
+      }
+    }
+  }, [saveToNearSocial, nearSocialProfile, form]);
 
   async function onSubmit(values: DelegateStatementFormValues) {
     if (!agreeCodeConduct) {
@@ -93,6 +148,9 @@ export default function DelegateStatementForm({
     const serializedBody = JSON.stringify(body, undefined, "\t");
 
     if (saveToNearSocial) {
+      const dirtyFields = form.formState.dirtyFields;
+      const includeAllFields =
+        !nearSocialProfile || !form.formState.isDirty;
       const trimmedName = sanitizeString(displayName ?? "");
       const trimmedStatement = sanitizeString(delegateStatement);
 
@@ -102,46 +160,78 @@ export default function DelegateStatementForm({
               type: sanitizeString(issue.type),
               value: sanitizeString(issue.value),
             }))
-            .filter((issue) => issue.value)
+            .filter((issue) => issue.type && issue.value)
         : undefined;
 
-      const nearSocialTopIssues = sanitizedTopIssues?.reduce<
-        Record<string, string>
-      >((acc, issue) => {
-        if (issue.type) {
-          acc[issue.type] = issue.value;
-        }
-        return acc;
-      }, {});
+      const includeDisplayName = includeAllFields
+        ? trimmedName.length > 0
+        : Boolean(dirtyFields.displayName);
+      const includeStatement = includeAllFields
+        ? trimmedStatement.length > 0
+        : Boolean(dirtyFields.delegateStatement);
+      const includeTopIssues = includeAllFields
+        ? Boolean(sanitizedTopIssues && sanitizedTopIssues.length > 0)
+        : Boolean(dirtyFields.topIssues);
+      const includeCodeOfConduct = includeAllFields
+        ? values.agreeCodeConduct
+        : Boolean(dirtyFields.agreeCodeConduct);
+
+      // Store as JSON string so Near Social preserves the array structure
+      const topIssuesJson =
+        includeTopIssues && hasTopIssues
+          ? sanitizedTopIssues && sanitizedTopIssues.length > 0
+            ? JSON.stringify(sanitizedTopIssues)
+            : null
+          : undefined;
 
       const nearSocialPayload = {
-        ...(trimmedName ? { name: trimmedName } : {}),
-        ...(trimmedStatement ? { statement: trimmedStatement } : {}),
-        ...(nearSocialTopIssues && Object.keys(nearSocialTopIssues).length
-          ? { topIssues: nearSocialTopIssues }
+        ...(includeDisplayName
+          ? { name: trimmedName ? trimmedName : null }
           : {}),
-        ...(values.agreeCodeConduct
+        ...(includeStatement
+          ? { statement: trimmedStatement ? trimmedStatement : null }
+          : {}),
+        ...(topIssuesJson !== undefined ? { topIssues: topIssuesJson } : {}),
+        ...(includeCodeOfConduct && values.agreeCodeConduct
           ? { codeOfConductSigned: "Signed" as const }
           : {}),
       };
 
-      let nearSocialSaved = false;
+      // Validate payload size to prevent oversized on-chain storage
+      const sizeValidation = validatePayloadSize(
+        nearSocialPayload,
+        DELEGATE_PROFILE_LIMITS.nearSocialMaxBytes
+      );
+      if (!sizeValidation.isValid) {
+        const sizeKb = Math.round(sizeValidation.size / 1000);
+        const maxKb = Math.round(sizeValidation.maxBytes / 1000);
+        setSubmissionError(
+          `Profile data is too large for on-chain storage (${sizeKb}KB / ${maxKb}KB max). Please shorten your delegate statement or reduce the number of issues.`
+        );
+        return;
+      }
+
       try {
         await writeNearSocial.mutateAsync(nearSocialPayload);
-        toast.success("Saved to Near Social");
+        toast.success(
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-semibold">Saved to Near Social</span>
+          </div>
+        );
         trackEvent({
           event_name: MixpanelEvents.SavedNearSocialProfile,
           event_data: { address: signedAccountId },
         });
         setNearSocialSaveSuccess(true);
-        nearSocialSaved = true;
-      } catch {
-        toast.error("Failed to save to Near Social");
-      }
-      if (nearSocialSaved) {
         router.push(`/delegates/${signedAccountId}`);
+        return;
+      } catch (error) {
+        console.error("Near Social save failed:", error);
+        setSubmissionError(
+          "Failed to save to Near Social. You can retry or uncheck the option to save off-chain instead."
+        );
+        return;
       }
-      return;
     }
 
     let signature;
@@ -196,6 +286,7 @@ export default function DelegateStatementForm({
   const canSubmit =
     !!signedAccountId &&
     !form.formState.isSubmitting &&
+    !writeNearSocial.isPending &&
     !!form.formState.isValid &&
     !!agreeCodeConduct;
 
@@ -224,9 +315,20 @@ export default function DelegateStatementForm({
                   <Checkbox
                     id="saveToNearSocial"
                     checked={saveToNearSocial}
-                    onCheckedChange={(checked) =>
-                      setSaveToNearSocial(checked === true)
-                    }
+                    onCheckedChange={(checked) => {
+                      const nextValue = checked === true;
+                      if (nextValue) {
+                        offChainSnapshotRef.current = form.getValues();
+                      }
+                      setSaveToNearSocial(nextValue);
+                      if (!nextValue) {
+                        if (offChainSnapshotRef.current) {
+                          form.reset(offChainSnapshotRef.current);
+                        } else {
+                          onResetToOffChain?.();
+                        }
+                      }
+                    }}
                   />
                   <label
                     htmlFor="saveToNearSocial"
@@ -237,7 +339,10 @@ export default function DelegateStatementForm({
                 </div>
               </div>
 
-              <DelegateStatementFormSection form={form} />
+              <DelegateStatementFormSection
+                form={form}
+                showDisplayName={saveToNearSocial}
+              />
               {hasTopIssues && <TopIssuesFormSection form={form} />}
 
               <OtherInfoFormSection

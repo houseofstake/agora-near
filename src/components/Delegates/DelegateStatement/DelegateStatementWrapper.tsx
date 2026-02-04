@@ -25,8 +25,11 @@ const DelegateStatementWrapper = ({ statement, topIssues, address }: Props) => {
   const onChainTopIssues = Array.isArray(nearSocialProfile?.topIssues)
     ? nearSocialProfile.topIssues.filter((issue) => issue.value)
     : [];
+  const filteredOffChainTopIssues = topIssues?.filter((issue) => issue.value) ?? [];
   const resolvedTopIssues =
-    topIssues && topIssues.length > 0 ? topIssues : onChainTopIssues;
+    filteredOffChainTopIssues.length > 0
+      ? filteredOffChainTopIssues
+      : onChainTopIssues;
 
   return (
     <>

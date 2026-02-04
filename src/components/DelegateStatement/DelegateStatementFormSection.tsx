@@ -14,8 +14,10 @@ import { FormEvent } from "react";
 
 export default function DelegateStatementFormSection({
   form,
+  showDisplayName = false,
 }: {
   form: UseFormReturn<DelegateStatementFormValues>;
+  showDisplayName?: boolean;
 }) {
   const delegateStatement = useWatch({ name: "delegateStatement" });
   const { ui } = Tenant.current();
@@ -37,24 +39,26 @@ Discourse username:`;
 
   return (
     <div className="flex flex-col py-8 px-6 border-b border-line text-primary">
-      <FormField
-        control={form.control}
-        name="displayName"
-        render={({ field }) => (
-          <Label variant="black" className="mb-6">
-            <h4 className="font-semibold text-xs mb-1 text-secondary">
-              Display name
-            </h4>
-            <Input
-              variant="bgGray100"
-              inputSize="md"
-              placeholder="How should your name appear?"
-              maxLength={DELEGATE_PROFILE_LIMITS.displayName}
-              {...field}
-            />
-          </Label>
-        )}
-      />
+      {showDisplayName && (
+        <FormField
+          control={form.control}
+          name="displayName"
+          render={({ field }) => (
+            <Label variant="black" className="mb-6">
+              <h4 className="font-semibold text-xs mb-1 text-secondary">
+                Display name (on-chain)
+              </h4>
+              <Input
+                variant="bgGray100"
+                inputSize="md"
+                placeholder="How should your name appear?"
+                maxLength={DELEGATE_PROFILE_LIMITS.displayName}
+                {...field}
+              />
+            </Label>
+          )}
+        />
+      )}
       <Tabs defaultValue="write">
         <div className="flex flex-row gap-4 justify-between items-baseline">
           <div className="flex flex-row items-baseline gap-2">

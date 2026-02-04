@@ -4,8 +4,8 @@ export type TopIssue = {
 };
 
 export type NearSocialProfile = {
-  name?: string;
-  statement?: string;
-  topIssues?: Record<string, string> | TopIssue[];
-  codeOfConductSigned?: "Signed";
+  name?: string | null;
+  statement?: string | null;
+  topIssues?: Record<string, string> | TopIssue[] | string | null;
+  codeOfConductSigned?: "Signed" | null;
 };
