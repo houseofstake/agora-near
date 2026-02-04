@@ -14,6 +14,7 @@ import { DelegateProfile } from "@/lib/api/delegates/types";
 import { cn } from "@/lib/utils";
 import { EncourageDelegationBanner } from "./EncourageDelegationBanner";
 import Tenant from "@/lib/tenant/tenant";
+import { useNearSocialProfiles } from "@/hooks/useNearSocialProfiles";
 
 interface Props {
   delegates?: DelegateProfile[];
@@ -36,6 +37,9 @@ export default function DelegateTable({
   const isDelegationEncouragementEnabled = ui.toggle(
     "delegation-encouragement"
   )?.enabled;
+  const { data: nearSocialNames } = useNearSocialProfiles(
+    delegates?.map((delegate) => delegate.address) ?? []
+  );
 
   return (
     <DialogProvider>
@@ -85,7 +89,11 @@ export default function DelegateTable({
               </td>
             ) : (
               delegates?.map((delegate) => (
-                <DelegateTableRow key={delegate.address} delegate={delegate} />
+                <DelegateTableRow
+                  key={delegate.address}
+                  delegate={delegate}
+                  displayName={nearSocialNames?.[delegate.address]}
+                />
               ))
             )}
           </InfiniteScroll>

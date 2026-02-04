@@ -20,19 +20,26 @@ export default function DelegateStatementContainer({
   const showSuccessMessage = useDelegateStatementStore(
     (state) => state.showSaveSuccess
   );
+  const showNearSocialSuccessMessage = useDelegateStatementStore(
+    (state) => state.showNearSocialSaveSuccess
+  );
   const setSaveSuccess = useDelegateStatementStore(
     (state) => state.setSaveSuccess
+  );
+  const setNearSocialSaveSuccess = useDelegateStatementStore(
+    (state) => state.setNearSocialSaveSuccess
   );
 
   useEffect(() => {
     const handleBeforeUnload = () => {
       setSaveSuccess(false);
+      setNearSocialSaveSuccess(false);
     };
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [setSaveSuccess]);
+  }, [setNearSocialSaveSuccess, setSaveSuccess]);
 
   return (
     <>
@@ -43,6 +50,15 @@ export default function DelegateStatementContainer({
         >
           <p className="font-bold">Statement Saved</p>
           <p>Nice! Thank you for telling the community what you believe in.</p>
+        </div>
+      )}
+      {showNearSocialSuccessMessage && (
+        <div
+          className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4"
+          role="alert"
+        >
+          <p className="font-bold">Saved to Near Social</p>
+          <p>Your profile was saved on-chain.</p>
         </div>
       )}
       {!statement && (

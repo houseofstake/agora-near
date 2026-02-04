@@ -27,6 +27,8 @@ export async function GET(
 
   try {
     const { address } = params;
+    const { searchParams } = new URL(request.url);
+    const networkId = searchParams.get("networkId") || "mainnet";
 
     // Validate that address is provided
     if (
@@ -41,7 +43,7 @@ export async function GET(
     }
 
     // Fetch delegate from backend
-    const delegate = await getDelegate(address);
+    const delegate = await getDelegate(address, networkId);
 
     if (!delegate) {
       return NextResponse.json(

@@ -4,6 +4,7 @@ import { DelegateProfileContent } from "@/components/Delegates/DelegateProfile/D
 import { getDelegate } from "@/lib/api/delegates/requests";
 import { formatNumber } from "@/lib/utils";
 import { NEAR_TOKEN } from "@/lib/constants";
+import Tenant from "@/lib/tenant/tenant";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -14,8 +15,9 @@ export async function generateMetadata({
   params: { accountId: string };
 }): Promise<Metadata> {
   const address = params.accountId;
+  const { networkId } = Tenant.current();
 
-  const delegateProfile = await getDelegate(address);
+  const delegateProfile = await getDelegate(address, networkId);
 
   const statement = delegateProfile?.statement;
   const votingPower = delegateProfile?.votingPower;

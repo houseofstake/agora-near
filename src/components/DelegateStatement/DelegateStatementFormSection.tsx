@@ -2,8 +2,13 @@ import Markdown from "@/components/shared/Markdown/Markdown";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormField } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { type UseFormReturn, useWatch } from "react-hook-form";
-import { type DelegateStatementFormValues } from "./CurrentDelegateStatement";
+import {
+  DELEGATE_PROFILE_LIMITS,
+  type DelegateStatementFormValues,
+} from "./CurrentDelegateStatement";
 import Tenant from "@/lib/tenant/tenant";
 import { FormEvent } from "react";
 
@@ -32,6 +37,24 @@ Discourse username:`;
 
   return (
     <div className="flex flex-col py-8 px-6 border-b border-line text-primary">
+      <FormField
+        control={form.control}
+        name="displayName"
+        render={({ field }) => (
+          <Label variant="black" className="mb-6">
+            <h4 className="font-semibold text-xs mb-1 text-secondary">
+              Display name
+            </h4>
+            <Input
+              variant="bgGray100"
+              inputSize="md"
+              placeholder="How should your name appear?"
+              maxLength={DELEGATE_PROFILE_LIMITS.displayName}
+              {...field}
+            />
+          </Label>
+        )}
+      />
       <Tabs defaultValue="write">
         <div className="flex flex-row gap-4 justify-between items-baseline">
           <div className="flex flex-row items-baseline gap-2">
@@ -56,12 +79,13 @@ Discourse username:`;
             control={form.control}
             name="delegateStatement"
             render={({ field }) => (
-              <Textarea
-                className="mt-2 min-h-[16rem]"
-                onFocus={addDefaultValueOnFocus}
-                placeholder={defaultValue}
-                {...field}
-              />
+            <Textarea
+              className="mt-2 min-h-[16rem]"
+              onFocus={addDefaultValueOnFocus}
+              placeholder={defaultValue}
+              maxLength={DELEGATE_PROFILE_LIMITS.delegateStatement}
+              {...field}
+            />
             )}
           />
         </TabsContent>

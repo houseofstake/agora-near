@@ -18,10 +18,8 @@ const queryClient = new QueryClient({
   },
 });
 
-const { ui } = Tenant.current();
+const { ui, networkId } = Tenant.current();
 const shouldHideAgoraFooter = ui.hideAgoraFooter;
-
-const networkId = "mainnet";
 
 const Web3Provider: FC<PropsWithChildren> = ({ children }) => (
   <QueryClientProvider client={queryClient}>

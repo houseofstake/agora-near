@@ -19,6 +19,9 @@ import { DelegateProfile as DelegateProfileType } from "@/lib/api/delegates/type
 import { MixpanelEvents } from "@/lib/analytics/mixpanel";
 import { trackEvent } from "@/lib/analytics";
 import { sanitizeString } from "@/lib/sanitizationUtils";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useWriteNearSocialProfile } from "@/hooks/useWriteNearSocialProfile";
+import toast from "react-hot-toast";
 
 export default function DelegateStatementForm({
   form,
@@ -31,6 +34,8 @@ export default function DelegateStatementForm({
   const { ui } = Tenant.current();
   const { signMessage, signedAccountId, networkId } = useNear();
   const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const [saveToNearSocial, setSaveToNearSocial] = useState(false);
+  const writeNearSocial = useWriteNearSocialProfile();
 
   const hasTopIssues = Boolean(
     ui.governanceIssues && ui.governanceIssues.length > 0
@@ -43,6 +48,9 @@ export default function DelegateStatementForm({
 
   const setSaveSuccess = useDelegateStatementStore(
     (state) => state.setSaveSuccess
+  );
+  const setNearSocialSaveSuccess = useDelegateStatementStore(
+    (state) => state.setNearSocialSaveSuccess
   );
 
   async function onSubmit(values: DelegateStatementFormValues) {
@@ -58,6 +66,7 @@ export default function DelegateStatementForm({
     const {
       discord,
       delegateStatement,
+      displayName,
       email,
       twitter,
       warpcast,
@@ -83,22 +92,90 @@ export default function DelegateStatementForm({
 
     const serializedBody = JSON.stringify(body, undefined, "\t");
 
-    const signature = await signMessage({ message: serializedBody });
+    if (saveToNearSocial) {
+      const trimmedName = sanitizeString(displayName ?? "");
+      const trimmedStatement = sanitizeString(delegateStatement);
+
+      const sanitizedTopIssues = hasTopIssues
+        ? topIssues
+            .map((issue) => ({
+              type: sanitizeString(issue.type),
+              value: sanitizeString(issue.value),
+            }))
+            .filter((issue) => issue.value)
+        : undefined;
+
+      const nearSocialTopIssues = sanitizedTopIssues?.reduce<
+        Record<string, string>
+      >((acc, issue) => {
+        if (issue.type) {
+          acc[issue.type] = issue.value;
+        }
+        return acc;
+      }, {});
+
+      const nearSocialPayload = {
+        ...(trimmedName ? { name: trimmedName } : {}),
+        ...(trimmedStatement ? { statement: trimmedStatement } : {}),
+        ...(nearSocialTopIssues && Object.keys(nearSocialTopIssues).length
+          ? { topIssues: nearSocialTopIssues }
+          : {}),
+        ...(values.agreeCodeConduct
+          ? { codeOfConductSigned: "Signed" as const }
+          : {}),
+      };
+
+      let nearSocialSaved = false;
+      try {
+        await writeNearSocial.mutateAsync(nearSocialPayload);
+        toast.success("Saved to Near Social");
+        trackEvent({
+          event_name: MixpanelEvents.SavedNearSocialProfile,
+          event_data: { address: signedAccountId },
+        });
+        setNearSocialSaveSuccess(true);
+        nearSocialSaved = true;
+      } catch {
+        toast.error("Failed to save to Near Social");
+      }
+      if (nearSocialSaved) {
+        router.push(`/delegates/${signedAccountId}`);
+      }
+      return;
+    }
+
+    let signature;
+    try {
+      signature = await signMessage({ message: serializedBody });
+    } catch (error) {
+      console.error(error);
+      setSubmissionError("Signature failed, please try again");
+      return;
+    }
 
     if (!signature) {
       setSubmissionError("Signature failed, please try again");
       return;
     }
 
-    const response = await createDelegateStatement(
-      {
-        data: body,
-        message: serializedBody,
-        signature: signature.signature,
-        publicKey: signature.publicKey,
-      },
-      networkId
-    );
+    let response;
+    try {
+      response = await createDelegateStatement(
+        {
+          data: body,
+          message: serializedBody,
+          signature: signature.signature,
+          publicKey: signature.publicKey,
+        },
+        networkId
+      );
+    } catch (error) {
+      console.error(error);
+      setSubmissionError(
+        "There was an error submitting your form, please try again"
+      );
+      return;
+    }
 
     if (!response) {
       setSubmissionError(
@@ -112,6 +189,7 @@ export default function DelegateStatementForm({
       event_data: { address: signedAccountId },
     });
     setSaveSuccess(true);
+
     router.push(`/delegates/${signedAccountId}`);
   }
 
@@ -141,10 +219,31 @@ export default function DelegateStatementForm({
         <div className="flex flex-col bg-neutral border rounded-xl border-line shadow-newDefault">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="flex flex-col gap-1 py-4 px-6 border-b border-line">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="saveToNearSocial"
+                    checked={saveToNearSocial}
+                    onCheckedChange={(checked) =>
+                      setSaveToNearSocial(checked === true)
+                    }
+                  />
+                  <label
+                    htmlFor="saveToNearSocial"
+                    className="text-sm text-secondary cursor-pointer"
+                  >
+                    Save profile to the on-chain Near Social contract
+                  </label>
+                </div>
+              </div>
+
               <DelegateStatementFormSection form={form} />
               {hasTopIssues && <TopIssuesFormSection form={form} />}
 
-              <OtherInfoFormSection form={form} />
+              <OtherInfoFormSection
+                form={form}
+                hideOffChainFields={saveToNearSocial}
+              />
 
               <div className="flex flex-col sm:flex-row justify-end sm:justify-between items-stretch sm:items-center gap-4 py-8 px-6 flex-wrap">
                 <span className="text-sm text-primary">

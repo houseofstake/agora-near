@@ -3,24 +3,29 @@ import { DelegateProfile } from "@/lib/api/delegates/types";
 import { sanitizeContent, stripMarkdown } from "@/lib/sanitizationUtils";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useMemo } from "react";
 import { DelegateActions } from "../DelegateCard/DelegateActions";
 import { EndorsedTooltip } from "./EndorsedTooltip";
+import { DelegateAddress } from "../DelegateCard/DelegateAddress";
 
 type DelegateCardProps = {
   delegate: DelegateProfile;
   isDelegatesFiltering: boolean;
+  displayName?: string;
 };
 
 const DelegateCard = ({
   delegate,
   isDelegatesFiltering,
+  displayName,
 }: DelegateCardProps) => {
-  const truncatedStatement = stripMarkdown(delegate.statement ?? "").slice(
-    0,
-    120
-  );
-
-  const sanitizedTruncatedStatement = sanitizeContent(truncatedStatement);
+  const sanitizedTruncatedStatement = useMemo(() => {
+    const truncatedStatement = stripMarkdown(delegate.statement ?? "").slice(
+      0,
+      120
+    );
+    return sanitizeContent(truncatedStatement);
+  }, [delegate.statement]);
   const endorsed = delegate.endorsed;
 
   return (
@@ -35,9 +40,14 @@ const DelegateCard = ({
         <div className="flex flex-col gap-4 h-full rounded-xl bg-wash border border-line shadow-newDefault">
           <div className="flex flex-col gap-4 justify-center pt-4">
             <div className="border-b border-line px-4 pb-4 flex flex-row gap-2 items-center">
-              <span className="truncate max-w-[280px]" title={delegate.address}>
-                {delegate.address}
-              </span>
+              <div className="truncate max-w-[280px]" title={delegate.address}>
+                <DelegateAddress
+                  address={delegate.address}
+                  shouldTruncate={true}
+                  displayName={displayName}
+                  fetchDisplayName={false}
+                />
+              </div>
               {endorsed && <EndorsedTooltip />}
             </div>
             <div className="px-4 flex flex-row gap-4 min-h-[24px]">

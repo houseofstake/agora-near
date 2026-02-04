@@ -26,6 +26,11 @@ export default class Tenant {
     return env === "local" ? "dev(?)" : env;
   }
 
+  public get networkId(): "mainnet" | "testnet" {
+    const mainnetEnvs = new Set(["prod", "august-prod", "staging"]);
+    return mainnetEnvs.has(this.contractEnvironment) ? "mainnet" : "testnet";
+  }
+
   public get namespace(): TenantNamespace {
     return "near";
   }
