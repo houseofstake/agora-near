@@ -108,8 +108,6 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
     await proceedWithUnstake();
   };
 
-
-
   const isLoading = isUnstakingNear;
 
   if (showWarning) {
@@ -180,15 +178,15 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
             <span className="font-medium">NEAR</span>
           </div>
 
-            <div className="flex items-center flex-1 sm:ml-2 min-w-0">
-              <Input
-                type="text"
-                value={amount}
-                readOnly
-                disabled
-                className="w-full bg-transparent border-none text-lg text-right h-auto focus-visible:ring-0 focus-visible:ring-offset-0 pr-2 opacity-100 text-primary cursor-not-allowed"
-              />
-            </div>
+          <div className="flex items-center flex-1 sm:ml-2 min-w-0">
+            <Input
+              type="text"
+              value={amount}
+              readOnly
+              disabled
+              className="w-full bg-transparent border-none text-lg text-right h-auto focus-visible:ring-0 focus-visible:ring-offset-0 pr-2 opacity-100 text-primary cursor-not-allowed"
+            />
+          </div>
         </div>
       </div>
 
