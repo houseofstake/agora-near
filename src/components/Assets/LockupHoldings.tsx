@@ -118,6 +118,7 @@ export const LockupHoldings = memo(
       const staked = Big(stakedBalance ?? "0");
       const unstaked = Big(unstakedBalance ?? "0");
       const pending = Big(pendingBalance ?? "0");
+      
       const locked = Big(
         filteredLiquidLockupBalance.lockableNearBalance ?? "0"
       );
@@ -128,13 +129,15 @@ export const LockupHoldings = memo(
         filteredLiquidLockupBalance.withdrawableNearBalance ?? "0"
       );
 
+      const totalLiquid = locked.add(stakable).add(withdrawable);
+      // Per Issue #147: User should have no NEAR balance greater than 2.1
+      const MAX_REMAINING_FOR_DELETE = Big("2.1").mul(Big(10).pow(24));
+
       return (
         staked.eq(0) &&
         unstaked.eq(0) &&
         pending.eq(0) &&
-        locked.eq(0) &&
-        stakable.eq(0) &&
-        withdrawable.eq(0) &&
+        totalLiquid.lte(MAX_REMAINING_FOR_DELETE) &&
         !!lockupAccountId
       );
     }, [
