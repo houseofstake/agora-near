@@ -130,7 +130,7 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
         </div>
         <div className="flex flex-col gap-2">
           <UpdatedButton
-            onClick={closeDialog} // Or ideally redirect to Withdraw flow, but keeping it simple for now as requested
+            onClick={closeDialog}
             type="secondary"
             className="w-full"
             variant="rounded"

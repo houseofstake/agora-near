@@ -277,7 +277,7 @@ export const LockupHoldings = memo(
                     await deleteLockup();
                     toast.success("Account closed and storage reclaimed");
                   } catch (e: any) {
-                    // Error is maintained in hook, but we can toast generic error
+                    // Ignore error
                   }
                 },
                 isLoading: isDeletingLockup,
