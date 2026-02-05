@@ -7,7 +7,7 @@ import { useStakedBalance } from "@/hooks/useStakedBalance";
 import { useStakeNear } from "@/hooks/useStakeNear";
 import { NEAR_TOKEN_METADATA } from "@/lib/constants";
 import Big from "big.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { UnstakeDialogHeader } from "./UnstakeDialogHeader";
 import { AssetIcon } from "../../common/AssetIcon";
@@ -59,12 +59,14 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
     }
     setAmountError(null);
   };
-
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setAmount(value);
-    validateAmount(value);
-  };
+  // Auto-set amount to max staked balance
+  useEffect(() => {
+    if (stakedBalance) {
+      const maxVal = Big(stakedBalance).div(Big(10).pow(24)).toFixed(24, 0);
+      setAmount(maxVal);
+      setAmountError(null);
+    }
+  }, [stakedBalance]);
 
   const hasInsufficientBalance = !!amountError;
 
@@ -106,14 +108,7 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
     await proceedWithUnstake();
   };
 
-  const handleMaxClick = () => {
-    if (stakedBalance) {
-      // Format to NEAR for display/input: Use 24 decimal places and Round Down (0)
-      const maxVal = Big(stakedBalance).div(Big(10).pow(24)).toFixed(24, 0);
-      setAmount(maxVal);
-      setAmountError(null);
-    }
-  };
+
 
   const isLoading = isUnstakingNear;
 
@@ -185,23 +180,15 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
             <span className="font-medium">NEAR</span>
           </div>
 
-          <div className="flex items-center flex-1 sm:ml-2 min-w-0">
-            <Input
-              type="number"
-              placeholder="0"
-              value={amount}
-              onChange={handleAmountChange}
-              disabled={isLoading}
-              className="w-full bg-transparent border-none text-lg text-right h-auto focus-visible:ring-0 focus-visible:ring-offset-0 pr-2"
-            />
-            <button
-              onClick={handleMaxClick}
-              disabled={isLoading || !stakedBalance}
-              className="px-3 py-1 text-sm text-[#00E391] hover:bg-[#00E391] hover:text-white rounded transition-colors duration-200 flex-shrink-0"
-            >
-              Max
-            </button>
-          </div>
+            <div className="flex items-center flex-1 sm:ml-2 min-w-0">
+              <Input
+                type="text"
+                value={amount}
+                readOnly
+                disabled
+                className="w-full bg-transparent border-none text-lg text-right h-auto focus-visible:ring-0 focus-visible:ring-offset-0 pr-2 opacity-100 text-primary cursor-not-allowed"
+              />
+            </div>
         </div>
       </div>
 
@@ -227,7 +214,7 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
           className="w-full"
           variant="rounded"
         >
-          Unstake
+          Unstake All
         </UpdatedButton>
       </div>
     </div>
