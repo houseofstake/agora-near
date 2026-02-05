@@ -13,13 +13,13 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
 import Big from "big.js";
-import { utils } from "near-api-js";
 import { useCallback, useMemo } from "react";
 import { AssetIcon } from "../../common/AssetIcon";
 import TokenAmount from "../../shared/TokenAmount";
 import { useLockProviderContext } from "../LockProvider";
 
 import { useStakedBalance } from "@/hooks/useStakedBalance";
+import { formatNearAmount } from "@near-js/utils";
 
 type EnterAmountStepProps = {
   openAssetSelector: () => void;
@@ -79,7 +79,7 @@ export const EnterAmountStep = ({
 
   const conversionText = useMemo(() => {
     if (!showConversion) return null;
-    const nearPerLst = utils.format.formatNearAmount(lstPriceYocto ?? "0", 4);
+    const nearPerLst = formatNearAmount(lstPriceYocto ?? "0", 4);
     const symbol = selectedToken?.metadata?.symbol ?? "";
     return `1 ${symbol} ≈ ${nearPerLst} NEAR`;
   }, [lstPriceYocto, selectedToken?.metadata?.symbol, showConversion]);
@@ -96,7 +96,7 @@ export const EnterAmountStep = ({
               <div className="max-w-[300px] flex flex-col text-left p-3">
                 <h4 className="text-lg font-bold mb-2">Available to lock</h4>
                 <p className="text-sm">
-                  {`Amount available to lock, with ${utils.format.formatNearAmount(
+                  {`Amount available to lock, with ${formatNearAmount(
                     DEFAULT_GAS_RESERVE
                   )} NEAR reserved for gas fees.`}
                 </p>

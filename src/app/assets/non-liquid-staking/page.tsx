@@ -23,7 +23,7 @@ import toast from "react-hot-toast";
 import { UpdatedButton } from "@/components/Button";
 
 import { getRpcUrl } from "@/lib/utils";
-import { providers } from "near-api-js";
+import { JsonRpcProvider } from "@near-js/providers";
 
 export default function NonLiquidOnboardingPage() {
   const openDialog = useOpenDialog();
@@ -63,7 +63,7 @@ export default function NonLiquidOnboardingPage() {
     const checkLockup = async () => {
       try {
         const url = getRpcUrl(networkId, { useArchivalNode: false });
-        const provider = new providers.JsonRpcProvider({ url });
+        const provider = new JsonRpcProvider({ url });
 
         await provider.query({
           request_type: "view_account",

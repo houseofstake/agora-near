@@ -210,7 +210,7 @@ const transformVotesToChartData = ({
 
 const tickFormatter = (timeStr: string, index: number) => {
   const date = new Date(timeStr);
-  const formattedDate = format(date, "MM/dd h:mm a");
+  const formattedDate = format(date, "yyyy-MM-dd h:mm a");
 
   const metaText = index === 0 ? "(vote begins)" : "(vote end)";
   return `${formattedDate} ${metaText}`;

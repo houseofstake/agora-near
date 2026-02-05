@@ -18,6 +18,7 @@ export const useLockupAccount = () => {
       config: {
         args: { account_id: signedAccountId || "" },
         enabled: !!signedAccountId,
+        staleTime: 0,
       },
     },
   ]);

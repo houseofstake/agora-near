@@ -12,7 +12,7 @@ import {
   GetProposalQuorumResponse,
 } from "./types";
 import { getRpcUrl } from "@/lib/utils";
-import { JsonRpcProvider } from "near-api-js/lib/providers";
+import { JsonRpcProvider } from "@near-js/providers";
 import { CONTRACTS } from "@/lib/contractConstants";
 import { ProposalInfo } from "@/lib/contracts/types/voting";
 

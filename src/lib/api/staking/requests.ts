@@ -1,12 +1,11 @@
 import axios from "axios";
 import { Endpoint } from "../constants";
-import { NetworkId } from "@near-wallet-selector/core";
 
 export const getStakingPoolApy = async ({
   networkId,
   contractId,
 }: {
-  networkId: NetworkId;
+  networkId: string;
   contractId: string;
 }) => {
   const response = await axios.get<{

@@ -111,7 +111,7 @@ export const PendingProposal = ({ proposal }: { proposal: Proposal }) => {
           <div className="text-xs text-secondary">Submitted on</div>
           {proposal.createdAt && (
             <div className="overflow-ellipsis overflow-visible whitespace-normal break-words text-primary">
-              {format(new Date(proposal.createdAt), "MM/dd/yyyy")}
+              {format(new Date(proposal.createdAt), "yyyy-MM-dd")}
             </div>
           )}
         </div>

@@ -71,12 +71,12 @@ export async function middleware(request: NextRequest) {
   }
 
   // Hide `/near` page in production only; keep for dev/staging
-  if (
-    (path === "/near" || path.startsWith("/near/")) &&
-    process.env.NEXT_PUBLIC_AGORA_ENV === "prod"
-  ) {
-    return new NextResponse("Not Found", { status: 404 });
-  }
+  // if (
+  //   (path === "/near" || path.startsWith("/near/")) &&
+  //   process.env.NEXT_PUBLIC_AGORA_ENV === "prod"
+  // ) {
+  //   return new NextResponse("Not Found", { status: 404 });
+  // }
 
   // Handle preflight OPTIONS requests
   if (request.method === "OPTIONS") {

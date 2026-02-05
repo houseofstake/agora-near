@@ -1,0 +1,58 @@
+/**
+ * Fireblocks Compatibility Layer
+ *
+ * Signs transactions individually since Fireblocks doesn't support batch.
+ */
+
+import { NearWalletBase } from "@hot-labs/near-connect";
+import {
+  Optional,
+  SignAndSendTransactionParams,
+} from "@hot-labs/near-connect/build/types";
+import { Transaction } from "@near-js/transactions";
+import { getTransactionLastResult } from "@near-js/utils";
+
+/**
+ * Detects if a NearWalletBase is WalletConnect (Fireblocks)
+ * @param wallet - The wallet to check (from NearConnect)
+ * @returns true if the wallet is WalletConnect/Fireblocks
+ */
+export function isNearConnectWalletConnect(wallet: NearWalletBase): boolean {
+  // NearConnect wallets are identified by their manifest.id
+  return wallet.manifest?.id === "wallet-connect";
+}
+
+export async function signAndSendTransactionsWithFireblocksCompat(
+  wallet: NearWalletBase,
+  params: {
+    transactions: Array<SignAndSendTransactionParams>;
+    callbackUrl?: string;
+  }
+): Promise<any[]> {
+  const outcomes: any[] = [];
+
+  for (let txIndex = 0; txIndex < params.transactions.length; txIndex++) {
+    const tx = params.transactions[txIndex];
+    const actionCount = tx.actions.length;
+    let lastOutcome: any = null;
+
+    for (let actionIndex = 0; actionIndex < actionCount; actionIndex++) {
+      const action = tx.actions[actionIndex];
+      console.log(
+        `[Fireblocks] Signing ${txIndex + 1}/${params.transactions.length} (action ${actionIndex + 1}/${actionCount})...`
+      );
+
+      lastOutcome = await wallet.signAndSendTransaction({
+        receiverId: tx.receiverId,
+        actions: [action],
+      });
+    }
+    if (lastOutcome != null) outcomes.push(lastOutcome);
+  }
+
+  return outcomes;
+}
+
+export function getTransactionResults(outcomes: any[]): any[] {
+  return outcomes.map((outcome) => getTransactionLastResult(outcome));
+}

@@ -8,6 +8,7 @@ import { DelegationEvent } from "@/lib/api/delegates/types";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
 import { format } from "date-fns";
 import Link from "next/link";
+import { truncateAddress } from "@/lib/text";
 
 export default function DelegationFromRow({
   delegation,
@@ -21,7 +22,7 @@ export default function DelegationFromRow({
       <TableCell>
         <TokenAmount amount={delegation.nearAmount ?? "0"} currency="veNEAR" />
       </TableCell>
-      <TableCell>{format(delegation.eventTimestamp, "MM/dd/yyyy")}</TableCell>
+      <TableCell>{format(delegation.eventTimestamp, "yyyy-MM-dd")}</TableCell>
       <TableCell>
         <Link
           href={`/delegates/${delegation.delegatorId}`}
@@ -31,7 +32,7 @@ export default function DelegationFromRow({
             className="truncate max-w-[120px]"
             title={delegation.delegatorId}
           >
-            {delegation.delegatorId}
+            {truncateAddress(delegation.delegatorId || "")}
           </span>
         </Link>
       </TableCell>

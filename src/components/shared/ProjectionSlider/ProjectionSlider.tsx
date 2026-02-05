@@ -3,7 +3,7 @@
 import { memo, useCallback, useState, useRef, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import TokenAmount from "../TokenAmount";
-import { utils } from "near-api-js";
+import { parseNearAmount } from "@near-js/utils";
 
 interface ProjectionSliderProps {
   apy: number; // Annual percentage yield as decimal (e.g., 0.0599 for 5.99%)
@@ -110,10 +110,7 @@ export const ProjectionSlider = memo(
           </h3>
           <div className="text-6xl font-bold text-primary mb-8 tabular-nums">
             <TokenAmount
-              amount={
-                utils.format.parseNearAmount(currentProjection.toString()) ??
-                "0"
-              }
+              amount={parseNearAmount(currentProjection.toString()) ?? "0"}
               compact={false}
               hideCurrency={true}
               minimumFractionDigits={shouldShowDecimals ? 4 : 0}

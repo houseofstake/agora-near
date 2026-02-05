@@ -731,11 +731,136 @@ const rewardsFaqs: FAQ[] = [
   },
 ];
 
+const walletFaqs: FAQ[] = [
+  {
+    id: "supported-wallets",
+    question: "What wallets are supported?",
+    answer: (
+      <div className="space-y-6">
+        <Text>
+          House of Stake supports the most common NEAR wallets, including:
+        </Text>
+        <ul className="list-disc list-inside space-y-2 pl-4">
+          <li>MyNearWallet</li>
+          <li>HERE Wallet</li>
+          <li>Meteor Wallet</li>
+          <li>Sender Wallet</li>
+          <li>Nightly Wallet</li>
+          <li>Ledger (via supported wallet integrations)</li>
+          <li>Fireblocks vaults (see special instructions below)</li>
+        </ul>
+        <Text>
+          To get started, go to{" "}
+          <Link
+            className="text-primary underline hover:text-secondary font-medium"
+            href="/proposals"
+          >
+            gov.houseofstake.org/proposals
+          </Link>
+          , connect your wallet, and select your preferred wallet provider.
+        </Text>
+        <Text>Once your wallet is connected, you are ready to:</Text>
+        <ul className="list-disc list-inside space-y-2 pl-4">
+          <li>
+            lock NEAR for veNEAR (
+            <Link
+              className="text-primary underline hover:text-secondary font-medium"
+              href="/assets"
+            >
+              learn more here
+            </Link>
+            )
+          </li>
+          <li>
+            accumulate voting power (
+            <Link
+              className="text-primary underline hover:text-secondary font-medium"
+              href="/assets#lock"
+            >
+              learn more here
+            </Link>
+            )
+          </li>
+          <li>
+            participate in governance (
+            <Link
+              className="text-primary underline hover:text-secondary font-medium"
+              href="/proposals"
+            >
+              learn more here
+            </Link>
+            )
+          </li>
+          <li>
+            earn veNEAR rewards (
+            <Link
+              className="text-primary underline hover:text-secondary font-medium"
+              href="/assets"
+            >
+              learn more here
+            </Link>
+            )
+          </li>
+        </ul>
+      </div>
+    ),
+  },
+  {
+    id: "fireblocks-vaults",
+    question: "Using Fireblocks vaults",
+    answer: (
+      <div className="space-y-6">
+        <Text>
+          If you are using a Fireblocks vault, please note the following:
+        </Text>
+        <ul className="list-disc list-inside space-y-2 pl-4">
+          <li>
+            To connect to the House of Stake contracts, your Fireblocks
+            workspace must allow <strong>typed messages</strong>.
+          </li>
+          <li>
+            Make sure you have configured an appropriate policy in your
+            Fireblocks Console.
+          </li>
+        </ul>
+        <Text>
+          If you would like to become a delegate using a Fireblocks vault, note
+          that delegate statements are not supported for Fireblocks vaults.
+        </Text>
+        <div className="pl-4">
+          <Text>You can:</Text>
+          <ul className="list-disc list-inside space-y-2 pl-4">
+            <li>vote as a delegate without publishing a statement, or</li>
+            <li>
+              delegate your voting power to a regular wallet that has a delegate
+              statement set up (
+              <Link
+                className="text-primary underline hover:text-secondary font-medium"
+                href="/delegates"
+              >
+                see example here
+              </Link>
+              ).
+            </li>
+          </ul>
+        </div>
+        <Text>
+          In case you need support, please reach out to House of Stake on
+          Telegram or on X.
+        </Text>
+      </div>
+    ),
+  },
+];
+
 const InfoFAQ = () => {
   const searchParams = useSearchParams();
   const faqId = searchParams?.get("item");
   const isValidFaqId =
-    faqId && [...generalFaqs, ...rewardsFaqs].some((faq) => faq.id === faqId);
+    faqId &&
+    [...generalFaqs, ...rewardsFaqs, ...walletFaqs].some(
+      (faq) => faq.id === faqId
+    );
   const [openItem, setOpenItem] = useState<string | undefined>(
     isValidFaqId ? faqId : undefined
   );
@@ -756,7 +881,9 @@ const InfoFAQ = () => {
   const handleToggle = useCallback((value: string) => {
     setOpenItem(value);
     if (value) {
-      const faq = [...generalFaqs, ...rewardsFaqs].find((f) => f.id === value);
+      const faq = [...generalFaqs, ...rewardsFaqs, ...walletFaqs].find(
+        (f) => f.id === value
+      );
       trackEvent({
         event_name: MixpanelEvents.FAQExpanded,
         event_data: { id: value, question: faq?.question },
@@ -805,6 +932,35 @@ const InfoFAQ = () => {
               </div>
             </div>
           )}
+        </section>
+
+        <section className="mb-16">
+          <h3 className="text-3xl font-black text-primary mb-10">
+            FAQs | Wallets
+          </h3>
+          <Accordion
+            type="single"
+            collapsible
+            className="space-y-4"
+            value={openItem}
+            onValueChange={handleToggle}
+          >
+            {walletFaqs.map((faq) => (
+              <AccordionItem
+                key={faq.id}
+                value={faq.id}
+                id={faq.id}
+                className="w-full border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow data-[state=open]:shadow-md"
+              >
+                <AccordionTrigger className="w-full text-left text-primary hover:text-secondary text-base font-semibold px-8 py-6 hover:no-underline">
+                  {faq.question}
+                </AccordionTrigger>
+                <AccordionContent className="w-full text-base leading-relaxed px-8 pb-8 pt-2">
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </section>
 
         <section>

@@ -51,10 +51,10 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
       case "unlock":
       case "outbound_delegation":
       case "withdraw":
-        return "text-red-600";
-      case "unstake":
       case "staking_pool_withdraw":
-        return "text-gray-900";
+      case "unstake":
+        return "text-red-600";
+
       default:
         return "text-gray-900";
     }
@@ -71,10 +71,10 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
       case "unlock":
       case "outbound_delegation":
       case "withdraw":
-        return "-";
-      case "unstake":
       case "staking_pool_withdraw":
-        return "";
+      case "unstake":
+        return "-";
+
       default:
         return "";
     }

@@ -226,7 +226,10 @@ export function NearClaimDialog({ closeDialog }: NearClaimDialogProps) {
           <div className="text-4xl font-bold text-primary mb-1">
             {hasNoClaimableTokens
               ? "0.00"
-              : convertYoctoToNear(actualTotalAmount, 2)}
+              : convertYoctoToNear(
+                  actualTotalAmount,
+                  BigInt(actualTotalAmount) < BigInt(1e22) ? 5 : 2
+                )}
           </div>
           <div className="flex items-center justify-center gap-1 text-sm text-secondary">
             <AssetIcon

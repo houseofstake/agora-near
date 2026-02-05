@@ -24,6 +24,7 @@ import { useNear } from "@/contexts/NearContext";
 import { useProposalNonVoters } from "@/hooks/useProposalNonVoters";
 import { icons } from "@/assets/icons";
 import Link from "next/link";
+import { truncateAddress } from "@/lib/text";
 
 const ProposalVoteResult = ({
   proposal,
@@ -133,7 +134,9 @@ const ProposalVoteResult = ({
                                     href={`/delegates/${nonVoter.registeredVoterId}`}
                                     className="hover:text-primary transition-colors truncate max-w-[200px]"
                                   >
-                                    {nonVoter.registeredVoterId}
+                                    {truncateAddress(
+                                      nonVoter.registeredVoterId
+                                    )}
                                   </Link>
                                   {nonVoter.registeredVoterId ===
                                     signedAccountId && (
@@ -194,7 +197,7 @@ const ProposalVoteResult = ({
                                     href={`/delegates/${vote.accountId}`}
                                     className="hover:text-primary transition-colors truncate max-w-[200px]"
                                   >
-                                    {vote.accountId}
+                                    {truncateAddress(vote.accountId)}
                                   </Link>
                                   {vote.accountId === signedAccountId && (
                                     <p className="text-primary">(you)</p>

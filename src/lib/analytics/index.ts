@@ -1,6 +1,6 @@
 import Tenant from "@/lib/tenant/tenant";
 import { track as trackMixpanel } from "./mixpanel";
-import { utils } from "near-api-js";
+import { formatNearAmount } from "@near-js/utils";
 
 export type AnalyticsPayload = {
   event_name: string;
@@ -100,7 +100,7 @@ function enrichYoctoFields(data?: Record<string, unknown>) {
 
 function safelyFormatNear(yocto: string): string {
   try {
-    return utils.format.formatNearAmount(yocto);
+    return formatNearAmount(yocto);
   } catch (_e) {
     return yocto;
   }

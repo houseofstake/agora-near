@@ -16,3 +16,8 @@ export const truncateMiddle = (
   if (str.length <= startLen + endLen) return str;
   return `${str.slice(0, startLen)}...${str.slice(-endLen)}`;
 };
+
+export const truncateAddress = (address: string) => {
+  if (address.length <= 24) return address;
+  return truncateMiddle(address, 6, 6);
+};

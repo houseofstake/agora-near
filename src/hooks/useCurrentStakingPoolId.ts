@@ -20,6 +20,7 @@ export const useCurrentStakingPoolId = ({
       config: {
         args: {},
         enabled: !!lockupAccountId && enabled,
+        staleTime: 0,
       },
     },
   ]);
