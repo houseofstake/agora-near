@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
-import { READ_NEAR_CONTRACT_QK } from "./useReadHOSContract";
+import { CONTRACTS } from "@/lib/contractConstants";
+import { READ_NEAR_CONTRACT_QK } from "@/hooks/useReadHOSContract";
 import { STAKED_BALANCE_QK } from "./useStakedBalance";
 import { UNSTAKED_BALANCE_QK } from "./useUnstakedBalance";
 import { useWriteHOSContract } from "./useWriteHOSContract";
@@ -223,8 +224,12 @@ export const useStakeNear = ({ lockupAccountId }: Props) => {
         ],
       });
 
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: [READ_NEAR_CONTRACT_QK, lockupAccountId],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: [READ_NEAR_CONTRACT_QK, CONTRACTS.VENEAR_CONTRACT_ID],
       });
     } catch (e) {
       console.error("[deleteLockup] error", e);
