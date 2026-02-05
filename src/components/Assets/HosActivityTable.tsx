@@ -29,6 +29,8 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
         return "Delegated to";
       case "initial_registration":
         return "Registration";
+      case "staking_pool_withdraw":
+        return "Withdraw from Pool";
       case "withdraw":
         return "Withdraw";
       case "unstake":
@@ -49,8 +51,10 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
       case "unlock":
       case "outbound_delegation":
       case "withdraw":
+      case "staking_pool_withdraw":
       case "unstake":
         return "text-red-600";
+
       default:
         return "text-gray-900";
     }
@@ -67,8 +71,10 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
       case "unlock":
       case "outbound_delegation":
       case "withdraw":
+      case "staking_pool_withdraw":
       case "unstake":
         return "-";
+
       default:
         return "";
     }
@@ -88,6 +94,15 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
           ? getTransactionTypeDisplay(activity.transactionType)
           : "-"}
       </td>
+      <td className="py-4 text-sm text-gray-900">
+        {activity.nearAmount ? (
+          <span>
+            <TokenAmount amount={activity.nearAmount} />
+          </span>
+        ) : (
+          "-"
+        )}
+      </td>
       <td
         className={cn(
           "py-4 text-sm",
@@ -96,10 +111,13 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
             : "text-gray-500"
         )}
       >
-        {activity.nearAmount ? (
+        {activity.transactionType === "staking_pool_withdraw" ||
+        activity.transactionType === "unstake" ? (
+          <span className="text-gray-500">-</span>
+        ) : activity.nearAmount ? (
           <span>
             {getAmountPrefix(activity.transactionType)}
-            <TokenAmount amount={activity.nearAmount} currency="veNEAR" />
+            <TokenAmount amount={activity.nearAmount} />
           </span>
         ) : (
           "-"
@@ -192,6 +210,9 @@ export const HosActivityTable = memo(({ address }: Props) => {
             </th>
             <th className="text-left py-3 text-sm font-semibold text-gray-900">
               Action
+            </th>
+            <th className="text-left py-3 text-sm font-semibold text-gray-900">
+              Amount
             </th>
             <th className="text-left py-3 text-sm font-semibold text-gray-900">
               Change in Voting Power
