@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
-import { READ_NEAR_CONTRACT_QK } from "./useReadHOSContract";
+import { CONTRACTS } from "@/lib/contractConstants";
+import { READ_NEAR_CONTRACT_QK } from "@/hooks/useReadHOSContract";
 import { STAKED_BALANCE_QK } from "./useStakedBalance";
 import { UNSTAKED_BALANCE_QK } from "./useUnstakedBalance";
 import { useWriteHOSContract } from "./useWriteHOSContract";
@@ -19,6 +20,11 @@ export const useStakeNear = ({ lockupAccountId }: Props) => {
   );
   const [withdrawingNearError, setWithdrawingNearError] =
     useState<Error | null>(null);
+
+  const [isDeletingLockup, setIsDeletingLockup] = useState(false);
+  const [deleteLockupError, setDeleteLockupError] = useState<Error | null>(
+    null
+  );
 
   const [isUnstakingAll, setIsUnstakingAll] = useState(false);
   const [isWithdrawingAll, setIsWithdrawingAll] = useState(false);
@@ -203,21 +209,55 @@ export const useStakeNear = ({ lockupAccountId }: Props) => {
     }
   }, [mutateStakeNear, lockupAccountId, queryClient]);
 
+  const deleteLockup = useCallback(async () => {
+    try {
+      setIsDeletingLockup(true);
+      setDeleteLockupError(null);
+
+      await mutateStakeNear({
+        contractId: lockupAccountId,
+        methodCalls: [
+          {
+            methodName: "delete_lockup",
+            args: {},
+          },
+        ],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: [READ_NEAR_CONTRACT_QK, lockupAccountId],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: [READ_NEAR_CONTRACT_QK, CONTRACTS.VENEAR_CONTRACT_ID],
+      });
+    } catch (e) {
+      console.error("[deleteLockup] error", e);
+      setDeleteLockupError(e as Error);
+      throw e;
+    } finally {
+      setIsDeletingLockup(false);
+    }
+  }, [mutateStakeNear, lockupAccountId, queryClient]);
+
   return {
     stakeNear,
     unstakeNear,
     unstakeAll,
     withdrawNear,
     withdrawAll,
+    deleteLockup,
     isStakingNear,
     isUnstakingNear,
     isUnstakingAll,
     isWithdrawingNear,
     isWithdrawingAll,
+    isDeletingLockup,
     stakingNearError,
     unstakingNearError,
     unstakingAllError,
     withdrawingNearError,
     withdrawingAllError,
+    deleteLockupError,
   };
 };
