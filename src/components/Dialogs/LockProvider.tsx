@@ -16,6 +16,7 @@ import {
   RNEAR_TOKEN_CONTRACT,
   RNEAR_TOKEN_METADATA,
 } from "@/lib/constants";
+import { CONTRACTS } from "@/lib/contractConstants";
 import { getAPYFromGrowthRate } from "@/lib/lockUtils";
 import { TokenWithBalance } from "@/lib/types";
 import { convertYoctoToNear, isValidNearAmount } from "@/lib/utils";
@@ -34,6 +35,8 @@ import { useVenearAccountInfo } from "../../hooks/useVenearAccountInfo";
 import { useVenearConfig } from "../../hooks/useVenearConfig";
 import { LockDialogSource } from "./LockDialog/index";
 import { formatNearAmount, parseNearAmount } from "@near-js/utils";
+import { useQueryClient } from "@tanstack/react-query";
+import { READ_NEAR_CONTRACT_QK } from "@/hooks/useReadHOSContract";
 
 export type LockTransaction =
   | "deploy_lockup"
@@ -141,6 +144,7 @@ export const LockProvider = ({
   customStakingPoolId: initialCustomStakingPoolId,
 }: LockProviderProps) => {
   const { signedAccountId } = useNear();
+  const queryClient = useQueryClient();
 
   const linearTokenContractId = useMemo(() => LINEAR_TOKEN_CONTRACT, []);
 
@@ -191,7 +195,13 @@ export const LockProvider = ({
 
   const { lockNearAsync, isLockingNear, lockingNearError } = useLockNear({
     lockupAccountId: lockupAccountId || "",
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [READ_NEAR_CONTRACT_QK, lockupAccountId],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: [READ_NEAR_CONTRACT_QK, CONTRACTS.VENEAR_CONTRACT_ID],
+      });
       toast.success("Lock successful");
       onLockSuccess?.();
     },
