@@ -279,7 +279,13 @@ export const LockupHoldings = memo(
                     await deleteLockup();
                     toast.success("Account closed and storage reclaimed");
                   } catch (e: any) {
-                    // Ignore error
+                    if (
+                      e?.message?.includes("User rejected") ||
+                      e?.message?.includes("user rejected")
+                    ) {
+                      return;
+                    }
+                    toast.error("Failed to close account");
                   }
                 },
                 isLoading: isDeletingLockup,
