@@ -13,6 +13,13 @@ import {
 import { useDelegatedFrom } from "@/hooks/useDelegatedFrom";
 import { useDelegatedTo } from "@/hooks/useDelegatedTo";
 import { DelegationsContainerSkeleton } from "./DelegationsContainerWrapper";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { InformationCircleIcon } from "@heroicons/react/20/solid";
 
 function DelegationsContainer({ address }: { address: string }) {
   const {
@@ -73,7 +80,18 @@ function DelegationsContainer({ address }: { address: string }) {
                   <TableHeader className="text-xs text-secondary sticky top-0 bg-white z-10">
                     <TableRow>
                       <TableHead className="h-10 text-secondary">
-                        Voting Power
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger className="flex flex-row gap-1 items-center">
+                              Voting Power
+                              <InformationCircleIcon className="w-4 h-4" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              Voting power is as of the point in time when
+                              delegation was made.
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </TableHead>
                       <TableHead className="h-10 text-secondary">
                         Delegated on

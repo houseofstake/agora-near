@@ -84,7 +84,7 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
     <tr className="border-b border-gray-100 last:border-b-0">
       <td className="hidden md:table-cell py-4 text-sm text-gray-900">
         {activity.eventDate ? (
-          <span>{format(new Date(activity.eventDate), "M/d/yy")}</span>
+          <span>{format(new Date(activity.eventDate), "yyyy-MM-dd")}</span>
         ) : (
           "-"
         )}
