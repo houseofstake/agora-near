@@ -16,6 +16,10 @@ import { VeNearAssetRow } from "./VeNearAssetRow";
 import { LockupLiquidNearRow } from "./LockupLiquidNearRow";
 import { VeNearStakedAssetRow } from "./VeNearStakedAssetRow";
 
+import { NEAR_TOKEN_METADATA } from "@/lib/constants";
+import { ResponsiveAssetRow } from "./ResponsiveAssetRow";
+import { TrashIcon } from "@heroicons/react/24/outline";
+
 interface LockupHoldingsProps {
   openLockDialog: (preSelectedTokenId?: string | null) => void;
   openStakingDialog: () => void;
@@ -76,9 +80,10 @@ export const LockupHoldings = memo(
       accountId: lockupAccountId,
     });
 
-    const { withdrawNear, isWithdrawingNear } = useStakeNear({
-      lockupAccountId: lockupAccountId ?? "",
-    });
+    const { withdrawNear, isWithdrawingNear, deleteLockup, isDeletingLockup } =
+      useStakeNear({
+        lockupAccountId: lockupAccountId ?? "",
+      });
 
     const filteredLiquidLockupBalance = useMemo(() => {
       return {
@@ -106,9 +111,41 @@ export const LockupHoldings = memo(
       [
         filteredLiquidLockupBalance.lockableNearBalance,
         filteredLiquidLockupBalance.stakableNearBalance,
-        filteredLiquidLockupBalance.withdrawableNearBalance,
       ]
     );
+
+    const showDeleteLockup = useMemo(() => {
+      const staked = Big(stakedBalance ?? "0");
+      const unstaked = Big(unstakedBalance ?? "0");
+      const pending = Big(pendingBalance ?? "0");
+      const locked = Big(
+        filteredLiquidLockupBalance.lockableNearBalance ?? "0"
+      );
+      const stakable = Big(
+        filteredLiquidLockupBalance.stakableNearBalance ?? "0"
+      );
+      const withdrawable = Big(
+        filteredLiquidLockupBalance.withdrawableNearBalance ?? "0"
+      );
+
+      return (
+        staked.eq(0) &&
+        unstaked.eq(0) &&
+        pending.eq(0) &&
+        locked.eq(0) &&
+        stakable.eq(0) &&
+        withdrawable.eq(0) &&
+        !!lockupAccountId
+      );
+    }, [
+      stakedBalance,
+      unstakedBalance,
+      pendingBalance,
+      filteredLiquidLockupBalance.lockableNearBalance,
+      filteredLiquidLockupBalance.stakableNearBalance,
+      filteredLiquidLockupBalance.withdrawableNearBalance,
+      lockupAccountId,
+    ]);
 
     const isLoading =
       isLoadingLockupAccountId ||
@@ -212,6 +249,41 @@ export const LockupHoldings = memo(
               />
             )}
           </>
+        )}
+        {showDeleteLockup && (
+          <ResponsiveAssetRow
+            metadata={{
+              ...NEAR_TOKEN_METADATA,
+              name: "Storage Deposit",
+            }}
+            icon={
+              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                <TrashIcon className="w-5 h-5 text-red-600" />
+              </div>
+            }
+            columns={[
+              {
+                title: "Refundable Amount",
+                subtitle: (
+                  <span className="text-sm font-medium">Reclaim Storage</span>
+                ),
+              },
+            ]}
+            actionButtons={[
+              {
+                title: "Close Account",
+                onClick: async () => {
+                  try {
+                    await deleteLockup();
+                    toast.success("Account closed and storage reclaimed");
+                  } catch (e: any) {
+                    // Error is maintained in hook, but we can toast generic error
+                  }
+                },
+                isLoading: isDeletingLockup,
+              },
+            ]}
+          />
         )}
       </>
     );
