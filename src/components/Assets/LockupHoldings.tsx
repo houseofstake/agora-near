@@ -119,33 +119,21 @@ export const LockupHoldings = memo(
       const unstaked = Big(unstakedBalance ?? "0");
       const pending = Big(pendingBalance ?? "0");
 
-      const locked = Big(
-        filteredLiquidLockupBalance.lockableNearBalance ?? "0"
-      );
-      const stakable = Big(
-        filteredLiquidLockupBalance.stakableNearBalance ?? "0"
-      );
-      const withdrawable = Big(
-        filteredLiquidLockupBalance.withdrawableNearBalance ?? "0"
-      );
-
-      const totalLiquid = locked.add(stakable).add(withdrawable);
+      const totalBalance = Big(accountInfo?.totalBalance.near ?? "0");
       const MAX_REMAINING_FOR_DELETE = Big("2.1").mul(Big(10).pow(24));
 
       return (
         staked.eq(0) &&
         unstaked.eq(0) &&
         pending.eq(0) &&
-        totalLiquid.lte(MAX_REMAINING_FOR_DELETE) &&
+        totalBalance.lte(MAX_REMAINING_FOR_DELETE) &&
         !!lockupAccountId
       );
     }, [
       stakedBalance,
       unstakedBalance,
       pendingBalance,
-      filteredLiquidLockupBalance.lockableNearBalance,
-      filteredLiquidLockupBalance.stakableNearBalance,
-      filteredLiquidLockupBalance.withdrawableNearBalance,
+      accountInfo?.totalBalance.near,
       lockupAccountId,
     ]);
 
