@@ -277,10 +277,6 @@ export const getRpcUrl = (
   networkId: string,
   params: { useArchivalNode: boolean }
 ) => {
-  if (networkId === "mainnet") {
-    if (params.useArchivalNode) return "https://archival-rpc.mainnet.near.org";
-    return "https://rpc.mainnet.fastnear.com";
-  }
   const url = `${baseApiUrl}/${params.useArchivalNode ? "archival-rpc" : "rpc"}/${networkId}`;
   return url;
 };
