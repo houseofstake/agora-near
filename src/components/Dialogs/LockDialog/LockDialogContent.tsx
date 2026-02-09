@@ -4,6 +4,7 @@ import { TokenWithBalance } from "@/lib/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
+import Big from "big.js";
 import LoadingSpinner from "../../shared/LoadingSpinner";
 import { useOpenDialog } from "../DialogProvider/DialogProvider";
 import { useLockProviderContext } from "../LockProvider";
@@ -11,14 +12,70 @@ import { AssetSelector } from "./AssetSelector";
 import { EnterAmountStep } from "./EnterAmountStep";
 import { LockDialogHeader } from "./LockDialogHeader";
 import { ReviewStep } from "./ReviewStep";
+import { useAnalytics } from "@/hooks/useAnalytics";
+import { useNear } from "@/contexts/NearContext";
+import { useEffect, useRef } from "react";
 
 type DialogContentProps = {
   closeDialog: () => void;
 };
 
 export function LockDialogContent({ closeDialog }: DialogContentProps) {
-  const { setSelectedToken, isLoading, resetForm, source } =
-    useLockProviderContext();
+  const {
+    setSelectedToken,
+    isLoading,
+    resetForm,
+    source,
+    lockupAccountId,
+    availableTokens,
+  } = useLockProviderContext();
+  const { trackLockDialogOpened, trackLockDialogClosed } = useAnalytics();
+  const { getBalance, signedAccountId } = useNear();
+  const startTime = useRef(Date.now());
+  const currentStepRef = useRef(1);
+
+  useEffect(() => {
+    const startTimeMs = startTime.current;
+    const fetchBalanceAndTrack = async () => {
+      let nearBalance = "0";
+      if (signedAccountId) {
+        nearBalance = await getBalance(signedAccountId);
+      }
+
+      const totalLstBalance = availableTokens
+        .filter((t) => t.type === "lst")
+        .reduce((acc, t) => acc.plus(Big(t.balance)), Big(0))
+        .toFixed();
+
+      trackLockDialogOpened({
+        source,
+        user_near_balance_yocto: nearBalance,
+        user_lst_balance_yocto: totalLstBalance,
+        has_existing_lockup: !!lockupAccountId,
+      });
+    };
+    fetchBalanceAndTrack();
+
+    return () => {
+      const timeSpent = Date.now() - startTimeMs;
+      let stepName = "unknown";
+      if (currentStepRef.current === 1) stepName = "amount_selection";
+      if (currentStepRef.current === 2) stepName = "review";
+
+      trackLockDialogClosed({
+        step_abandoned: stepName,
+        time_in_flow_ms: timeSpent,
+      });
+    };
+  }, [
+    source,
+    signedAccountId,
+    getBalance,
+    trackLockDialogOpened,
+    trackLockDialogClosed,
+    lockupAccountId,
+    availableTokens,
+  ]);
 
   const router = useRouter();
 
@@ -31,14 +88,17 @@ export function LockDialogContent({ closeDialog }: DialogContentProps) {
 
   const handleReview = () => {
     setCurrentStep(2);
+    currentStepRef.current = 2;
   };
 
   const handleEdit = () => {
     setCurrentStep(1);
+    currentStepRef.current = 1;
   };
 
   const handleLockMore = () => {
     setCurrentStep(1);
+    currentStepRef.current = 1;
   };
 
   const openAssetSelector = useCallback(() => {

@@ -7,13 +7,12 @@ import { UpdatedButton } from "@/components/Button";
 import { TransactionError } from "@/components/TransactionError";
 import { TooltipWithTap } from "@/components/ui/tooltip-with-tap";
 import { useDeployLockupAndLockV2 } from "@/hooks/useDeployLockupAndLockV2";
-import { trackEvent } from "@/lib/analytics";
-import { MixpanelEvents } from "@/lib/analytics/mixpanel";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { MIN_VERSION_FOR_LST_LOCKUP } from "@/lib/constants";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import Big from "big.js";
 import Image from "next/image";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import TokenAmount from "../../shared/TokenAmount";
 import { useLockProviderContext } from "../LockProvider";
 import { DepositTooltip } from "./DepositTooltip";
@@ -99,24 +98,60 @@ export const ReviewStep = memo(
       );
     }, [venearAmount]);
 
-    const onSubmit = useCallback(() => {
-      trackEvent({
-        event_name:
-          selectedToken?.type === "lst"
-            ? MixpanelEvents.LockedNEARWithLST
-            : MixpanelEvents.LockedNEAR,
-        event_data: {
-          token: selectedToken?.metadata?.symbol,
-          type: selectedToken?.type,
-          amountYocto: parseNearAmount(enteredAmount) ?? "0",
-        },
+    const {
+      trackLockReviewStepReached,
+      trackLockTransactionInitiated,
+      trackLockTransactionSuccess,
+      trackLockTransactionFailed,
+    } = useAnalytics();
+
+    useEffect(() => {
+      trackLockReviewStepReached({
+        amount_near: Number(enteredAmount),
+        duration_days: 0,
+        lst_selected: selectedToken?.metadata?.symbol || "NEAR",
+      });
+    }, [enteredAmount, selectedToken, trackLockReviewStepReached]);
+
+    useEffect(() => {
+      if (isCompleted) {
+        trackLockTransactionSuccess({
+          amount_near_yocto: lockedAmountYocto,
+          duration_days: 0,
+          lst_selected: selectedToken?.metadata?.symbol || "NEAR",
+          tx_hash: "unknown",
+          lockup_id: lockupAccountId ?? undefined,
+        });
+      }
+    }, [
+      isCompleted,
+      lockedAmountYocto,
+      selectedToken,
+      lockupAccountId,
+      trackLockTransactionSuccess,
+    ]);
+
+    useEffect(() => {
+      if (error) {
+        trackLockTransactionFailed({
+          error_type: "transaction_error",
+          error_message: error,
+        });
+      }
+    }, [error, trackLockTransactionFailed]);
+
+    const handleTransactionInit = useCallback(() => {
+      trackLockTransactionInitiated({
+        amount_near: Number(enteredAmount),
+        duration_days: 0,
+        lst_selected: selectedToken?.metadata?.symbol || "NEAR",
       });
       executeTransactions();
     }, [
-      executeTransactions,
       enteredAmount,
-      selectedToken?.metadata?.symbol,
-      selectedToken?.type,
+      selectedToken,
+      trackLockTransactionInitiated,
+      executeTransactions,
     ]);
 
     const shouldShowLSTWarning = useMemo(() => {
@@ -298,7 +333,7 @@ export const ReviewStep = memo(
     if (error) {
       return (
         <TransactionError
-          message={error}
+          message={error || "Unknown error"}
           onRetry={
             isFireblocksWallet ? retryFromCurrentStep : executeTransactions
           }
@@ -341,7 +376,10 @@ export const ReviewStep = memo(
               {selectedToken?.type === "lst" && lstPriceYocto && (
                 <span className="text-secondary text-xs">
                   {(() => {
-                    const nearPerLst = formatNearAmount(lstPriceYocto, 4);
+                    const nearPerLst = formatNearAmount(
+                      lstPriceYocto ?? "0",
+                      4
+                    );
                     return `1 ${selectedToken?.metadata?.symbol} ≈ ${nearPerLst} NEAR`;
                   })()}
                 </span>
@@ -413,7 +451,7 @@ export const ReviewStep = memo(
           <div className="flex flex-col gap-2">
             <UpdatedButton
               type="primary"
-              onClick={onSubmit}
+              onClick={handleTransactionInit}
               disabled={
                 !enteredAmount ||
                 enteredAmount === "0" ||

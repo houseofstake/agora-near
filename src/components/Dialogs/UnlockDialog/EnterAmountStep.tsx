@@ -20,6 +20,8 @@ type EnterAmountStepProps = {
   handleReview: () => void;
 };
 
+import { useAnalytics } from "@/hooks/useAnalytics";
+
 export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
   const {
     enteredAmount,
@@ -32,10 +34,29 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
     isUnlockingMax,
   } = useUnlockProviderContext();
 
+  const { trackUnlockAmountEntered } = useAnalytics();
+
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEnteredAmount(value);
   };
+
+  const onContinue = useCallback(() => {
+    const maxNear = Big(maxAmountToUnlock ?? "0").div(Big(10).pow(24));
+    const entered = Big(enteredAmount || "0");
+    const remaining = maxNear.minus(entered);
+
+    trackUnlockAmountEntered({
+      unlock_amount_near: entered.toNumber(),
+      remaining_after_unlock: remaining.toNumber(),
+    });
+    handleReview();
+  }, [
+    enteredAmount,
+    handleReview,
+    maxAmountToUnlock,
+    trackUnlockAmountEntered,
+  ]);
 
   const onMaxPressed = useCallback(() => {
     onUnlockMax();
@@ -164,7 +185,7 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
       <div className="flex-1 flex flex-col justify-end pb-4 gap-4">
         <UnlockWarning />
         <UpdatedButton
-          onClick={handleReview}
+          onClick={onContinue}
           type={shouldDisableButton ? "disabled" : "primary"}
           disabled={shouldDisableButton}
           className="w-full"
