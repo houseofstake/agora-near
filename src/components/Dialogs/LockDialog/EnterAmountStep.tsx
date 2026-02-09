@@ -86,7 +86,11 @@ export const EnterAmountStep = ({
   return (
     <div className="flex flex-col gap-6 h-full w-full">
       <p className="text-2xl font-bold text-left text-primary">
-        Lock assets and gain voting power
+        Lock NEAR for Voting Power
+      </p>
+      <p className="text-sm text-secondary">
+        Locking your NEAR mints veNEAR, which gives you voting rights and
+        eligibility for rewards.
       </p>
       <div className="flex flex-col gap-1">
         <div className="flex items-center text-sm text-secondary">

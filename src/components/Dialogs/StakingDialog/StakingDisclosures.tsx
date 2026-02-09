@@ -51,15 +51,11 @@ export const StakingDisclosures = memo(
 
           <div>
             <h2 className="text-sm font-bold text-gray-900">
-              Unstaking Must Be Done Through the Pool
+              Unstake via House of Stake
             </h2>
             <p className="text-[#3C3C3C] leading-relaxed text-sm">
-              To unstake your tokens, you must visit the staking pool&apos;s
-              website.
-            </p>
-            <p className="text-[#3C3C3C] leading-relaxed mt-4 text-sm">
-              You&apos;ll need to unstake there before you can unlock or move
-              your tokens through this platform.
+              You must unstake your tokens directly through the House of Stake
+              interface to ensure they are returned to your lockup contract.
             </p>
           </div>
 
@@ -68,9 +64,10 @@ export const StakingDisclosures = memo(
               Unstaking May Involve a Delay
             </h2>
             <p className="text-[#3C3C3C] leading-relaxed text-sm">
-              Some staking pools have an unbonding or cooldown period before
-              your tokens are fully withdrawable. This varies by pool and is
-              outside of our control.
+              After unstaking, there&apos;s a cooldown before your tokens are
+              withdrawable. Cooldown times vary: stNEAR (Meta Pool): 48-72
+              hours, liNEAR: ~49 hours, rNEAR: ~30 hours. For non-liquid pools,
+              typically 2-3 epochs (~2-3 days).
             </p>
           </div>
 

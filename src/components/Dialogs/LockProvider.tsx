@@ -202,7 +202,7 @@ export const LockProvider = ({
       await queryClient.invalidateQueries({
         queryKey: [READ_NEAR_CONTRACT_QK, CONTRACTS.VENEAR_CONTRACT_ID],
       });
-      toast.success("Lock successful");
+      toast.success("Successfully locked assets. You now have voting power!");
       onLockSuccess?.();
     },
   });

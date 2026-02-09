@@ -132,8 +132,12 @@ export const EnterStakingAmount = ({
       <div className="flex-1 flex flex-col">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            Stake assets and get liquid rewards
+            Stake NEAR for Rewards
           </h1>
+          <p className="text-sm text-secondary mb-2">
+            Staking your locked NEAR allows you to earn rewards while
+            participating in governance.
+          </p>
         </div>
         {hasAlreadySelectedStakingPool && (
           <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-3 flex gap-3 items-start">

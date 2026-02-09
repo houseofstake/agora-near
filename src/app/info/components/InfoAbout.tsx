@@ -29,7 +29,7 @@ const tabs = [
     ),
     title: "Browse proposals",
     description:
-      "Governance decisions are initiated as proposals, providing insights into the priorities of the community.",
+      "Token holders submit proposals that shape the priorities and direction of the community.",
   },
   {
     icon: (
@@ -40,7 +40,7 @@ const tabs = [
     ),
     title: "Vote on proposals",
     description:
-      "Proposals that advance to a vote are accepted or rejected by the community’s delegates.",
+      "Eligible proposals go to a community vote where delegates and self-delegated token holders decide the outcome.",
   },
 ];
 

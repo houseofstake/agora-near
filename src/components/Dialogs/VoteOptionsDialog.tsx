@@ -60,11 +60,12 @@ export function VoteOptionsDialog({
       className="flex flex-col gap-4 w-full relative"
       style={{ transformStyle: "preserve-3d" }}
     >
-      <div className="flex flex-col">
-        <div className="text-xs text-tertiary font-medium">
-          {signedAccountId}
-        </div>
-        <p className="text-xl font-extrabold">Select an option</p>
+      <div className="flex flex-col gap-1">
+        <p className="text-xl font-extrabold text-primary">Vote on Proposal</p>
+        <p className="text-sm text-secondary">
+          Select your vote option. Your voting power was recorded when this
+          proposal was approved by the Screening Committee.
+        </p>
       </div>
       <div className="flex flex-col max-h-[46vh] overflow-y-scroll">
         {proposal.voting_options.map((option, index) => (

@@ -49,7 +49,8 @@ export function UndelegateDialog({
             </p>
             <div className="text-secondary">
               This delegate will no longer be able to vote on your behalf. Your
-              votes will be returned to you.
+              voting power will be returned to you. Note: This will not affect
+              votes already cast on active proposals.
             </div>
             <div className="flex flex-col relative border border-line rounded-lg">
               <div className="flex flex-row items-center gap-3 p-2 border-b border-line">

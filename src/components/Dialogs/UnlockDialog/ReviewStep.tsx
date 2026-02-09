@@ -107,10 +107,10 @@ export const ReviewStep = memo(
           <div className="flex-1 flex flex-col justify-end items-center gap-6">
             <div className="flex flex-col gap-4 text-center">
               <h2 className="text-4xl font-bold">
-                Your voting power is depleted
+                Success! Your unlock has started.
               </h2>
               <p className="text-2xl">
-                You can always lock more to re-engage with your community
+                Your NEAR will be available to withdraw in ~45 days.
               </p>
             </div>
           </div>

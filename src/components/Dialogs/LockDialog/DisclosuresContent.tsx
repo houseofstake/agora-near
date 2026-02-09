@@ -38,8 +38,8 @@ export const DisclosuresContent = memo(
                 You Can Unlock Anytime
               </h2>
               <p className="text-sm text-gray-600 leading-relaxed">
-                You can unlock your NEAR whenever you want. There is no fixed
-                lock period.
+                You can initiate unlocking anytime. Once started, there&apos;s a
+                45-day cooldown before withdrawal.
               </p>
             </div>
 
