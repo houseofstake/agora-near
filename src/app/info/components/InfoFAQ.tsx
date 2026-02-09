@@ -762,7 +762,7 @@ const walletFaqs: FAQ[] = [
         <Text>Once your wallet is connected, you are ready to:</Text>
         <ul className="list-disc list-inside space-y-2 pl-4">
           <li>
-            lock NEAR for veNEAR (
+            Lock NEAR for veNEAR (
             <Link
               className="text-primary underline hover:text-secondary font-medium"
               href="/delegates"
@@ -772,21 +772,21 @@ const walletFaqs: FAQ[] = [
             )
           </li>
           <li>
-            accumulate voting power (
+            Accumulate voting power (
             <ExternalLink href="https://houseofstake.org/docs/governance-system/what-is-venear/">
               learn more here
             </ExternalLink>
             )
           </li>
           <li>
-            participate in governance (
+            Participate in governance (
             <ExternalLink href="https://houseofstake.org/docs/overview/what-is-house-of-stake">
               learn more here
             </ExternalLink>
             )
           </li>
           <li>
-            earn veNEAR rewards (
+            Earn veNEAR rewards (
             <Link
               className="text-primary underline hover:text-secondary font-medium"
               href="/assets"
@@ -801,7 +801,7 @@ const walletFaqs: FAQ[] = [
   },
   {
     id: "fireblocks-vaults",
-    question: "Using Fireblocks vaults",
+    question: "How do I use Fireblocks vaults?",
     answer: (
       <div className="space-y-6">
         <Text>
@@ -831,9 +831,9 @@ const walletFaqs: FAQ[] = [
         <div className="pl-4">
           <Text>You can:</Text>
           <ul className="list-disc list-inside space-y-2 pl-4">
-            <li>vote as a delegate without publishing a statement, or</li>
+            <li>Vote as a delegate without publishing a statement, or</li>
             <li>
-              delegate your voting power to a regular wallet that has a delegate
+              Delegate your voting power to a regular wallet that has a delegate
               statement set up (
               <Link
                 className="text-primary underline hover:text-secondary font-medium"
