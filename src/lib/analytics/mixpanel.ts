@@ -67,6 +67,13 @@ export function identify(userId?: string) {
   mixpanel.identify(userId);
 }
 
+export function alias(userId: string) {
+  if (!analyticsEnabled()) return;
+  if (!initialized) initMixpanel();
+  if (!initialized || !userId) return;
+  mixpanel.alias(userId);
+}
+
 export function pageView({ path, title }: PageEventProps) {
   track("Page View", {
     path,

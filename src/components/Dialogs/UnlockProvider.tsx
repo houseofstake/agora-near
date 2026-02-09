@@ -30,6 +30,7 @@ type UnlockProviderContextType = {
   resetForm: () => void;
   nearAmount: string;
   formattedUnlockDuration: string;
+  unlockDurationNs: string;
 };
 
 export const UnlockProviderContext = createContext<UnlockProviderContextType>({
@@ -46,6 +47,7 @@ export const UnlockProviderContext = createContext<UnlockProviderContextType>({
   resetForm: () => {},
   nearAmount: "0",
   formattedUnlockDuration: "0",
+  unlockDurationNs: "0",
 });
 
 export const useUnlockProviderContext = () => {
@@ -156,6 +158,7 @@ export const UnlockProvider = ({ children }: UnlockProviderProps) => {
         resetForm,
         nearAmount,
         formattedUnlockDuration,
+        unlockDurationNs: unlockDuration.toString(),
       }}
     >
       {children}

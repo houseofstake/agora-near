@@ -20,6 +20,7 @@ import { useLockProviderContext } from "../LockProvider";
 
 import { useStakedBalance } from "@/hooks/useStakedBalance";
 import { formatNearAmount } from "@near-js/utils";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 type EnterAmountStepProps = {
   openAssetSelector: () => void;
@@ -83,6 +84,18 @@ export const EnterAmountStep = ({
     const symbol = selectedToken?.metadata?.symbol ?? "";
     return `1 ${symbol} ≈ ${nearPerLst} NEAR`;
   }, [lstPriceYocto, selectedToken?.metadata?.symbol, showConversion]);
+
+  const { trackLockAmountEntered } = useAnalytics();
+
+  const onProceed = () => {
+      trackLockAmountEntered({
+          amount_near: Number(enteredAmount),
+          lock_duration_days: 0, // No duration selection in this flow currently
+          lst_selected: selectedToken?.metadata?.symbol || "NEAR"
+      });
+      handleReview();
+  }
+
   return (
     <div className="flex flex-col gap-6 h-full w-full">
       <p className="text-2xl font-bold text-left text-primary">
@@ -193,7 +206,7 @@ export const EnterAmountStep = ({
       </div>
       <div className="flex-1 flex flex-col justify-end pb-4">
         <UpdatedButton
-          onClick={handleReview}
+          onClick={onProceed}
           type={shouldDisableButton ? "disabled" : "primary"}
           disabled={shouldDisableButton}
           className="w-full"
