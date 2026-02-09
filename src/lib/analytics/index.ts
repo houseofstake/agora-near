@@ -1,5 +1,6 @@
 import Tenant from "@/lib/tenant/tenant";
-import { track as trackMixpanel } from "./mixpanel";
+import * as trackMixpanel from "./mixpanel";
+
 import { formatNearAmount } from "@near-js/utils";
 
 export type AnalyticsPayload = {
@@ -7,7 +8,7 @@ export type AnalyticsPayload = {
   event_data?: Record<string, unknown>;
 };
 
-// Normalize event names coming from different sources (our app or agora-next style)
+// Normalize event names coming from different sources
 const EVENT_NAME_MAP: Record<string, string> = {
   // Exact NEAR events (left as-is)
   "Started Lock and Stake": "Started Lock and Stake",
@@ -54,7 +55,7 @@ class AnalyticsManager {
     };
 
     // 1) Mixpanel
-    trackMixpanel(payload.event_name, payload.event_data);
+    trackMixpanel.track(payload.event_name, payload.event_data);
 
     // 2) Backend (optional, if API key is present)
     const apiKey = process.env.NEXT_PUBLIC_AGORA_API_KEY;
@@ -75,11 +76,32 @@ class AnalyticsManager {
       }
     }
   }
+  identifyUser(userId: string) {
+    // 1) Mixpanel
+    // We want to identify the user if they were previously anonymous
+    // mixpanel.alias(userId) is ideally called on sign-up, but here we'll use identify
+    // If we want to link pre-signin events, we might need alias logic in the UI
+    trackMixpanel.identify(userId);
+
+    // 2) Google Analytics
+    // Set user_id
+    if (typeof window !== "undefined" && (window as any).gtag) {
+      (window as any).gtag(
+        "config",
+        process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
+        {
+          user_id: userId,
+        }
+      );
+    }
+  }
 }
 
 const manager = new AnalyticsManager();
 export const trackEvent = (event: AnalyticsPayload) =>
   manager.trackEvent(event);
+
+export const identifyUser = (userId: string) => manager.identifyUser(userId);
 
 function enrichYoctoFields(data?: Record<string, unknown>) {
   if (!data) return data;
