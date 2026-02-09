@@ -5,6 +5,7 @@ import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import styles from "./ProposalDescription.module.scss";
 import ProposalChart from "../ProposalPage/ProposalChart/ProposalChart";
 import { ProposalTypeBadge } from "@/components/Proposals/ProposalTypeBadge";
+import { truncateAddress, truncateMiddle } from "@/lib/text";
 
 export default function ProposalDescription({
   proposal,
