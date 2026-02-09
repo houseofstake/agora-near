@@ -762,37 +762,31 @@ const walletFaqs: FAQ[] = [
         <Text>Once your wallet is connected, you are ready to:</Text>
         <ul className="list-disc list-inside space-y-2 pl-4">
           <li>
-            lock NEAR for veNEAR (
+            Lock NEAR for veNEAR (
             <Link
               className="text-primary underline hover:text-secondary font-medium"
-              href="/assets"
+              href="/delegates"
             >
               connect your wallet and follow the process to lock
             </Link>
             )
           </li>
           <li>
-            accumulate voting power (
-            <Link
-              className="text-primary underline hover:text-secondary font-medium"
-              href="/assets#lock"
-            >
+            Accumulate voting power (
+            <ExternalLink href="https://houseofstake.org/docs/governance-system/what-is-venear/">
               learn more here
-            </Link>
+            </ExternalLink>
             )
           </li>
           <li>
-            participate in governance (
-            <Link
-              className="text-primary underline hover:text-secondary font-medium"
-              href="/proposals"
-            >
+            Participate in governance (
+            <ExternalLink href="https://houseofstake.org/docs/overview/what-is-house-of-stake">
               learn more here
-            </Link>
+            </ExternalLink>
             )
           </li>
           <li>
-            earn veNEAR rewards (
+            Earn veNEAR rewards (
             <Link
               className="text-primary underline hover:text-secondary font-medium"
               href="/assets"
@@ -807,7 +801,7 @@ const walletFaqs: FAQ[] = [
   },
   {
     id: "fireblocks-vaults",
-    question: "Using Fireblocks vaults",
+    question: "How do I use Fireblocks vaults?",
     answer: (
       <div className="space-y-6">
         <Text>
@@ -816,11 +810,18 @@ const walletFaqs: FAQ[] = [
         <ul className="list-disc list-inside space-y-2 pl-4">
           <li>
             To connect to the House of Stake contracts, your Fireblocks
-            workspace must allow <strong>typed messages</strong>.
+            workspace{" "}
+            <ExternalLink href="https://support.fireblocks.io/hc/en-us/articles/19158869149596-Policies-for-EVM-DeFi-operations#h_01JQ1MDMDGZY9C831P67762GCQ">
+              must allow <strong>typed messages</strong>
+            </ExternalLink>
+            .
           </li>
           <li>
-            Make sure you have configured an appropriate policy in your
-            Fireblocks Console.
+            Make sure you have configured an{" "}
+            <ExternalLink href="https://console.fireblocks.io/v2/policies/typed_message">
+              appropriate policy in your Fireblocks Console
+            </ExternalLink>
+            .
           </li>
         </ul>
         <Text>
@@ -830,9 +831,9 @@ const walletFaqs: FAQ[] = [
         <div className="pl-4">
           <Text>You can:</Text>
           <ul className="list-disc list-inside space-y-2 pl-4">
-            <li>vote as a delegate without publishing a statement, or</li>
+            <li>Vote as a delegate without publishing a statement, or</li>
             <li>
-              delegate your voting power to a regular wallet that has a delegate
+              Delegate your voting power to a regular wallet that has a delegate
               statement set up (
               <Link
                 className="text-primary underline hover:text-secondary font-medium"
@@ -845,8 +846,12 @@ const walletFaqs: FAQ[] = [
           </ul>
         </div>
         <Text>
-          In case you need support, please reach out to House of Stake on
-          Telegram or on X.
+          In case you need support, please reach out to House of Stake{" "}
+          <ExternalLink href="https://t.me/NEAR_HouseOfStake">
+            on Telegram
+          </ExternalLink>{" "}
+          or{" "}
+          <ExternalLink href="https://x.com/NEARGovernance">on X</ExternalLink>.
         </Text>
       </div>
     ),
@@ -894,46 +899,6 @@ const InfoFAQ = () => {
   return (
     <div className="mt-16 w-full">
       <div className="mx-auto">
-        <section className="mb-16" id="ve-near-rewards">
-          <h3 className="text-3xl font-black text-primary mb-10">
-            FAQs | veNEAR Rewards
-          </h3>
-
-          {rewardsFaqs.length > 0 ? (
-            <Accordion
-              type="single"
-              collapsible
-              className="space-y-4"
-              value={openItem}
-              onValueChange={handleToggle}
-            >
-              {rewardsFaqs.map((faq) => (
-                <AccordionItem
-                  key={faq.id}
-                  value={faq.id}
-                  id={faq.id}
-                  className="w-full border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow data-[state=open]:shadow-md"
-                >
-                  <AccordionTrigger className="w-full text-left text-primary hover:text-secondary text-base font-semibold px-8 py-6 hover:no-underline">
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="w-full text-base leading-relaxed px-8 pb-8 pt-2">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          ) : (
-            <div className="w-full bg-[#5EA5F5] rounded-lg p-12 text-white">
-              <div className="text-xl font-medium">
-                <br />
-                FAQs about veNEAR Rewards
-                <br />
-              </div>
-            </div>
-          )}
-        </section>
-
         <section className="mb-16">
           <h3 className="text-3xl font-black text-primary mb-10">
             FAQs | Voting
@@ -1008,6 +973,46 @@ const InfoFAQ = () => {
               .
             </Text>
           </div>
+        </section>
+
+        <section className="mb-16" id="ve-near-rewards">
+          <h3 className="text-3xl font-black text-primary mb-10">
+            FAQs | veNEAR Rewards
+          </h3>
+
+          {rewardsFaqs.length > 0 ? (
+            <Accordion
+              type="single"
+              collapsible
+              className="space-y-4"
+              value={openItem}
+              onValueChange={handleToggle}
+            >
+              {rewardsFaqs.map((faq) => (
+                <AccordionItem
+                  key={faq.id}
+                  value={faq.id}
+                  id={faq.id}
+                  className="w-full border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow data-[state=open]:shadow-md"
+                >
+                  <AccordionTrigger className="w-full text-left text-primary hover:text-secondary text-base font-semibold px-8 py-6 hover:no-underline">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="w-full text-base leading-relaxed px-8 pb-8 pt-2">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          ) : (
+            <div className="w-full bg-[#5EA5F5] rounded-lg p-12 text-white">
+              <div className="text-xl font-medium">
+                <br />
+                FAQs about veNEAR Rewards
+                <br />
+              </div>
+            </div>
+          )}
         </section>
       </div>
     </div>
