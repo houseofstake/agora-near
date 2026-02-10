@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { DelegateActions } from "../DelegateCard/DelegateActions";
 import { EndorsedTooltip } from "./EndorsedTooltip";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 type DelegateCardProps = {
   delegate: DelegateProfile;
@@ -23,6 +24,8 @@ const DelegateCard = ({
   const sanitizedTruncatedStatement = sanitizeContent(truncatedStatement);
   const endorsed = delegate.endorsed;
 
+  const { trackDelegateCardCtaClicked } = useAnalytics();
+
   return (
     <div
       key={delegate.address}
@@ -30,6 +33,12 @@ const DelegateCard = ({
         "flex flex-col",
         isDelegatesFiltering ? "animate-pulse" : ""
       )}
+      onClick={() => {
+        trackDelegateCardCtaClicked({
+          delegate_address: delegate.address,
+          source: "delegate_card",
+        });
+      }}
     >
       <Link href={`/delegates/${delegate.address}`}>
         <div className="flex flex-col gap-4 h-full rounded-xl bg-wash border border-line shadow-newDefault">

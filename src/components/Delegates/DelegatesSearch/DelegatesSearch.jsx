@@ -4,15 +4,21 @@ import { TextInputWithTooltip } from "@/components/shared/Form/TextInputWithTool
 import { useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/navigation";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 export default function DelegatesSearch() {
   const router = useRouter();
   const [enteredName, setEnteredName] = useState("");
+  const { trackDelegateSearchPerformed } = useAnalytics();
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
+        trackDelegateSearchPerformed({
+          search_query: enteredName,
+          results_count: 0, // We don't know the count yet as it redirects
+        });
         router.push(`/delegates/${enteredName}`);
       }}
     >

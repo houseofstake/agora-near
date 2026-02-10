@@ -7,6 +7,7 @@ import { CheckmarkIcon } from "react-hot-toast";
 import { FilterIcon } from "@/assets/filter";
 import DelegatesIssuesFilter from "./DelegatesIssuesFilter";
 import { useQueryState } from "nuqs";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 type FilterButtonProps = {
   label: string;
@@ -61,6 +62,16 @@ export const DelegatesFilter = ({
   const hasActiveIssues = issuesParam && issuesParam.length > 0;
   const activeCount = (hasActiveFilter ? 1 : 0) + (hasActiveIssues ? 1 : 0);
 
+  const { trackDelegateFilterApplied } = useAnalytics();
+
+  const handleFilterClick = (filterValue: string, filterType: string) => {
+    handleFilterChange(filterValue);
+    trackDelegateFilterApplied({
+      filter_type: filterType,
+      filter_value: filterValue,
+    });
+  };
+
   return (
     <FilterResetListbox
       triggerLabel="Filter"
@@ -84,14 +95,17 @@ export const DelegatesFilter = ({
             label={delegatesFilterOptions.all.value}
             isActive={filterParam === delegatesFilterOptions.all.filter}
             onClick={() =>
-              handleFilterChange(delegatesFilterOptions.all.filter)
+              handleFilterClick(delegatesFilterOptions.all.filter, "status")
             }
           />
           <FilterButton
             label={delegatesFilterOptions.endorsed.value}
             isActive={filterParam === delegatesFilterOptions.endorsed.filter}
             onClick={() =>
-              handleFilterChange(delegatesFilterOptions.endorsed.filter)
+              handleFilterClick(
+                delegatesFilterOptions.endorsed.filter,
+                "status"
+              )
             }
             icon={
               <CheckmarkIcon

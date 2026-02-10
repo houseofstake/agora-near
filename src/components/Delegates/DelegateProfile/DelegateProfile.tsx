@@ -5,6 +5,8 @@ import { DelegateActions } from "./DelegateActions";
 import { DelegateAddress } from "../DelegateCard/DelegateAddress";
 import { DelegateCardEditProfile } from "../DelegateCard/DelegateCardEditProfile";
 import { EndorsedTooltip } from "../DelegateCardList/EndorsedTooltip";
+import { useAnalytics } from "@/hooks/useAnalytics";
+import { useEffect, useRef } from "react";
 
 type DelegateProfileProps = {
   profile: {
@@ -40,6 +42,20 @@ export default function DelegateProfile({
   isEditMode,
   stats,
 }: DelegateProfileProps) {
+  const { trackDelegateProfileViewed } = useAnalytics();
+  const hasTracked = useRef(false);
+
+  useEffect(() => {
+    if (!hasTracked.current) {
+      hasTracked.current = true;
+      trackDelegateProfileViewed({
+        delegate_address: profile.address,
+        delegate_name: profile.address, // We don't have a separate name field here usually, it's the address
+        delegate_voting_power: stats?.votingPower ?? "0",
+      });
+    }
+  }, [profile.address, stats?.votingPower, trackDelegateProfileViewed]);
+
   return (
     <div className="flex flex-col static sm:sticky top-16 flex-shrink-0 width-[20rem]">
       {stats?.participationRate && (

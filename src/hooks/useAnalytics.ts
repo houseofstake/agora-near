@@ -483,6 +483,46 @@ export const useAnalytics = () => {
     trackEvent({ event_name: "Undelegation Failed", event_data: props });
   };
 
+  // --- Delegate Discovery (P5 continued) ---
+
+  const trackDelegatePageViewed = (props: {
+    delegates_count: number;
+    filter_applied: string;
+    sort_by: string;
+  }) => {
+    trackEvent({ event_name: "Delegates Page Viewed", event_data: props });
+  };
+
+  const trackDelegateProfileViewed = (props: {
+    delegate_address: string;
+    delegate_name?: string;
+    delegate_rank?: number;
+    delegate_voting_power: string;
+  }) => {
+    trackEvent({ event_name: "Delegate Profile Viewed", event_data: props });
+  };
+
+  const trackDelegateSearchPerformed = (props: {
+    search_query: string;
+    results_count: number;
+  }) => {
+    trackEvent({ event_name: "Delegate Search Performed", event_data: props });
+  };
+
+  const trackDelegateFilterApplied = (props: {
+    filter_type: string;
+    filter_value: string;
+  }) => {
+    trackEvent({ event_name: "Delegate Filter Applied", event_data: props });
+  };
+
+  const trackDelegateCardCtaClicked = (props: {
+    delegate_address: string;
+    source: string;
+  }) => {
+    trackEvent({ event_name: "Delegate Card CTA Clicked", event_data: props });
+  };
+
   // -- General --
   const trackGenericEvent = (
     eventName: string,
@@ -545,6 +585,11 @@ export const useAnalytics = () => {
     trackUndelegationStarted,
     trackUndelegationSuccess,
     trackUndelegationFailed,
+    trackDelegatePageViewed,
+    trackDelegateProfileViewed,
+    trackDelegateSearchPerformed,
+    trackDelegateFilterApplied,
+    trackDelegateCardCtaClicked,
     trackGenericEvent,
   };
 };
