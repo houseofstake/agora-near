@@ -74,6 +74,20 @@ export function alias(userId: string) {
   mixpanel.alias(userId);
 }
 
+export function setPeopleProperties(props: Record<string, any>) {
+  if (!analyticsEnabled()) return;
+  if (!initialized) initMixpanel();
+  if (!initialized) return;
+  mixpanel.people.set(props);
+}
+
+export function registerSuperProperties(props: Record<string, any>) {
+  if (!analyticsEnabled()) return;
+  if (!initialized) initMixpanel();
+  if (!initialized) return;
+  mixpanel.register(props);
+}
+
 export function pageView({ path, title }: PageEventProps) {
   track("Page View", {
     path,

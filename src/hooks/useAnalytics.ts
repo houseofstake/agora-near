@@ -1,4 +1,4 @@
-import { trackEvent, identifyUser } from "@/lib/analytics";
+import { trackEvent, identifyUser, clearIdentity } from "@/lib/analytics";
 
 export const useAnalytics = () => {
   const trackWalletSelectorOpened = (source: string) => {
@@ -20,7 +20,10 @@ export const useAnalytics = () => {
     walletAddress: string,
     isFireblocks: boolean
   ) => {
-    identifyUser(walletAddress);
+    identifyUser(walletAddress, {
+      wallet_type: walletType,
+      is_fireblocks: isFireblocks,
+    });
     trackEvent({
       event_name: "Wallet Connected",
       event_data: {
@@ -57,6 +60,7 @@ export const useAnalytics = () => {
         session_duration_ms: sessionDurationMs,
       },
     });
+    clearIdentity();
   };
 
   // --- veNEAR Locking Funnel ---
@@ -281,6 +285,128 @@ export const useAnalytics = () => {
     });
   };
 
+  // --- Staking Flow (§2a) ---
+
+  const trackStakingFlowStarted = (props: {
+    source: string;
+    lockup_balance_near?: string;
+  }) => {
+    trackEvent({ event_name: "Staking Flow Started", event_data: props });
+  };
+
+  const trackStakingPoolSelected = (props: {
+    pool_type: string;
+    pool_id: string;
+    pool_apy?: number;
+  }) => {
+    trackEvent({ event_name: "Staking Pool Selected", event_data: props });
+  };
+
+  const trackCustomPoolEntered = (props: {
+    pool_id: string;
+    is_whitelisted: boolean;
+  }) => {
+    trackEvent({ event_name: "Custom Pool Entered", event_data: props });
+  };
+
+  const trackStakingAmountEntered = (props: {
+    amount_near: number;
+    pool_id: string;
+  }) => {
+    trackEvent({ event_name: "Staking Amount Entered", event_data: props });
+  };
+
+  const trackStakingTransactionSuccess = (props: {
+    amount_near_yocto: string;
+    pool_id: string;
+    tx_hash?: string;
+  }) => {
+    trackEvent({
+      event_name: "Staking Transaction Success",
+      event_data: props,
+    });
+  };
+
+  const trackStakingTransactionFailed = (props: {
+    error_type: string;
+    error_message: string;
+    pool_id: string;
+  }) => {
+    trackEvent({
+      event_name: "Staking Transaction Failed",
+      event_data: props,
+    });
+  };
+
+  const trackStakingSkipped = (props: { lockup_balance_near?: string }) => {
+    trackEvent({ event_name: "Staking Skipped", event_data: props });
+  };
+
+  const trackStakingDialogClosed = (props: {
+    step_abandoned: string;
+    time_in_flow_ms: number;
+  }) => {
+    trackEvent({ event_name: "Staking Dialog Closed", event_data: props });
+  };
+
+  // --- Unstaking & Withdrawal (§2b) ---
+
+  const trackUnstakeFlowStarted = (props: {
+    pool_id: string;
+    staked_amount_yocto: string;
+    has_pending_withdrawal: boolean;
+  }) => {
+    trackEvent({ event_name: "Unstake Flow Started", event_data: props });
+  };
+
+  const trackUnstakeTimerWarningShown = (props: {
+    pending_withdrawal_amount: string;
+  }) => {
+    trackEvent({
+      event_name: "Unstake Timer Warning Shown",
+      event_data: props,
+    });
+  };
+
+  const trackUnstakeTimerWarningProceeded = (props: {
+    pending_withdrawal_amount: string;
+  }) => {
+    trackEvent({
+      event_name: "Unstake Timer Warning Proceeded",
+      event_data: props,
+    });
+  };
+
+  const trackUnstakeTimerWarningCancelled = (props: {
+    pending_withdrawal_amount: string;
+  }) => {
+    trackEvent({
+      event_name: "Unstake Timer Warning Cancelled",
+      event_data: props,
+    });
+  };
+
+  const trackUnstakeTransactionSuccess = (props: {
+    amount_yocto: string;
+    pool_id: string;
+    tx_hash?: string;
+  }) => {
+    trackEvent({
+      event_name: "Unstake Transaction Success",
+      event_data: props,
+    });
+  };
+
+  const trackUnstakeTransactionFailed = (props: {
+    error_type: string;
+    error_message: string;
+  }) => {
+    trackEvent({
+      event_name: "Unstake Transaction Failed",
+      event_data: props,
+    });
+  };
+
   // -- General --
   const trackGenericEvent = (
     eventName: string,
@@ -319,6 +445,20 @@ export const useAnalytics = () => {
     trackVoteOptionSelected,
     trackVoteCast,
     trackVoteFailed,
+    trackStakingFlowStarted,
+    trackStakingPoolSelected,
+    trackCustomPoolEntered,
+    trackStakingAmountEntered,
+    trackStakingTransactionSuccess,
+    trackStakingTransactionFailed,
+    trackStakingSkipped,
+    trackStakingDialogClosed,
+    trackUnstakeFlowStarted,
+    trackUnstakeTimerWarningShown,
+    trackUnstakeTimerWarningProceeded,
+    trackUnstakeTimerWarningCancelled,
+    trackUnstakeTransactionSuccess,
+    trackUnstakeTransactionFailed,
     trackGenericEvent,
   };
 };

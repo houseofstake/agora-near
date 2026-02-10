@@ -41,6 +41,9 @@ function mapEventName(name: string): string {
 }
 
 class AnalyticsManager {
+  private currentWalletAddress: string | null = null;
+  private hasAliased = false;
+
   async trackEvent(event: AnalyticsPayload) {
     const { slug } = Tenant.current();
     const normalizedName = mapEventName(event.event_name);
@@ -51,10 +54,13 @@ class AnalyticsManager {
       event_data: {
         ...enrichedData,
         dao_slug: slug,
+        ...(this.currentWalletAddress && {
+          wallet_address: this.currentWalletAddress,
+        }),
       },
     };
 
-    // 1) Mixpanel
+    // 1) Mixpanel (wallet_address also injected via super properties)
     trackMixpanel.track(payload.event_name, payload.event_data);
 
     // 2) Backend (optional, if API key is present)
@@ -76,15 +82,40 @@ class AnalyticsManager {
       }
     }
   }
-  identifyUser(userId: string) {
-    // 1) Mixpanel
-    // We want to identify the user if they were previously anonymous
-    // mixpanel.alias(userId) is ideally called on sign-up, but here we'll use identify
-    // If we want to link pre-signin events, we might need alias logic in the UI
+
+  identifyUser(
+    userId: string,
+    properties?: {
+      wallet_type?: string;
+      is_fireblocks?: boolean;
+    }
+  ) {
+    this.currentWalletAddress = userId;
+
+    // 1) Mixpanel: alias (first connect only) → links anonymous pre-connect session
+    if (!this.hasAliased) {
+      trackMixpanel.alias(userId);
+      this.hasAliased = true;
+    }
+
+    // 2) Mixpanel: identify
     trackMixpanel.identify(userId);
 
-    // 2) Google Analytics
-    // Set user_id
+    // 3) Mixpanel: register wallet_address as super property (auto-injected on all events)
+    trackMixpanel.registerSuperProperties({ wallet_address: userId });
+
+    // 4) Mixpanel: set user profile properties
+    trackMixpanel.setPeopleProperties({
+      $name: userId,
+      wallet_address: userId,
+      first_seen: new Date().toISOString(),
+      ...(properties?.wallet_type && { wallet_type: properties.wallet_type }),
+      ...(properties?.is_fireblocks !== undefined && {
+        is_fireblocks: properties.is_fireblocks,
+      }),
+    });
+
+    // 5) Google Analytics: set user_id
     if (typeof window !== "undefined" && (window as any).gtag) {
       (window as any).gtag(
         "config",
@@ -95,13 +126,22 @@ class AnalyticsManager {
       );
     }
   }
+
+  clearIdentity() {
+    this.currentWalletAddress = null;
+  }
 }
 
 const manager = new AnalyticsManager();
 export const trackEvent = (event: AnalyticsPayload) =>
   manager.trackEvent(event);
 
-export const identifyUser = (userId: string) => manager.identifyUser(userId);
+export const identifyUser = (
+  userId: string,
+  properties?: { wallet_type?: string; is_fireblocks?: boolean }
+) => manager.identifyUser(userId, properties);
+
+export const clearIdentity = () => manager.clearIdentity();
 
 function enrichYoctoFields(data?: Record<string, unknown>) {
   if (!data) return data;

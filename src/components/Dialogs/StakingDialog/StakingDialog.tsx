@@ -4,10 +4,12 @@ import { CONTRACTS } from "@/lib/contractConstants";
 import { StakingPool } from "@/lib/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { StakingProvider, useStakingProviderContext } from "../StakingProvider";
 import { EnterStakingAmount } from "./EnterStakingAmount";
 import { StakingReview } from "./StakingReview";
+import { useAnalytics } from "@/hooks/useAnalytics";
+import { convertYoctoToNear } from "@/lib/utils";
 
 export type StakingSource =
   | "onboarding"
@@ -22,8 +24,22 @@ type StakingDialogProps = {
 type DialogStep = "form" | "review";
 
 const StakingDialogContent = ({ closeDialog }: { closeDialog: () => void }) => {
-  const { isLoading, setSelectedPool } = useStakingProviderContext();
+  const { isLoading, setSelectedPool, source, maxStakingAmount } =
+    useStakingProviderContext();
   const [currentStep, setCurrentStep] = useState<DialogStep>("form");
+  const {
+    trackStakingFlowStarted,
+    trackStakingSkipped,
+  } = useAnalytics();
+
+  useEffect(() => {
+    trackStakingFlowStarted({
+      source,
+      lockup_balance_near: maxStakingAmount
+        ? convertYoctoToNear(maxStakingAmount)
+        : undefined,
+    });
+  }, [source, maxStakingAmount, trackStakingFlowStarted]);
 
   const queryClient = useQueryClient();
 
@@ -46,6 +62,16 @@ const StakingDialogContent = ({ closeDialog }: { closeDialog: () => void }) => {
     setCurrentStep("form");
   };
 
+  const handleSkip = useCallback(() => {
+    trackStakingSkipped({
+      lockup_balance_near: maxStakingAmount
+        ? convertYoctoToNear(maxStakingAmount)
+        : undefined,
+    });
+    goToDashboard();
+  }, [trackStakingSkipped, maxStakingAmount, goToDashboard]);
+
+
   if (isLoading) {
     return (
       <div className="flex flex-col justify-center items-center w-full h-full">
@@ -61,7 +87,7 @@ const StakingDialogContent = ({ closeDialog }: { closeDialog: () => void }) => {
   }
 
   return (
-    <EnterStakingAmount onContinue={handleContinue} onSkip={goToDashboard} />
+    <EnterStakingAmount onContinue={handleContinue} onSkip={handleSkip} />
   );
 };
 
