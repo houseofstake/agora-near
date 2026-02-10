@@ -88,6 +88,12 @@ class AnalyticsManager {
     properties?: {
       wallet_type?: string;
       is_fireblocks?: boolean;
+      total_near_locked_yocto?: string;
+      total_venear_balance?: string;
+      is_delegate?: boolean;
+      delegation_count?: string;
+      has_voted?: boolean;
+      lockup_count?: number;
     }
   ) {
     this.currentWalletAddress = userId;
@@ -112,6 +118,24 @@ class AnalyticsManager {
       ...(properties?.wallet_type && { wallet_type: properties.wallet_type }),
       ...(properties?.is_fireblocks !== undefined && {
         is_fireblocks: properties.is_fireblocks,
+      }),
+      ...(properties?.total_near_locked_yocto && {
+        total_near_locked_yocto: properties.total_near_locked_yocto,
+      }),
+      ...(properties?.total_venear_balance && {
+        total_venear_balance: properties.total_venear_balance,
+      }),
+      ...(properties?.is_delegate !== undefined && {
+        is_delegate: properties.is_delegate,
+      }),
+      ...(properties?.delegation_count && {
+        delegation_count: properties.delegation_count,
+      }),
+      ...(properties?.has_voted !== undefined && {
+        has_voted: properties.has_voted,
+      }),
+      ...(properties?.lockup_count !== undefined && {
+        lockup_count: properties.lockup_count,
       }),
     });
 
@@ -138,7 +162,16 @@ export const trackEvent = (event: AnalyticsPayload) =>
 
 export const identifyUser = (
   userId: string,
-  properties?: { wallet_type?: string; is_fireblocks?: boolean }
+  properties?: {
+    wallet_type?: string;
+    is_fireblocks?: boolean;
+    total_near_locked_yocto?: string;
+    total_venear_balance?: string;
+    is_delegate?: boolean;
+    delegation_count?: string;
+    has_voted?: boolean;
+    lockup_count?: number;
+  }
 ) => manager.identifyUser(userId, properties);
 
 export const clearIdentity = () => manager.clearIdentity();

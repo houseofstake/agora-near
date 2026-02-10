@@ -71,7 +71,7 @@ export default function DelegateContent({
     if (!isLoading && data && !hasTrackedInitialLoad.current) {
       hasTrackedInitialLoad.current = true;
       trackDelegatePageViewed({
-        delegates_count: data.length, // approximate for first page
+        delegates_count: data.length,
         filter_applied: filterParam || "all",
         sort_by: orderByParam || "default",
       });
