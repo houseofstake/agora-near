@@ -1,5 +1,5 @@
 import { ArrowRightIcon } from "lucide-react";
-import { memo } from "react";
+import { memo, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { AnimatedStars } from "./AnimatedStars";
@@ -9,12 +9,30 @@ import { UpdatedButton } from "@/components/Button";
 import { useOpenDialog } from "@/components/Dialogs/DialogProvider/DialogProvider";
 import LoadingSpinner from "../shared/LoadingSpinner";
 import GreenStar from "@/assets/green_star.svg";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 export const GovernanceRewardsCard = memo(() => {
   const { signedAccountId } = useNear();
   const { hasUnclaimedRewards, isLoading, data } =
     useNearClaimProofs(signedAccountId);
   const openDialog = useOpenDialog();
+
+  const { trackRewardsPageViewed } = useAnalytics();
+  const hasTracked = useRef(false);
+
+  useEffect(() => {
+    if (!isLoading && !hasTracked.current) {
+      hasTracked.current = true;
+      const totalUnclaimed = data?.proofs
+        ?.filter((p: any) => !p.claimed)
+        ?.reduce((sum: bigint, p: any) => sum + BigInt(p.amount ?? "0"), BigInt(0))
+        ?.toString();
+      trackRewardsPageViewed({
+        has_unclaimed_rewards: !!hasUnclaimedRewards,
+        unclaimed_amount_yocto: totalUnclaimed,
+      });
+    }
+  }, [isLoading, hasUnclaimedRewards, data, trackRewardsPageViewed]);
 
   const handleClaimClick = () => {
     openDialog({

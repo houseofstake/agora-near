@@ -4,9 +4,10 @@ import { useDelegateAll } from "@/hooks/useDelegateAll";
 import { useVenearAccountInfo } from "@/hooks/useVenearAccountInfo";
 
 import { ArrowDownIcon } from "@heroicons/react/20/solid";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import toast from "react-hot-toast";
 import Big from "big.js";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 export function DelegateDialog({
   delegateAddress,
@@ -22,14 +23,39 @@ export function DelegateDialog({
     accountInfo?.totalBalance?.near || "0"
   ).plus(accountInfo?.totalBalance?.extraBalance || "0");
 
+  const { trackDelegationStarted, trackDelegationSuccess, trackDelegationFailed } =
+    useAnalytics();
+
   const { delegateAll, isDelegating, error } = useDelegateAll({
     onSuccess: () => {
+      trackDelegationSuccess({
+        delegate_address: delegateAddress,
+        voting_power_yocto: delegatableVotingPower.toFixed(0),
+      });
       toast.success("Delegation completed!");
       closeDialog();
     },
     delegateVotingPower: delegatableVotingPower,
     currentDelegateeAddress: accountInfo?.delegation?.delegatee,
   });
+
+  useEffect(() => {
+    if (error) {
+      trackDelegationFailed({
+        delegate_address: delegateAddress,
+        error_type: "contract_error",
+        error_message: (error as any)?.message || "Unknown error",
+      });
+    }
+  }, [error, delegateAddress, trackDelegationFailed]);
+
+  useEffect(() => {
+    trackDelegationStarted({
+      delegate_address: delegateAddress,
+      current_delegate: accountInfo?.delegation?.delegatee,
+      voting_power_yocto: delegatableVotingPower.toFixed(0),
+    });
+  }, [delegateAddress, accountInfo?.delegation?.delegatee, delegatableVotingPower, trackDelegationStarted]);
 
   const handleDelegate = useCallback(() => {
     delegateAll(delegateAddress);

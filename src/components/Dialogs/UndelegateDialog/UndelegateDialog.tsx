@@ -4,9 +4,10 @@ import { useUndelegate } from "@/hooks/useUndelegate";
 import { useVenearAccountInfo } from "@/hooks/useVenearAccountInfo";
 
 import { ArrowDownIcon } from "@heroicons/react/20/solid";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import toast from "react-hot-toast";
 import Big from "big.js";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 export function UndelegateDialog({
   delegateAddress,
@@ -22,14 +23,37 @@ export function UndelegateDialog({
     accountInfo?.totalBalance?.near || "0"
   ).plus(accountInfo?.totalBalance?.extraBalance || "0");
 
+  const { trackUndelegationStarted, trackUndelegationSuccess, trackUndelegationFailed } =
+    useAnalytics();
+
   const { undelegate, isUndelegating, error } = useUndelegate({
     onSuccess: () => {
+      trackUndelegationSuccess({
+        delegate_address: delegateAddress,
+      });
       toast.success("Undelegation completed!");
       closeDialog();
     },
     delegateVotingPower: delegatableVotingPower,
     delegateeAddress: delegateAddress,
   });
+
+  useEffect(() => {
+    if (error) {
+      trackUndelegationFailed({
+        delegate_address: delegateAddress,
+        error_type: "contract_error",
+        error_message: (error as any)?.message || "Unknown error",
+      });
+    }
+  }, [error, delegateAddress, trackUndelegationFailed]);
+
+  useEffect(() => {
+    trackUndelegationStarted({
+      delegate_address: delegateAddress,
+      voting_power_yocto: delegatableVotingPower.toFixed(0),
+    });
+  }, [delegateAddress, delegatableVotingPower, trackUndelegationStarted]);
 
   const handleUndelegate = useCallback(() => {
     undelegate();

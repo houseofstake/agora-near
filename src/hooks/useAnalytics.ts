@@ -407,6 +407,82 @@ export const useAnalytics = () => {
     });
   };
 
+  // --- Rewards Claiming (§3) ---
+
+  const trackRewardsPageViewed = (props: {
+    has_unclaimed_rewards: boolean;
+    unclaimed_amount_yocto?: string;
+  }) => {
+    trackEvent({ event_name: "Rewards Page Viewed", event_data: props });
+  };
+
+  const trackClaimInitiated = (props: {
+    amount_yocto: string;
+    num_campaigns: number;
+  }) => {
+    trackEvent({ event_name: "Claim Initiated", event_data: props });
+  };
+
+  const trackClaimSuccess = (props: {
+    amount_yocto: string;
+    num_campaigns: number;
+  }) => {
+    trackEvent({ event_name: "Claim Success", event_data: props });
+  };
+
+  const trackClaimFailed = (props: {
+    error_type: string;
+    error_message: string;
+  }) => {
+    trackEvent({ event_name: "Claim Failed", event_data: props });
+  };
+
+  // --- Delegation Flow (§4) ---
+
+  const trackDelegationStarted = (props: {
+    delegate_address: string;
+    current_delegate?: string;
+    voting_power_yocto: string;
+  }) => {
+    trackEvent({ event_name: "Delegation Started", event_data: props });
+  };
+
+  const trackDelegationSuccess = (props: {
+    delegate_address: string;
+    voting_power_yocto: string;
+  }) => {
+    trackEvent({ event_name: "Delegation Success", event_data: props });
+  };
+
+  const trackDelegationFailed = (props: {
+    delegate_address: string;
+    error_type: string;
+    error_message: string;
+  }) => {
+    trackEvent({ event_name: "Delegation Failed", event_data: props });
+  };
+
+  const trackUndelegationStarted = (props: {
+    delegate_address: string;
+    voting_power_yocto: string;
+  }) => {
+    trackEvent({ event_name: "Undelegation Started", event_data: props });
+  };
+
+  const trackUndelegationSuccess = (props: {
+    delegate_address: string;
+  }) => {
+    trackEvent({ event_name: "Undelegation Success", event_data: props });
+  };
+
+  const trackUndelegationFailed = (props: {
+    delegate_address: string;
+    error_type: string;
+    error_message: string;
+  }) => {
+    trackEvent({ event_name: "Undelegation Failed", event_data: props });
+  };
+
   // -- General --
   const trackGenericEvent = (
     eventName: string,
@@ -459,6 +535,16 @@ export const useAnalytics = () => {
     trackUnstakeTimerWarningCancelled,
     trackUnstakeTransactionSuccess,
     trackUnstakeTransactionFailed,
+    trackRewardsPageViewed,
+    trackClaimInitiated,
+    trackClaimSuccess,
+    trackClaimFailed,
+    trackDelegationStarted,
+    trackDelegationSuccess,
+    trackDelegationFailed,
+    trackUndelegationStarted,
+    trackUndelegationSuccess,
+    trackUndelegationFailed,
     trackGenericEvent,
   };
 };

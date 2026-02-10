@@ -11,6 +11,7 @@ import { NEAR_TOKEN_METADATA } from "@/lib/constants";
 import { AssetIcon } from "@/components/common/AssetIcon";
 import { useCheckClaimStatus } from "@/hooks/useCheckClaimStatus";
 import { useMarkProofAsClaimed } from "@/hooks/useMarkProofAsClaimed";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface NearClaimDialogProps {
   closeDialog: () => void;
@@ -92,9 +93,21 @@ export function NearClaimDialog({ closeDialog }: NearClaimDialogProps) {
   const hasNoClaimableTokens =
     actuallyUnclaimedProofs.length === 0 || allClaimed;
 
+  const { trackClaimInitiated, trackClaimSuccess, trackClaimFailed } =
+    useAnalytics();
+
   const handleClaim = async () => {
     const proofs = actuallyUnclaimedProofs;
     setCurrentStep("processing");
+
+    const totalAmount = proofs
+      .reduce((sum, proof) => sum + BigInt(proof.amount), BigInt(0))
+      .toString();
+
+    trackClaimInitiated({
+      amount_yocto: totalAmount,
+      num_campaigns: proofs.length,
+    });
 
     try {
       const claims = proofs.map((proof) => {
@@ -112,17 +125,23 @@ export function NearClaimDialog({ closeDialog }: NearClaimDialogProps) {
 
       await batchClaimRewards({ claims });
 
-      const totalClaimed = proofs.reduce(
-        (sum, proof) => sum + BigInt(proof.amount),
-        BigInt(0)
-      );
-
-      setClaimedAmount(totalClaimed.toString());
+      setClaimedAmount(totalAmount);
+      trackClaimSuccess({
+        amount_yocto: totalAmount,
+        num_campaigns: proofs.length,
+      });
       toast.success(
-        `Claimed ${convertYoctoToNear(totalClaimed.toString(), 2)} NEAR`
+        `Claimed ${convertYoctoToNear(totalAmount, 2)} NEAR`
       );
     } catch (error) {
       console.error("Failed to claim rewards:", error);
+      trackClaimFailed({
+        error_type: (error as any)?.message?.includes("User rejected")
+          ? "user_rejected"
+          : "contract_error",
+        error_message:
+          error instanceof Error ? error.message : "Unknown error",
+      });
       toast.error(
         `Failed to claim rewards: ${error instanceof Error ? error.message : "Unknown error"}`
       );
