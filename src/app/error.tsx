@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import ResourceNotFound from "@/components/shared/ResourceNotFound/ResourceNotFound";
 import { UpdatedButton } from "@/components/Button";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 export default function GlobalError({
   error,
@@ -11,10 +12,15 @@ export default function GlobalError({
   error: Error;
   reset: () => void;
 }) {
+  const { trackGenericEvent } = useAnalytics();
+
   useEffect(() => {
-    // TODO: integrate logger if available
-    // console.error(error);
-  }, [error]);
+
+    trackGenericEvent("Error Displayed", {
+      error_message: error.message,
+      error_digest: (error as any).digest,
+    });
+  }, [error, trackGenericEvent]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">

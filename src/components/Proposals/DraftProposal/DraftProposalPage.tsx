@@ -34,6 +34,7 @@ import {
   ProposalMetadata,
   ProposalType,
 } from "@/lib/proposalMetadata";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -165,6 +166,25 @@ const DraftProposalsPageContent = memo(
 
     const isLoading = draftLoading || configLoading;
 
+    const {
+      trackProposalDraftStarted,
+      trackProposalDraftSaved,
+      trackProposalSubmitted,
+      trackProposalSubmissionFailed,
+    } = useAnalytics();
+
+    const hasTrackedStart = useRef(false);
+
+    useEffect(() => {
+      if (draft && step === 1 && !hasTrackedStart.current) {
+        hasTrackedStart.current = true;
+        // Only track if it's a new draft session or page load
+        trackProposalDraftStarted({
+          proposal_type: "unknown", // Type is set in the form, might not be known yet
+        });
+      }
+    }, [draft, step, trackProposalDraftStarted]);
+
     const handleSubmit = useCallback(() => {
       handleSubmitForm(
         async ({ title, description, link, proposalType }) => {
@@ -231,10 +251,20 @@ const DraftProposalsPageContent = memo(
               },
             });
 
+            trackProposalSubmitted({
+              proposal_id: receiptId || "unknown",
+              proposal_type: proposalType || "unknown",
+              tx_hash: receiptId || "unknown",
+            });
+
             toast.success("Proposal submitted successfully");
             router.replace("/proposals");
-          } catch (error) {
+          } catch (error: any) {
             console.error("Failed to submit proposal:", error);
+            trackProposalSubmissionFailed({
+              error_type: "submission_error",
+              error_message: error?.message || "Unknown error",
+            });
           }
         },
         (errors) => {
@@ -249,6 +279,8 @@ const DraftProposalsPageContent = memo(
       setError,
       step,
       updateDraft,
+      trackProposalSubmissionFailed,
+      trackProposalSubmitted,
     ]);
 
     useEffect(() => {
@@ -381,7 +413,14 @@ const DraftProposalsPageContent = memo(
                   <TrashIcon className="w-4 h-4" />
                 </Button>
                 <Button
-                  onClick={() => draftFormRef.current?.handleSave()}
+                  onClick={() => {
+                    draftFormRef.current?.handleSave();
+                    trackProposalDraftSaved({
+                      title_length: title?.length || 0,
+                      body_length: description?.length || 0,
+                      has_forum_link: !!link,
+                    });
+                  }}
                   variant="outline"
                   className="rounded-full"
                   disabled={!isDirty || isUpdating}

@@ -5,6 +5,8 @@ import { useOpenDialog } from "../Dialogs/DialogProvider/DialogProvider";
 import { UpdatedButton } from "../Button";
 import { useVenearAccountInfo } from "@/hooks/useVenearAccountInfo";
 import { useDelegateProfile } from "@/hooks/useDelegateProfile";
+import { useAnalytics } from "@/hooks/useAnalytics";
+import Big from "big.js";
 
 type AccountActionsProps = {
   close: () => void;
@@ -20,6 +22,8 @@ export const AccountActions = memo(({ close }: AccountActionsProps) => {
     useDelegateProfile({
       accountId: signedAccountId,
     });
+
+  const { trackBecomeDelegateCtaClicked } = useAnalytics();
 
   const hasStatement = !!delegate?.statement;
   const currentDelegatee = accountInfo?.delegation?.delegatee;
@@ -92,7 +96,20 @@ export const AccountActions = memo(({ close }: AccountActionsProps) => {
       </Link>
       <Link
         href={`/delegates/create`}
-        onClick={close}
+        onClick={() => {
+          close();
+          if (!hasStatement) {
+            const totalBalance = accountInfo
+              ? Big(accountInfo.totalBalance.near || "0")
+                  .plus(accountInfo.totalBalance.extraBalance || "0")
+                  .toString()
+              : "0";
+            trackBecomeDelegateCtaClicked({
+              user_venear_balance: totalBalance,
+              has_existing_statement: false,
+            });
+          }
+        }}
         className="self-stretch h-12 pl-4 text-secondary flex items-center hover:bg-neutral hover:font-bold hover:rounded-md"
       >
         {hasStatement ? "Edit delegate statement" : "Create delegate statement"}

@@ -10,6 +10,8 @@ import { useMemo } from "react";
 import { PendingProposal } from "./PendingProposal";
 import ProposalDescription from "./ProposalDescription";
 import ProposalVoteResult from "./ProposalVoteResult";
+import { useAnalytics } from "@/hooks/useAnalytics";
+import { useEffect, useRef } from "react";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -40,9 +42,23 @@ export default function ProposalHome({ proposalId }: { proposalId: string }) {
         proposalWithQuorum.cleanDescription || proposalWithQuorum.description,
     };
   }, [proposalWithQuorum]);
-
   const isLoading =
     isLoadingProposal || isConfigLoading || isLoadingQuorumAmount;
+
+  const { trackProposalDetailViewed } = useAnalytics();
+  const hasTrackedView = useRef(false);
+
+  useEffect(() => {
+    if (!isLoading && finalProposal && !hasTrackedView.current) {
+      hasTrackedView.current = true;
+      trackProposalDetailViewed({
+        proposal_id: proposalId,
+        proposal_status: finalProposal.status,
+        proposal_category: finalProposal.proposalType || "unknown",
+        // time_to_deadline_hours: calculate if needed, skipping for now as it requires parsing
+      });
+    }
+  }, [isLoading, finalProposal, proposalId, trackProposalDetailViewed]);
 
   if (isLoading) {
     return <AgoraLoader />;
