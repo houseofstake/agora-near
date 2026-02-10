@@ -19,6 +19,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { DraftProposalsList } from "./DraftProposalsList";
 import { toast } from "react-hot-toast";
 import { useProposalConfig } from "@/hooks/useProposalConfig";
+import { useAnalytics } from "@/hooks/useAnalytics";
+import { useEffect, useRef } from "react";
 
 const Loader = () => {
   return (
@@ -67,6 +69,20 @@ function NearProposalsList() {
     return <div>{error?.message}</div>;
   }
 
+  const { trackProposalListViewed } = useAnalytics();
+  const hasTrackedView = useRef(false);
+
+  useEffect(() => {
+    if (!isLoading && proposals && !hasTrackedView.current) {
+      hasTrackedView.current = true;
+      trackProposalListViewed({
+        filter_status: "approved", // This component only shows approved proposals
+        sort_by: "default",
+        proposals_visible: proposals.length,
+      });
+    }
+  }, [isLoading, proposals, trackProposalListViewed]);
+
   return (
     <div>
       <InfiniteScroll
@@ -98,6 +114,7 @@ export default function NearProposals() {
 
   const { mutate: createDraft, isPending: isCreatingDraft } =
     useCreateDraftProposal();
+  const { trackCreateProposalCtaClicked } = useAnalytics();
 
   const { config } = useProposalConfig();
   const isReviewer =
@@ -131,6 +148,11 @@ export default function NearProposals() {
       signIn();
       return;
     }
+
+    trackCreateProposalCtaClicked({
+      user_voting_power: "unknown", // Data not readily available in this context without extra fetch
+      is_delegate: false, // Would need to check against delegate list
+    });
 
     createDraft(
       {

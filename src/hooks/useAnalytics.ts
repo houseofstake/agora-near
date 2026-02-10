@@ -523,6 +523,95 @@ export const useAnalytics = () => {
     trackEvent({ event_name: "Delegate Card CTA Clicked", event_data: props });
   };
 
+  // --- Proposal Submission & Viewing (P6) ---
+
+  const trackCreateProposalCtaClicked = (props: {
+    user_voting_power: string;
+    is_delegate: boolean;
+  }) => {
+    trackEvent({ event_name: "Create Proposal CTA Clicked", event_data: props });
+  };
+
+  const trackProposalDraftStarted = (props: {
+    proposal_type?: string;
+  }) => {
+    trackEvent({ event_name: "Proposal Draft Started", event_data: props });
+  };
+
+  const trackProposalDraftSaved = (props: {
+    title_length: number;
+    body_length: number;
+    has_forum_link: boolean;
+  }) => {
+    trackEvent({ event_name: "Proposal Draft Saved", event_data: props });
+  };
+
+  const trackProposalSubmitted = (props: {
+    proposal_id: string; // ID might be tx hash initially
+    proposal_type: string;
+    tx_hash: string;
+  }) => {
+    trackEvent({ event_name: "Proposal Submitted", event_data: props });
+  };
+
+  const trackProposalSubmissionFailed = (props: {
+    error_type: string;
+    error_message: string;
+  }) => {
+    trackEvent({ event_name: "Proposal Submission Failed", event_data: props });
+  };
+
+  const trackProposalListViewed = (props: {
+    filter_status: string;
+    sort_by: string;
+    proposals_visible: number;
+  }) => {
+    trackEvent({ event_name: "Proposal List Viewed", event_data: props });
+  };
+
+  const trackProposalDetailViewed = (props: {
+    proposal_id: string;
+    proposal_status: string;
+    proposal_category: string;
+    time_to_deadline_hours?: number;
+  }) => {
+    trackEvent({ event_name: "Proposal Detail Viewed", event_data: props });
+  };
+
+  const trackProposalForumLinkClicked = (props: {
+    proposal_id: string;
+  }) => {
+    trackEvent({ event_name: "Proposal Forum Link Clicked", event_data: props });
+  };
+
+  // --- Delegate Onboarding (P6 continued) ---
+
+  const trackBecomeDelegateCtaClicked = (props: {
+    user_venear_balance: string;
+    has_existing_statement: boolean;
+  }) => {
+    trackEvent({ event_name: "Become Delegate CTA Clicked", event_data: props });
+  };
+
+  const trackDelegateStatementEditorOpened = (props: {
+    is_edit: boolean;
+  }) => {
+    trackEvent({
+      event_name: "Delegate Statement Editor Opened",
+      event_data: props,
+    });
+  };
+
+  const trackDelegateStatementSaved = (props: {
+    statement_length_chars: number;
+    has_twitter: boolean;
+    has_discord: boolean;
+    topics_selected_count: number;
+    is_edit: boolean;
+  }) => {
+    trackEvent({ event_name: "Delegate Statement Saved", event_data: props });
+  };
+
   // -- General --
   const trackGenericEvent = (
     eventName: string,
@@ -590,6 +679,17 @@ export const useAnalytics = () => {
     trackDelegateSearchPerformed,
     trackDelegateFilterApplied,
     trackDelegateCardCtaClicked,
+    trackCreateProposalCtaClicked,
+    trackProposalDraftStarted,
+    trackProposalDraftSaved,
+    trackProposalSubmitted,
+    trackProposalSubmissionFailed,
+    trackProposalListViewed,
+    trackProposalDetailViewed,
+    trackProposalForumLinkClicked,
+    trackBecomeDelegateCtaClicked,
+    trackDelegateStatementEditorOpened,
+    trackDelegateStatementSaved,
     trackGenericEvent,
   };
 };
