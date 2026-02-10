@@ -114,6 +114,7 @@
     "@testing-library/react": "^16.2.0",
     "@types/d3": "^7.4.3",
     "@types/dompurify": "^3.2.0",
+    "@types/jsdom": "^27.0.0",
     "@types/node": "^24.2.0",
     "@types/react": "^18.2.8",
     "@types/react-dom": "^18.2.25",

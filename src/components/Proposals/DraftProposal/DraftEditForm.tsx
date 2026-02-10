@@ -32,6 +32,7 @@ import TokenAmount from "@/components/shared/TokenAmount";
 import Big from "big.js";
 import { VotingConfig } from "@/lib/contracts/types/voting";
 import { FormValues } from "./DraftProposalPage";
+import { LinkPreview } from "./LinkPreview";
 
 const errorTextStyle = "text-sm text-negative mt-1";
 
@@ -208,6 +209,9 @@ function DraftDetailsForm() {
             )}
           </div>
         )}
+
+        {/* Open Graph Preview */}
+        <LinkPreview url={control._formValues.link} />
         <div className="flex flex-col gap-4 border-t border-line pt-4 mt-2">
           <h4 className="text-xs font-semibold text-secondary">
             Configuration

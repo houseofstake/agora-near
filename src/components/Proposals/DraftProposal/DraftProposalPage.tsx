@@ -60,10 +60,15 @@ const submitSchema = z.object({
     .string()
     .min(1, "Link is required")
     .url("Must be a valid URL")
-    .refine((url) => url.includes("https://gov.near.org/"), {
-      message:
-        "Proposal links must be from https://gov.near.org/. Create a forum post first to gather community support.",
-    }),
+    .refine(
+      (url) =>
+        url.startsWith("https://gov.near.org/") ||
+        url.startsWith("https://github.com/houseofstake/proposals/"),
+      {
+        message:
+          "Proposal links must be from https://gov.near.org/ or https://github.com/houseofstake/proposals/.",
+      }
+    ),
   options: z
     .array(
       z.object({
