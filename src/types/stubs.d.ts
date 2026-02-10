@@ -10,3 +10,9 @@ declare module "@hapi/shot" {
 declare module "hapi__shot" {
   export {};
 }
+declare module "jsdom" {
+  export class JSDOM {
+    constructor(html: string | Buffer);
+    window: any;
+  }
+}
