@@ -3,6 +3,7 @@
 import { DialogProvider } from "@/components/Dialogs/DialogProvider/DialogProvider";
 import { DelegateProfile } from "@/lib/api/delegates/types";
 import InfiniteScroll from "react-infinite-scroller";
+const InfiniteScrollAny = InfiniteScroll as any;
 import DelegateCard from "./DelegateCard";
 import { EncourageDelegationBanner } from "./EncourageDelegationBanner";
 import Tenant from "@/lib/tenant/tenant";
@@ -34,7 +35,7 @@ export default function DelegateCardList({
       {isDelegationEncouragementEnabled && (
         <EncourageDelegationBanner filterParam={filterParam} />
       )}
-      <InfiniteScroll
+      <InfiniteScrollAny
         key={`${orderByParam}-${filterParam}`}
         className="grid grid-flow-row grid-cols-1 sm:grid-cols-3 justify-around sm:justify-between py-4 gap-4 sm:gap-8"
         hasMore={hasMore}
@@ -59,7 +60,7 @@ export default function DelegateCardList({
             />
           );
         })}
-      </InfiniteScroll>
+      </InfiniteScrollAny>
     </DialogProvider>
   );
 }

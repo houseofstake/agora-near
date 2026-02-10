@@ -1,6 +1,7 @@
 "use client";
 
 import InfiniteScroll from "react-infinite-scroller";
+const InfiniteScrollAny = InfiniteScroll as any;
 import { DialogProvider } from "@/components/Dialogs/DialogProvider/DialogProvider";
 import {
   Table,
@@ -57,7 +58,7 @@ export default function DelegateTable({
               </TableHead>
             </TableRow>
           </TableHeader>
-          <InfiniteScroll
+          <InfiniteScrollAny
             key={`${orderByParam}-${filterParam}`}
             hasMore={hasMore}
             pageStart={1}
@@ -88,7 +89,7 @@ export default function DelegateTable({
                 <DelegateTableRow key={delegate.address} delegate={delegate} />
               ))
             )}
-          </InfiniteScroll>
+          </InfiniteScrollAny>
         </Table>
       </div>
     </DialogProvider>

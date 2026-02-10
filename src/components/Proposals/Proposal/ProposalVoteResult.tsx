@@ -7,6 +7,7 @@ import ProposalVoteFilter from "./ProposalVoteFilter";
 import ProposalVoteSummary from "./ProposalVoteSummary";
 import ProposalVotingActions from "./ProposalVotingActions";
 import InfiniteScroll from "react-infinite-scroller";
+const InfiniteScrollAny = InfiniteScroll as any;
 import { useProposalVotes } from "@/hooks/useProposalVotes";
 import { HStack } from "@/components/Layout/Stack";
 import { VStack } from "@/components/Layout/Stack";
@@ -96,7 +97,7 @@ const ProposalVoteResult = ({
           </div>
           <div className="px-4 pb-4 overflow-y-auto max-h-[calc(100vh-580px)]">
             {!showVoters && !isNonVotersLoading && nonVoters && (
-              <InfiniteScroll
+              <InfiniteScrollAny
                 hasMore={hasNextNonVotersPage}
                 pageStart={0}
                 loadMore={() => {
@@ -168,11 +169,11 @@ const ProposalVoteResult = ({
                     </li>
                   ))}
                 </ul>
-              </InfiniteScroll>
+              </InfiniteScrollAny>
             )}
 
             {showVoters && !isVotingHistoryFetching && votingHistory && (
-              <InfiniteScroll
+              <InfiniteScrollAny
                 hasMore={hasNextPage}
                 pageStart={0}
                 loadMore={() => {
@@ -285,7 +286,7 @@ const ProposalVoteResult = ({
                     </li>
                   ))}
                 </ul>
-              </InfiniteScroll>
+              </InfiniteScrollAny>
             )}
 
             {(isVotingHistoryFetching || isNonVotersLoading) && (

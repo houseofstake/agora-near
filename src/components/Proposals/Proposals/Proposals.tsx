@@ -12,6 +12,7 @@ import { useNear } from "@/contexts/NearContext";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import InfiniteScroll from "react-infinite-scroller";
+const InfiniteScrollAny = InfiniteScroll as any;
 import { Proposal } from "./Proposal";
 import { PendingProposalsList } from "./PendingProposals";
 import { cn } from "@/lib/utils";
@@ -69,7 +70,7 @@ function NearProposalsList() {
 
   return (
     <div>
-      <InfiniteScroll
+      <InfiniteScrollAny
         hasMore={hasNextPage}
         loadMore={onLoadMore}
         initialLoad={false}
@@ -79,7 +80,7 @@ function NearProposalsList() {
           <Proposal key={proposal.id} proposal={proposal} />
         ))}
         {isFetchingNextPage && <Loader />}
-      </InfiniteScroll>
+      </InfiniteScrollAny>
     </div>
   );
 }

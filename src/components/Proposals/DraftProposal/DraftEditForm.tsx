@@ -28,6 +28,7 @@ import {
 } from "@/lib/constants";
 import Link from "next/link";
 import { Controller, useFormContext } from "react-hook-form";
+import LinkPreview from "@/components/shared/LinkPreview";
 import TokenAmount from "@/components/shared/TokenAmount";
 import Big from "big.js";
 import { VotingConfig } from "@/lib/contracts/types/voting";
@@ -192,6 +193,7 @@ function DraftDetailsForm() {
             />
           )}
         />
+        <LinkPreview url={watch("link") || ""} />
         {errors.link && (
           <div className={errorTextStyle}>
             {errors.link.message}

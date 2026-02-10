@@ -2,6 +2,7 @@
 
 import { useCallback } from "react";
 import InfiniteScroll from "react-infinite-scroller";
+const InfiniteScrollAny = InfiniteScroll as any;
 import { cn } from "@/lib/utils";
 import { usePendingProposals } from "@/hooks/usePendingProposals";
 import Link from "next/link";
@@ -75,7 +76,7 @@ export function PendingProposalsList() {
 
   return (
     <div>
-      <InfiniteScroll
+      <InfiniteScrollAny
         hasMore={hasNextPage}
         loadMore={onLoadMore}
         initialLoad={false}
@@ -85,7 +86,7 @@ export function PendingProposalsList() {
           <PendingProposal key={proposal.id} proposal={proposal} />
         ))}
         {isFetchingNextPage && <Loader />}
-      </InfiniteScroll>
+      </InfiniteScrollAny>
     </div>
   );
 }
