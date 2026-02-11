@@ -671,22 +671,22 @@ const rewardsFaqs: FAQ[] = [
     ),
   },
   {
-    id: "how-to-increase-governance-rewards",
-    question: "How can I increase my governance rewards?",
+    id: "how-to-increase-rewards",
+    question: "How can I increase my rewards?",
     answer: (
       <div className="space-y-4">
         <Text>
-          Your rewards increase based on how much NEAR you lock and how long you
-          lock it for. Please note: The total amount of veNEAR rewards
-          distributed depends on the overall NEAR participation in the rewards
-          campaign. Your individual allocation scales with your lock amount and
-          lock duration.
+          Your veNEAR rewards increase based on how much NEAR you lock and how
+          long you lock it for. The total amount distributed depends on the
+          overall participation in the campaign.
         </Text>
         <Text>
-          You can also increase your overall participation rewards by staking
-          NEAR (optional). Combining locking and staking may increase your
-          overall participation rewards, depending on program parameters. For
-          more details on how rewards are calculated,{" "}
+          You can also increase your total return by staking your locked NEAR.
+          This earns you additional staking yields from the underlying validator
+          pool, on top of your veNEAR rewards.
+        </Text>
+        <Text>
+          For more details on how rewards are calculated,{" "}
           <ExternalLink href="https://github.com/houseofstake/proposals/blob/e82f6a2978d62617f9b79a8b39016e383d3189ee/HSPs/hsp-003.md">
             check out this link
           </ExternalLink>
