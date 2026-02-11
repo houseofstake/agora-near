@@ -3,16 +3,14 @@ import { fetchVoteHistory } from "@/lib/api/delegates/requests";
 import { useQuery } from "@tanstack/react-query";
 import { DelegateProfile } from "@/lib/api/delegates/types";
 import { CACHE_TTL } from "@/lib/constants";
-import { useNear } from "@/contexts/NearContext";
 
 export const QK_DELEGATE_PROFILE = "delegateProfile";
 
 export const useDelegateProfile = ({ accountId }: { accountId?: string }) => {
-  const { networkId } = useNear();
   return useQuery({
-    queryKey: [QK_DELEGATE_PROFILE, accountId, networkId],
+    queryKey: [QK_DELEGATE_PROFILE, accountId],
     queryFn: async () => {
-      const delegate = await getDelegate(accountId ?? "", networkId);
+      const delegate = await getDelegate(accountId ?? "");
       if (!delegate) {
         return delegate;
       }

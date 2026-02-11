@@ -83,13 +83,13 @@ Discourse username:`;
             control={form.control}
             name="delegateStatement"
             render={({ field }) => (
-            <Textarea
-              className="mt-2 min-h-[16rem]"
-              onFocus={addDefaultValueOnFocus}
-              placeholder={defaultValue}
-              maxLength={DELEGATE_PROFILE_LIMITS.delegateStatement}
-              {...field}
-            />
+              <Textarea
+                className="mt-2 min-h-[16rem]"
+                onFocus={addDefaultValueOnFocus}
+                placeholder={defaultValue}
+                maxLength={DELEGATE_PROFILE_LIMITS.delegateStatement}
+                {...field}
+              />
             )}
           />
         </TabsContent>

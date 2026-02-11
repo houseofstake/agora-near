@@ -163,8 +163,7 @@ export default function DelegateStatementForm({
 
     if (saveToNearSocial) {
       const dirtyFields = form.formState.dirtyFields;
-      const includeAllFields =
-        !nearSocialProfile || !form.formState.isDirty;
+      const includeAllFields = !nearSocialProfile || !form.formState.isDirty;
       const trimmedName = sanitizeString(displayName ?? "");
       const trimmedStatement = sanitizeString(delegateStatement);
 

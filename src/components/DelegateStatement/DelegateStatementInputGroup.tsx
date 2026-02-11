@@ -32,7 +32,11 @@ export default function DelegateStatementInputGroup({
             inputSize="md"
             placeholder={placeholder}
             disabled={disabled}
-            maxLength={name === "email" ? DELEGATE_PROFILE_LIMITS.email : DELEGATE_PROFILE_LIMITS.handle}
+            maxLength={
+              name === "email"
+                ? DELEGATE_PROFILE_LIMITS.email
+                : DELEGATE_PROFILE_LIMITS.handle
+            }
             {...field}
           />
         </Label>

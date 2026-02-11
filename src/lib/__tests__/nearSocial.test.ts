@@ -84,7 +84,11 @@ describe("nearSocial", () => {
     });
 
     it("should overwrite fields with null for SocialDB clears", () => {
-      const existing = { name: "Alice", statement: "Hello", topIssues: "[...]" };
+      const existing = {
+        name: "Alice",
+        statement: "Hello",
+        topIssues: "[...]",
+      };
       const update = { name: null, statement: null };
 
       const merged = mergeNearSocialProfile(existing, update);

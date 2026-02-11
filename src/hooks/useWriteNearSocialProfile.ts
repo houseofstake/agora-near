@@ -82,8 +82,7 @@ export const useWriteNearSocialProfile = () => {
       const depositDelta =
         requiredDeposit > totalBalance ? requiredDeposit - totalBalance : 0n;
 
-      const deposit =
-        depositDelta > 0n ? depositDelta.toString() : ONE_YOCTO;
+      const deposit = depositDelta > 0n ? depositDelta.toString() : ONE_YOCTO;
 
       return callMethod({
         contractId,
