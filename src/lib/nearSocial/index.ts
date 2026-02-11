@@ -97,7 +97,11 @@ export const extractNearSocialProfile = (
   let topIssues: { type: string; value: string }[] | undefined;
   const topIssuesLeaf = readLeafString(profile.topIssues);
   topIssues = parseTopIssuesString(topIssuesLeaf);
-  if (!topIssues && profile.topIssues && typeof profile.topIssues === "object") {
+  if (
+    !topIssues &&
+    profile.topIssues &&
+    typeof profile.topIssues === "object"
+  ) {
     const topIssuesObj = profile.topIssues as Record<string, unknown>;
     const numericKeys = Object.keys(topIssuesObj).filter(
       (key) => !isNaN(Number(key))
