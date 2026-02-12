@@ -469,9 +469,7 @@ export const useAnalytics = () => {
     trackEvent({ event_name: "Undelegation Started", event_data: props });
   };
 
-  const trackUndelegationSuccess = (props: {
-    delegate_address: string;
-  }) => {
+  const trackUndelegationSuccess = (props: { delegate_address: string }) => {
     trackEvent({ event_name: "Undelegation Success", event_data: props });
   };
 
@@ -529,12 +527,13 @@ export const useAnalytics = () => {
     user_voting_power: string;
     is_delegate: boolean;
   }) => {
-    trackEvent({ event_name: "Create Proposal CTA Clicked", event_data: props });
+    trackEvent({
+      event_name: "Create Proposal CTA Clicked",
+      event_data: props,
+    });
   };
 
-  const trackProposalDraftStarted = (props: {
-    proposal_type?: string;
-  }) => {
+  const trackProposalDraftStarted = (props: { proposal_type?: string }) => {
     trackEvent({ event_name: "Proposal Draft Started", event_data: props });
   };
 
@@ -578,10 +577,11 @@ export const useAnalytics = () => {
     trackEvent({ event_name: "Proposal Detail Viewed", event_data: props });
   };
 
-  const trackProposalForumLinkClicked = (props: {
-    proposal_id: string;
-  }) => {
-    trackEvent({ event_name: "Proposal Forum Link Clicked", event_data: props });
+  const trackProposalForumLinkClicked = (props: { proposal_id: string }) => {
+    trackEvent({
+      event_name: "Proposal Forum Link Clicked",
+      event_data: props,
+    });
   };
 
   // --- Delegate Onboarding (P6 continued) ---
@@ -590,12 +590,13 @@ export const useAnalytics = () => {
     user_venear_balance: string;
     has_existing_statement: boolean;
   }) => {
-    trackEvent({ event_name: "Become Delegate CTA Clicked", event_data: props });
+    trackEvent({
+      event_name: "Become Delegate CTA Clicked",
+      event_data: props,
+    });
   };
 
-  const trackDelegateStatementEditorOpened = (props: {
-    is_edit: boolean;
-  }) => {
+  const trackDelegateStatementEditorOpened = (props: { is_edit: boolean }) => {
     trackEvent({
       event_name: "Delegate Statement Editor Opened",
       event_data: props,
@@ -612,7 +613,27 @@ export const useAnalytics = () => {
     trackEvent({ event_name: "Delegate Statement Saved", event_data: props });
   };
 
-  // -- General --
+  const trackExternalLinkClicked = (props: {
+    link_url: string;
+    link_context: string;
+  }) => {
+    trackEvent({ event_name: "External Link Clicked", event_data: props });
+  };
+
+  const trackDelegateSortChanged = (props: { sort_option: string }) => {
+    trackEvent({
+      event_name: "Delegate Filter Applied",
+      event_data: { filter_type: "sort", filter_value: props.sort_option },
+    });
+  };
+
+  const trackProposalVoteFilterChanged = (props: { filter_option: string }) => {
+    trackEvent({
+      event_name: "Proposal Vote Filter Changed",
+      event_data: props,
+    });
+  };
+
   const trackGenericEvent = (
     eventName: string,
     eventData?: Record<string, unknown>
@@ -690,6 +711,9 @@ export const useAnalytics = () => {
     trackBecomeDelegateCtaClicked,
     trackDelegateStatementEditorOpened,
     trackDelegateStatementSaved,
+    trackExternalLinkClicked,
+    trackDelegateSortChanged,
+    trackProposalVoteFilterChanged,
     trackGenericEvent,
   };
 };
