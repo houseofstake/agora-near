@@ -53,10 +53,12 @@ class AnalyticsManager {
       event_name: normalizedName,
       event_data: {
         ...enrichedData,
-        dao_slug: slug,
         ...(this.currentWalletAddress && {
           wallet_address: this.currentWalletAddress,
         }),
+        app_environment: this.getEnvironment(),
+        app_url:
+          typeof window !== "undefined" ? window.location.href : "server",
       },
     };
 
@@ -154,6 +156,17 @@ class AnalyticsManager {
 
   clearIdentity() {
     this.currentWalletAddress = null;
+  }
+
+  private getEnvironment(): string {
+    if (process.env.NEXT_PUBLIC_VERCEL_ENV) {
+      return process.env.NEXT_PUBLIC_VERCEL_ENV;
+    }
+    if (typeof window !== "undefined") {
+      if (window.location.hostname.includes("localhost")) return "development";
+      if (window.location.hostname.includes("vercel.app")) return "preview";
+    }
+    return process.env.NODE_ENV || "unknown";
   }
 }
 
