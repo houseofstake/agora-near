@@ -15,10 +15,10 @@ export default function GlobalError({
   const { trackGenericEvent } = useAnalytics();
 
   useEffect(() => {
-
     trackGenericEvent("Error Displayed", {
+      error_code: (error as any).digest || "Unknown",
       error_message: error.message,
-      error_digest: (error as any).digest,
+      component: "GlobalError",
     });
   }, [error, trackGenericEvent]);
 
