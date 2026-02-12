@@ -36,9 +36,9 @@ export function track(event: string, props?: Record<string, any>) {
   if (initialized) {
     mixpanel.track(event, props);
   }
-  // Optionally forward to backend if API key present (keeps parity with agora-next)
+  // Only enabled in production to prevent 404 spam in local development
   const apiKey = process.env.NEXT_PUBLIC_AGORA_API_KEY;
-  if (apiKey) {
+  if (false && apiKey && process.env.NODE_ENV === "production") {
     try {
       void fetch("/api/analytics/track", {
         method: "POST",

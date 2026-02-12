@@ -64,8 +64,9 @@ class AnalyticsManager {
     trackMixpanel.track(payload.event_name, payload.event_data);
 
     // 2) Backend (optional, if API key is present)
+    // Only enabled in production to prevent 404 spam in local development
     const apiKey = process.env.NEXT_PUBLIC_AGORA_API_KEY;
-    if (apiKey) {
+    if (false && apiKey && process.env.NODE_ENV === "production") {
       try {
         await fetch("/api/analytics/track", {
           method: "POST",
