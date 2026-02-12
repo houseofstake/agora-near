@@ -28,18 +28,20 @@ export const fetchSocialProfile = async (
   accountId: string
 ): Promise<Partial<DelegateProfile> | null> => {
   try {
-    const rpcUrl = getRpcUrl("mainnet");
+    const rpcUrl = getRpcUrl("mainnet", { useArchivalNode: false });
     const provider = new JsonRpcProvider({ url: rpcUrl });
 
     const key = `${accountId}/profile/**`;
-    
+
     // Call social.near get method
     const result = await provider.query({
       request_type: "call_function",
       finality: "optimistic",
       account_id: SOCIAL_CONTRACT_ID,
       method_name: "get",
-      args_base64: Buffer.from(JSON.stringify({ keys: [key] })).toString("base64"),
+      args_base64: Buffer.from(JSON.stringify({ keys: [key] })).toString(
+        "base64"
+      ),
     });
 
     const res: any = result;
@@ -64,13 +66,12 @@ export const fetchSocialProfile = async (
     if (profileData.description) {
       mappedProfile.statement = profileData.description;
     }
-    
+
     if (profileData.linktree?.twitter) {
       mappedProfile.twitter = profileData.linktree.twitter;
     }
 
     return mappedProfile;
-
   } catch (error) {
     console.warn(`Error fetching social profile for ${accountId}`, error);
     return null;

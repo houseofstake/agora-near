@@ -116,13 +116,13 @@ export default function CurrentDelegateStatement() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: getDefaultValues(delegate),
+    defaultValues: getDefaultValues(delegate ?? undefined),
     mode: "onChange",
   });
 
   // Reset form when off-chain delegate data changes
   useEffect(() => {
-    form.reset(getDefaultValues(delegate));
+    form.reset(getDefaultValues(delegate ?? undefined));
   }, [form, getDefaultValues, delegate]);
 
   if (isLoading || !isInitialized) {
@@ -136,10 +136,10 @@ export default function CurrentDelegateStatement() {
   return (
     <DelegateStatementForm
       form={form}
-      delegate={delegate}
+      delegate={delegate ?? undefined}
       nearSocialProfile={nearSocialProfile}
       onResetToOffChain={() => {
-        form.reset(getDefaultValues(delegate));
+        form.reset(getDefaultValues(delegate ?? undefined));
       }}
     />
   );
