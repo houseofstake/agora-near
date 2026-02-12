@@ -8,6 +8,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { trackEvent } from "@/lib/analytics";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { MixpanelEvents } from "@/lib/analytics/mixpanel";
 import Image from "next/image";
 import Link from "next/link";
@@ -32,16 +33,22 @@ const ExternalLink = ({
 }: {
   href: string;
   children: ReactNode;
-}) => (
-  <a
-    href={href}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="text-primary underline hover:text-secondary font-medium"
-  >
-    {children}
-  </a>
-);
+}) => {
+  const { trackExternalLinkClicked } = useAnalytics();
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-primary underline hover:text-secondary font-medium"
+      onClick={() =>
+        trackExternalLinkClicked({ link_url: href, link_context: "FAQ" })
+      }
+    >
+      {children}
+    </a>
+  );
+};
 
 const Code = ({ children }: { children: string }) => (
   <code className="bg-gray-100 px-2 py-1 rounded">{children}</code>
