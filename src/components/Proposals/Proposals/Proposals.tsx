@@ -47,6 +47,20 @@ function NearProposalsList() {
     isLoading,
   } = useApprovedProposals({ pageSize: 10 });
 
+  const { trackProposalListViewed } = useAnalytics();
+  const hasTrackedView = useRef(false);
+
+  useEffect(() => {
+    if (!isLoading && proposals && !hasTrackedView.current) {
+      hasTrackedView.current = true;
+      trackProposalListViewed({
+        filter_status: "approved",
+        sort_by: "default",
+        proposals_visible: proposals.length,
+      });
+    }
+  }, [isLoading, proposals, trackProposalListViewed]);
+
   const onLoadMore = useCallback(() => {
     if (!hasNextPage || isFetching || isFetchingNextPage) {
       return;
@@ -68,20 +82,6 @@ function NearProposalsList() {
   if (status === "error") {
     return <div>{error?.message}</div>;
   }
-
-  const { trackProposalListViewed } = useAnalytics();
-  const hasTrackedView = useRef(false);
-
-  useEffect(() => {
-    if (!isLoading && proposals && !hasTrackedView.current) {
-      hasTrackedView.current = true;
-      trackProposalListViewed({
-        filter_status: "approved", // This component only shows approved proposals
-        sort_by: "default",
-        proposals_visible: proposals.length,
-      });
-    }
-  }, [isLoading, proposals, trackProposalListViewed]);
 
   return (
     <div>

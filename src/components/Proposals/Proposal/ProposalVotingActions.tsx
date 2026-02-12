@@ -12,6 +12,7 @@ import { VOTES_QK } from "@/hooks/useProposalVotes";
 import { TooltipWithTap } from "@/components/ui/tooltip-with-tap";
 import { useProposalVotingPower } from "@/hooks/useProposalVotingPower";
 import { useUserVote } from "@/hooks/useUserVote";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { ProposalInfo, VotingConfig } from "@/lib/contracts/types/voting";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
@@ -171,6 +172,7 @@ export default function ProposalVotingActions({
   const { signedAccountId } = useNear();
   const openDialog = useOpenDialog();
   const { signIn } = useNear();
+  const { trackVoteDialogOpened } = useAnalytics();
   const [selectedVote, setSelectedVote] = useState<number>();
 
   const { voteIndex: userVoteIndex, isLoading: isLoadingUserVote } =
@@ -200,6 +202,10 @@ export default function ProposalVotingActions({
   const queryClient = useQueryClient();
 
   const openVoteDialog = useCallback(() => {
+    trackVoteDialogOpened({
+      proposal_id: proposal.id.toString(),
+      user_voting_power: votingPower || "0",
+    });
     openDialog({
       type: "NEAR_VOTE",
       params: {
@@ -217,7 +223,15 @@ export default function ProposalVotingActions({
         },
       },
     });
-  }, [openDialog, proposal, config, selectedVote, queryClient]);
+  }, [
+    openDialog,
+    proposal,
+    config,
+    selectedVote,
+    queryClient,
+    trackVoteDialogOpened,
+    votingPower,
+  ]);
 
   if (!signedAccountId) {
     return (
