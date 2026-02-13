@@ -6,6 +6,7 @@ import styles from "./ProposalDescription.module.scss";
 import ProposalChart from "../ProposalPage/ProposalChart/ProposalChart";
 import { ProposalTypeBadge } from "@/components/Proposals/ProposalTypeBadge";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { truncateAddress, truncateMiddle } from "@/lib/text";
 
 export default function ProposalDescription({
   proposal,
@@ -20,7 +21,13 @@ export default function ProposalDescription({
         <div className="text-xs font-semibold text-secondary flex items-center gap-2 mb-1">
           <ProposalTypeBadge type={proposal.proposalType} />
           <span className="flex items-center">
-            Proposal by {proposal.proposer_id}
+            Proposal by{" "}
+            <span className="hidden sm:inline">
+              {truncateAddress(proposal.proposer_id)}
+            </span>
+            <span className="inline sm:hidden">
+              {truncateMiddle(proposal.proposer_id, 4, 4)}
+            </span>
             {proposal.link && (
               <a
                 onClick={() => {

@@ -24,7 +24,7 @@ import { useNear } from "@/contexts/NearContext";
 import { useProposalNonVoters } from "@/hooks/useProposalNonVoters";
 import { icons } from "@/assets/icons";
 import Link from "next/link";
-import { truncateAddress } from "@/lib/text";
+import { truncateAddress, truncateMiddle } from "@/lib/text";
 
 const ProposalVoteResult = ({
   proposal,
@@ -63,7 +63,7 @@ const ProposalVoteResult = ({
 
   return (
     <div
-      className={`fixed flex justify-between gap-4 md:sticky top-[auto] md:top-20 md:max-h-[calc(100vh-220px)] max-h-[calc(100%-160px)] items-stretch flex-shrink w-[calc(100vw-2rem)] sm:w-[calc(100vw-4rem)] md:w-[20rem] lg:w-[24rem] bg-neutral border border-line rounded-xl shadow-newDefault mb-8 transition-all ${isClicked ? "bottom-[20px]" : "bottom-[calc(-100%+350px)] h-[calc(100%-160px)] md:h-auto"} md:overflow-y-auto`}
+      className={`fixed flex justify-between gap-4 md:sticky top-[auto] md:top-20 md:max-h-[calc(100vh-220px)] max-h-[calc(100%-160px)] items-stretch flex-shrink w-[calc(100vw-2rem)] sm:w-[calc(100vw-4rem)] md:w-[20rem] lg:w-[24rem] bg-neutral border border-line rounded-xl shadow-newDefault mb-8 transition-all ${isClicked ? "bottom-[20px]" : "bottom-[calc(-100%+350px)] h-[calc(100%-160px)] md:h-auto"} md:overflow-y-auto max-w-full overflow-hidden`}
       style={{
         transition: "bottom 600ms cubic-bezier(0, 0.975, 0.015, 0.995)",
       }}
@@ -127,16 +127,29 @@ const ProposalVoteResult = ({
                             <HoverCardTrigger>
                               <HStack
                                 justifyContent="justify-between"
-                                className="font-semibold text-secondary"
+                                className="font-semibold text-secondary w-full"
                               >
-                                <HStack gap={1} alignItems="items-center">
+                                <HStack
+                                  gap={1}
+                                  alignItems="items-center"
+                                  className="min-w-0 flex-1 overflow-hidden"
+                                >
                                   <Link
                                     href={`/delegates/${nonVoter.registeredVoterId}`}
-                                    className="hover:text-primary transition-colors truncate max-w-[200px]"
+                                    className="hover:text-primary transition-colors"
                                   >
-                                    {truncateAddress(
-                                      nonVoter.registeredVoterId
-                                    )}
+                                    <span className="hidden sm:inline">
+                                      {truncateAddress(
+                                        nonVoter.registeredVoterId
+                                      )}
+                                    </span>
+                                    <span className="inline sm:hidden">
+                                      {truncateMiddle(
+                                        nonVoter.registeredVoterId,
+                                        4,
+                                        4
+                                      )}
+                                    </span>
                                   </Link>
                                   {nonVoter.registeredVoterId ===
                                     signedAccountId && (
@@ -190,14 +203,23 @@ const ProposalVoteResult = ({
                             <HoverCardTrigger>
                               <HStack
                                 justifyContent="justify-between"
-                                className="font-semibold text-secondary"
+                                className="font-semibold text-secondary w-full"
                               >
-                                <HStack gap={1} alignItems="items-center">
+                                <HStack
+                                  gap={1}
+                                  alignItems="items-center"
+                                  className="min-w-0 flex-1 overflow-hidden"
+                                >
                                   <Link
                                     href={`/delegates/${vote.accountId}`}
-                                    className="hover:text-primary transition-colors truncate max-w-[200px]"
+                                    className="hover:text-primary transition-colors"
                                   >
-                                    {truncateAddress(vote.accountId)}
+                                    <span className="hidden sm:inline">
+                                      {truncateAddress(vote.accountId)}
+                                    </span>
+                                    <span className="inline sm:hidden">
+                                      {truncateMiddle(vote.accountId, 4, 4)}
+                                    </span>
                                   </Link>
                                   {vote.accountId === signedAccountId && (
                                     <p className="text-primary">(you)</p>
