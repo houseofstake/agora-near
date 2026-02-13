@@ -36,28 +36,6 @@ export function track(event: string, props?: Record<string, any>) {
   if (initialized) {
     mixpanel.track(event, props);
   }
-  // Only enabled in production to prevent 404 spam in local development
-  const apiKey = process.env.NEXT_PUBLIC_AGORA_API_KEY;
-  if (false && apiKey && process.env.NODE_ENV === "production") {
-    try {
-      void fetch("/api/analytics/track", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          event_name: event,
-          event_data: {
-            ...(props ?? {}),
-            dao_slug: Tenant.current().slug,
-          },
-        }),
-      });
-    } catch (_e) {
-      // swallow errors
-    }
-  }
 }
 
 export function identify(userId?: string) {

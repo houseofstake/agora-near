@@ -1,4 +1,3 @@
-import Tenant from "@/lib/tenant/tenant";
 import * as trackMixpanel from "./mixpanel";
 
 import { formatNearAmount } from "@near-js/utils";
@@ -45,7 +44,6 @@ class AnalyticsManager {
   private hasAliased = false;
 
   async trackEvent(event: AnalyticsPayload) {
-    const { slug } = Tenant.current();
     const normalizedName = mapEventName(event.event_name);
     const enrichedData = enrichYoctoFields(event.event_data);
     const payload = {
