@@ -63,7 +63,13 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
           isUnstakedBalanceAvailable && Big(unstakedBalance ?? "0").gt(0),
       });
     }
-  }, [stakingPoolId, stakedBalance, isUnstakedBalanceAvailable, unstakedBalance, trackUnstakeFlowStarted]);
+  }, [
+    stakingPoolId,
+    stakedBalance,
+    isUnstakedBalanceAvailable,
+    unstakedBalance,
+    trackUnstakeFlowStarted,
+  ]);
 
   const validateAmount = (value: string) => {
     if (!value) {
@@ -119,7 +125,17 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
         toast.error("Failed to unstake");
       }
     }
-  }, [amount, lockupAccountId, amountError, stakedBalance, unstakeNear, stakingPoolId, closeDialog, trackUnstakeTransactionSuccess, trackUnstakeTransactionFailed]);
+  }, [
+    amount,
+    lockupAccountId,
+    amountError,
+    stakedBalance,
+    unstakeNear,
+    stakingPoolId,
+    closeDialog,
+    trackUnstakeTransactionSuccess,
+    trackUnstakeTransactionFailed,
+  ]);
 
   const handleUnstakeClick = useCallback(async () => {
     if (!amount || !lockupAccountId || amountError) return;
@@ -137,7 +153,15 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
     }
 
     await proceedWithUnstake();
-  }, [amount, lockupAccountId, amountError, isUnstakedBalanceAvailable, unstakedBalance, proceedWithUnstake, trackUnstakeTimerWarningShown]);
+  }, [
+    amount,
+    lockupAccountId,
+    amountError,
+    isUnstakedBalanceAvailable,
+    unstakedBalance,
+    proceedWithUnstake,
+    trackUnstakeTimerWarningShown,
+  ]);
 
   const handleWarningCancel = useCallback(() => {
     trackUnstakeTimerWarningCancelled({

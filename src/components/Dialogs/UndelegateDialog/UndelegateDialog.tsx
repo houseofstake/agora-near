@@ -23,8 +23,11 @@ export function UndelegateDialog({
     accountInfo?.totalBalance?.near || "0"
   ).plus(accountInfo?.totalBalance?.extraBalance || "0");
 
-  const { trackUndelegationStarted, trackUndelegationSuccess, trackUndelegationFailed } =
-    useAnalytics();
+  const {
+    trackUndelegationStarted,
+    trackUndelegationSuccess,
+    trackUndelegationFailed,
+  } = useAnalytics();
 
   const { undelegate, isUndelegating, error } = useUndelegate({
     onSuccess: () => {

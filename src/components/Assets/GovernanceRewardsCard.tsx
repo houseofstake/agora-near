@@ -25,7 +25,10 @@ export const GovernanceRewardsCard = memo(() => {
       hasTracked.current = true;
       const totalUnclaimed = data?.proofs
         ?.filter((p: any) => !p.claimed)
-        ?.reduce((sum: bigint, p: any) => sum + BigInt(p.amount ?? "0"), BigInt(0))
+        ?.reduce(
+          (sum: bigint, p: any) => sum + BigInt(p.amount ?? "0"),
+          BigInt(0)
+        )
         ?.toString();
       trackRewardsPageViewed({
         has_unclaimed_rewards: !!hasUnclaimedRewards,

@@ -88,13 +88,13 @@ export const EnterAmountStep = ({
   const { trackLockAmountEntered } = useAnalytics();
 
   const onProceed = () => {
-      trackLockAmountEntered({
-          amount_near: Number(enteredAmount),
-          lock_duration_days: 0, // No duration selection in this flow currently
-          lst_selected: selectedToken?.metadata?.symbol || "NEAR"
-      });
-      handleReview();
-  }
+    trackLockAmountEntered({
+      amount_near: Number(enteredAmount),
+      lock_duration_days: 0, // No duration selection in this flow currently
+      lst_selected: selectedToken?.metadata?.symbol || "NEAR",
+    });
+    handleReview();
+  };
 
   return (
     <div className="flex flex-col gap-6 h-full w-full">

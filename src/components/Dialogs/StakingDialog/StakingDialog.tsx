@@ -27,10 +27,7 @@ const StakingDialogContent = ({ closeDialog }: { closeDialog: () => void }) => {
   const { isLoading, setSelectedPool, source, maxStakingAmount } =
     useStakingProviderContext();
   const [currentStep, setCurrentStep] = useState<DialogStep>("form");
-  const {
-    trackStakingFlowStarted,
-    trackStakingSkipped,
-  } = useAnalytics();
+  const { trackStakingFlowStarted, trackStakingSkipped } = useAnalytics();
 
   useEffect(() => {
     trackStakingFlowStarted({
@@ -71,7 +68,6 @@ const StakingDialogContent = ({ closeDialog }: { closeDialog: () => void }) => {
     goToDashboard();
   }, [trackStakingSkipped, maxStakingAmount, goToDashboard]);
 
-
   if (isLoading) {
     return (
       <div className="flex flex-col justify-center items-center w-full h-full">
@@ -86,9 +82,7 @@ const StakingDialogContent = ({ closeDialog }: { closeDialog: () => void }) => {
     );
   }
 
-  return (
-    <EnterStakingAmount onContinue={handleContinue} onSkip={handleSkip} />
-  );
+  return <EnterStakingAmount onContinue={handleContinue} onSkip={handleSkip} />;
 };
 
 export const StakingDialog = ({ closeDialog, source }: StakingDialogProps) => {

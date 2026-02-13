@@ -130,17 +130,14 @@ export function NearClaimDialog({ closeDialog }: NearClaimDialogProps) {
         amount_yocto: totalAmount,
         num_campaigns: proofs.length,
       });
-      toast.success(
-        `Claimed ${convertYoctoToNear(totalAmount, 2)} NEAR`
-      );
+      toast.success(`Claimed ${convertYoctoToNear(totalAmount, 2)} NEAR`);
     } catch (error) {
       console.error("Failed to claim rewards:", error);
       trackClaimFailed({
         error_type: (error as any)?.message?.includes("User rejected")
           ? "user_rejected"
           : "contract_error",
-        error_message:
-          error instanceof Error ? error.message : "Unknown error",
+        error_message: error instanceof Error ? error.message : "Unknown error",
       });
       toast.error(
         `Failed to claim rewards: ${error instanceof Error ? error.message : "Unknown error"}`

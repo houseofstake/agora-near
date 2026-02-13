@@ -28,12 +28,12 @@ export const NearLockDialog = (props: NearLockDialogProps) => {
     // Check balance if connected
     let hasBalance = false;
     const checkBalance = async () => {
-        if (signedAccountId) {
-            const balance = await getBalance(signedAccountId);
-            hasBalance = Big(balance).gt(0);
-        }
-        trackLockingFlowStarted(props.source, !!signedAccountId, hasBalance);
-    }
+      if (signedAccountId) {
+        const balance = await getBalance(signedAccountId);
+        hasBalance = Big(balance).gt(0);
+      }
+      trackLockingFlowStarted(props.source, !!signedAccountId, hasBalance);
+    };
     checkBalance();
   }, [props.source, signedAccountId, getBalance, trackLockingFlowStarted]);
 

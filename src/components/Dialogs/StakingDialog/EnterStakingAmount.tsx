@@ -90,8 +90,11 @@ export const EnterStakingAmount = ({
     return isValidNearAccountId(customPoolId);
   }, [customPoolId]);
 
-  const { trackStakingPoolSelected, trackCustomPoolEntered, trackStakingAmountEntered } =
-    useAnalytics();
+  const {
+    trackStakingPoolSelected,
+    trackCustomPoolEntered,
+    trackStakingAmountEntered,
+  } = useAnalytics();
 
   const handleUseCustomPool = useCallback(async () => {
     if (!isCustomPoolValid) {
@@ -126,7 +129,13 @@ export const EnterStakingAmount = ({
     } finally {
       setIsValidatingCustomPool(false);
     }
-  }, [customPoolId, isCustomPoolValid, isWhitelisted, setSelectedPool, trackCustomPoolEntered]);
+  }, [
+    customPoolId,
+    isCustomPoolValid,
+    isWhitelisted,
+    setSelectedPool,
+    trackCustomPoolEntered,
+  ]);
 
   const handleContinue = useCallback(() => {
     if (!enteredAmount || !!amountError) return;
@@ -135,7 +144,13 @@ export const EnterStakingAmount = ({
       pool_id: selectedPool.id,
     });
     onContinue(selectedPool);
-  }, [enteredAmount, amountError, onContinue, selectedPool, trackStakingAmountEntered]);
+  }, [
+    enteredAmount,
+    amountError,
+    onContinue,
+    selectedPool,
+    trackStakingAmountEntered,
+  ]);
 
   return (
     <div className="flex-1 flex flex-col gap-2">

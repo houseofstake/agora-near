@@ -23,8 +23,11 @@ export function DelegateDialog({
     accountInfo?.totalBalance?.near || "0"
   ).plus(accountInfo?.totalBalance?.extraBalance || "0");
 
-  const { trackDelegationStarted, trackDelegationSuccess, trackDelegationFailed } =
-    useAnalytics();
+  const {
+    trackDelegationStarted,
+    trackDelegationSuccess,
+    trackDelegationFailed,
+  } = useAnalytics();
 
   const { delegateAll, isDelegating, error } = useDelegateAll({
     onSuccess: () => {
@@ -55,7 +58,12 @@ export function DelegateDialog({
       current_delegate: accountInfo?.delegation?.delegatee,
       voting_power_yocto: delegatableVotingPower.toFixed(0),
     });
-  }, [delegateAddress, accountInfo?.delegation?.delegatee, delegatableVotingPower, trackDelegationStarted]);
+  }, [
+    delegateAddress,
+    accountInfo?.delegation?.delegatee,
+    delegatableVotingPower,
+    trackDelegationStarted,
+  ]);
 
   const handleDelegate = useCallback(() => {
     delegateAll(delegateAddress);

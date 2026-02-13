@@ -53,20 +53,20 @@ export default function DelegateStatementContainer({
           <p className="break-words">No delegate statement for {address}</p>
           {isConnected && signedAccountId === address && (
             <p className="my-3">
-            <p className="my-3">
-              <a
-                className="underline"
-                href="/delegates/create"
-                onClick={() => {
-                  trackBecomeDelegateCtaClicked({
-                    user_venear_balance: "0", // Placeholder, expensive to fetch here just for this
-                    has_existing_statement: false,
-                  });
-                }}
-              >
-                Create your delegate statement
-              </a>
-            </p>
+              <p className="my-3">
+                <a
+                  className="underline"
+                  href="/delegates/create"
+                  onClick={() => {
+                    trackBecomeDelegateCtaClicked({
+                      user_venear_balance: "0", // Placeholder, expensive to fetch here just for this
+                      has_existing_statement: false,
+                    });
+                  }}
+                >
+                  Create your delegate statement
+                </a>
+              </p>
             </p>
           )}
         </div>
