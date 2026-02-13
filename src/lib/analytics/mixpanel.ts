@@ -36,28 +36,6 @@ export function track(event: string, props?: Record<string, any>) {
   if (initialized) {
     mixpanel.track(event, props);
   }
-  // Optionally forward to backend if API key present (keeps parity with agora-next)
-  const apiKey = process.env.NEXT_PUBLIC_AGORA_API_KEY;
-  if (apiKey) {
-    try {
-      void fetch("/api/analytics/track", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          event_name: event,
-          event_data: {
-            ...(props ?? {}),
-            dao_slug: Tenant.current().slug,
-          },
-        }),
-      });
-    } catch (_e) {
-      // swallow errors
-    }
-  }
 }
 
 export function identify(userId?: string) {
@@ -65,6 +43,27 @@ export function identify(userId?: string) {
   if (!initialized) initMixpanel();
   if (!initialized || !userId) return;
   mixpanel.identify(userId);
+}
+
+export function alias(userId: string) {
+  if (!analyticsEnabled()) return;
+  if (!initialized) initMixpanel();
+  if (!initialized || !userId) return;
+  mixpanel.alias(userId);
+}
+
+export function setPeopleProperties(props: Record<string, any>) {
+  if (!analyticsEnabled()) return;
+  if (!initialized) initMixpanel();
+  if (!initialized) return;
+  mixpanel.people.set(props);
+}
+
+export function registerSuperProperties(props: Record<string, any>) {
+  if (!analyticsEnabled()) return;
+  if (!initialized) initMixpanel();
+  if (!initialized) return;
+  mixpanel.register(props);
 }
 
 export function pageView({ path, title }: PageEventProps) {

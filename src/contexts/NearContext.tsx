@@ -132,6 +132,8 @@ const debugLog = (message: string) => {
   }
 };
 
+import { useAnalytics } from "@/hooks/useAnalytics";
+
 export const NearProvider: React.FC<NearProviderProps> = ({
   children,
   networkId,
@@ -142,6 +144,7 @@ export const NearProvider: React.FC<NearProviderProps> = ({
   const [signedAccountId, setSignedAccountId] = useState<string | undefined>();
   const unsubscribeRef = useRef<() => void>();
   const [isInitialized, setIsInitialized] = useState(false);
+  const { trackWalletConnected, trackWalletDisconnected } = useAnalytics();
   /**
    * To be called when the website loads
    * @param {Function} accountChangeHook - a function that is called when the user signs in or out
@@ -153,7 +156,6 @@ export const NearProvider: React.FC<NearProviderProps> = ({
       const nearConnectNetwork: "mainnet" | "testnet" =
         networkId === "mainnet" ? "mainnet" : "testnet";
 
-      // Initialize SignClient for WalletConnect if configured
       let walletConnect: any = undefined;
       if (process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID) {
         walletConnect = SignClient.init({
@@ -178,9 +180,15 @@ export const NearProvider: React.FC<NearProviderProps> = ({
       });
 
       // Connection/disconnection events
-      connector.on("wallet:signIn", (payload) => {
+      connector.on("wallet:signIn", async (payload) => {
         const nextAccountId = payload?.accounts?.[0]?.accountId;
         setSignedAccountId(nextAccountId);
+        if (nextAccountId) {
+          const wallet = await connector.wallet();
+          const walletId = (wallet as any).id || "unknown";
+          const isFireblocks = isNearConnectWalletConnect(wallet);
+          trackWalletConnected(walletId, nextAccountId, isFireblocks);
+        }
       });
       connector.on("wallet:signOut", () => {
         setSignedAccountId(undefined);
@@ -190,7 +198,13 @@ export const NearProvider: React.FC<NearProviderProps> = ({
       try {
         const connected = await connector.getConnectedWallet();
         const nextAccountId = connected?.accounts?.[0]?.accountId;
-        setSignedAccountId(nextAccountId);
+        if (nextAccountId) {
+          setSignedAccountId(nextAccountId);
+          const wallet = await connector.wallet();
+          const walletId = (wallet as any).id || "unknown";
+          const isFireblocks = isNearConnectWalletConnect(wallet);
+          trackWalletConnected(walletId, nextAccountId, isFireblocks);
+        }
       } catch (_) {
         // No previous session
       }
@@ -201,7 +215,7 @@ export const NearProvider: React.FC<NearProviderProps> = ({
     } finally {
       setIsInitialized(true);
     }
-  }, [networkId]);
+  }, [networkId, trackWalletConnected]);
 
   /**
    * Displays a modal to login the user
@@ -216,14 +230,16 @@ export const NearProvider: React.FC<NearProviderProps> = ({
     return;
   }, [nearConnector]);
 
-  /**
-   * Logout the user
-   */
   const signOut = useCallback(async () => {
     if (!nearConnector) return;
+    const wallet = await nearConnector.wallet();
+    // Some wallets might not have an ID property directly accessible like this on the interface
+    // safe fallback
+    const walletId = (wallet as any).id || "unknown";
     await nearConnector.disconnect();
+    trackWalletDisconnected(walletId);
     return;
-  }, [nearConnector]);
+  }, [nearConnector, trackWalletDisconnected]);
 
   /**
    * Makes a read-only call to a contract
@@ -350,15 +366,13 @@ export const NearProvider: React.FC<NearProviderProps> = ({
           };
         });
 
-        // Detect if this is a WalletConnect wallet (Fireblocks)
-        // Fireblocks doesn't support batching, so sign actions individually
+        // Fireblocks (WalletConnect) cannot batch transactions; handle separately.
         let outcomes: any;
         if (isNearConnectWalletConnect(w)) {
           outcomes = await signAndSendTransactionsWithFireblocksCompat(w, {
             transactions,
           });
         } else {
-          // For other NearConnect wallets, use standard batched transaction signing
           outcomes = await w.signAndSendTransactions({ transactions });
         }
 
@@ -431,13 +445,11 @@ export const NearProvider: React.FC<NearProviderProps> = ({
       if (!nearConnector) return null;
       const w = await nearConnector.wallet();
 
-      // Detect if this is a WalletConnect wallet (Fireblocks)
-      // Fireblocks doesn't support batching, so sign actions individually
+      // Fireblocks (WalletConnect) cannot batch transactions; handle separately.
       if (isNearConnectWalletConnect(w)) {
         return signAndSendTransactionsWithFireblocksCompat(w, { transactions });
       }
 
-      // For other NearConnect wallets, use standard batched transaction signing
       return w.signAndSendTransactions({ transactions });
     },
     [nearConnector]

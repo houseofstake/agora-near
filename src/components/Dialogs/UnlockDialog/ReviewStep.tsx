@@ -12,13 +12,14 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { useQueryClient } from "@tanstack/react-query";
 import Big from "big.js";
 import Image from "next/image";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import TokenAmount from "../../shared/TokenAmount";
 import { useUnlockProviderContext } from "../UnlockProvider";
 import { UnlockWarning } from "./UnlockWarning";
 import { MixpanelEvents } from "@/lib/analytics/mixpanel";
 import { trackEvent } from "@/lib/analytics";
 import { parseNearAmount } from "@near-js/utils";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 type ReviewStepProps = {
   handleEdit: () => void;
@@ -37,7 +38,28 @@ export const ReviewStep = memo(
       lockupAccountId,
       formattedUnlockDuration,
       maxAmountToUnlock,
+      unlockDurationNs,
     } = useUnlockProviderContext();
+
+    const {
+      trackUnlockReviewReached,
+      trackUnlockTransactionInitiated,
+      trackUnlockTransactionSuccess,
+      trackUnlockTransactionFailed,
+    } = useAnalytics();
+
+    const unlockDurationDays = useMemo(() => {
+      return Big(unlockDurationNs)
+        .div(Big(10).pow(9).times(60).times(60).times(24))
+        .toNumber();
+    }, [unlockDurationNs]);
+
+    useEffect(() => {
+      trackUnlockReviewReached({
+        unlock_amount_near: Number(enteredAmount),
+        unlock_period_days: Math.round(unlockDurationDays),
+      });
+    }, [enteredAmount, trackUnlockReviewReached, unlockDurationDays]);
 
     const queryClient = useQueryClient();
 
@@ -74,19 +96,45 @@ export const ReviewStep = memo(
           }
         }
 
-        await beginUnlockNear({ amount: amountInYocto });
+        trackUnlockTransactionInitiated({
+          unlock_amount_near: Number(enteredAmount),
+          unlock_period_days: Math.round(unlockDurationDays),
+        });
+
+        const result = await beginUnlockNear({ amount: amountInYocto });
+        const txHash = (result as any)?.transaction_outcome?.id || "unknown";
+
         trackEvent({
           event_name: MixpanelEvents.UnlockedNEAR,
           event_data: { amountYocto: amountInYocto },
         });
 
+        trackUnlockTransactionSuccess({
+          unlock_amount_yocto: amountInYocto,
+          tx_hash: txHash,
+        });
+
         setIsCompleted(true);
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Failed to unlock tokens");
+        const errorMessage =
+          e instanceof Error ? e.message : "Failed to unlock tokens";
+        setError(errorMessage);
+        trackUnlockTransactionFailed({
+          error_type: "transaction_error",
+          error_message: errorMessage,
+        });
       } finally {
         setIsSubmitting(false);
       }
-    }, [enteredAmount, beginUnlockNear, maxAmountToUnlock]);
+    }, [
+      enteredAmount,
+      beginUnlockNear,
+      maxAmountToUnlock,
+      trackUnlockTransactionInitiated,
+      unlockDurationDays,
+      trackUnlockTransactionSuccess,
+      trackUnlockTransactionFailed,
+    ]);
 
     const { price, isLoading: isLoadingNearPrice } = usePrice();
 

@@ -6,6 +6,7 @@ import Big from "big.js";
 import toast from "react-hot-toast";
 import TokenAmount from "../shared/TokenAmount";
 import { ResponsiveAssetRow } from "./ResponsiveAssetRow";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 export const LockupLiquidNearRow = ({
   lockupAccountId,
@@ -18,6 +19,7 @@ export const LockupLiquidNearRow = ({
   onStakeClick: () => void;
   onLockClick: (accountId?: string | null) => void;
 }) => {
+  const { trackGenericEvent } = useAnalytics();
   const handleStakeClick = useCallback(() => {
     onStakeClick();
   }, [onStakeClick]);
@@ -25,13 +27,24 @@ export const LockupLiquidNearRow = ({
   const { transferLockup } = useTransferLockup({
     lockupAccountId: lockupAccountId ?? "",
     onSuccess: () => {
+      trackGenericEvent("Withdrawal Success", {
+        amount_near: liquidLockupBalance.withdrawableNearBalance,
+      });
       toast.success("Withdraw complete");
     },
   });
 
   const handleWithdraw = useCallback(() => {
+    trackGenericEvent("Withdrawal Initiated", {
+      amount_near: liquidLockupBalance.withdrawableNearBalance,
+      source: "liquid_lockup_row",
+    });
     transferLockup({ amount: liquidLockupBalance.withdrawableNearBalance });
-  }, [transferLockup, liquidLockupBalance.withdrawableNearBalance]);
+  }, [
+    transferLockup,
+    liquidLockupBalance.withdrawableNearBalance,
+    trackGenericEvent,
+  ]);
 
   const handleLockClick = useCallback(
     () => onLockClick(lockupAccountId),

@@ -13,6 +13,9 @@ import { RadioButton } from "../ui/radio-button";
 import { Skeleton } from "../ui/skeleton";
 import { capitalizeFirstLetter } from "@/lib/utils";
 
+import { useAnalytics } from "@/hooks/useAnalytics";
+import { useEffect } from "react";
+
 export function VoteOptionsDialog({
   proposal,
   config,
@@ -28,6 +31,28 @@ export function VoteOptionsDialog({
 
   const { data: votingPower } = useVotingPower(signedAccountId);
 
+  const {
+    trackVoteDialogOpened,
+    trackVoteOptionSelected,
+    trackVoteCast,
+    trackVoteFailed,
+  } = useAnalytics();
+
+  useEffect(() => {
+    trackVoteDialogOpened({
+      proposal_id: String(proposal.id),
+      user_voting_power: votingPower || "0",
+    });
+  }, [proposal.id, trackVoteDialogOpened, votingPower]);
+
+  const handleOptionSelect = (index: number) => {
+    setSelectedOption(index);
+    trackVoteOptionSelected({
+      proposal_id: String(proposal.id),
+      vote_choice: proposal.voting_options[index],
+    });
+  };
+
   const handleVote = async () => {
     if (
       !config?.vote_storage_fee ||
@@ -39,15 +64,27 @@ export function VoteOptionsDialog({
     }
 
     try {
-      await castVote({
+      const result = await castVote({
         proposalId: proposal.id,
         voteIndex: selectedOption,
         blockId: proposal.snapshot_and_state.snapshot.block_height,
         voteStorageFee: config.vote_storage_fee,
       });
+
+      trackVoteCast({
+        proposal_id: String(proposal.id),
+        vote_choice: proposal.voting_options[selectedOption],
+        voting_power_used: votingPower || "0",
+        tx_hash: (result as any)?.transaction_outcome?.id || "unknown",
+      });
+
       closeDialog();
     } catch (error) {
       console.error(`Error casting vote: ${error}`);
+      trackVoteFailed({
+        proposal_id: String(proposal.id),
+        error_type: "vote_error",
+      });
     }
   };
 
@@ -72,7 +109,7 @@ export function VoteOptionsDialog({
             key={index}
             title={option}
             checked={selectedOption === index}
-            onClick={() => setSelectedOption(index)}
+            onClick={() => handleOptionSelect(index)}
           />
         ))}
       </div>

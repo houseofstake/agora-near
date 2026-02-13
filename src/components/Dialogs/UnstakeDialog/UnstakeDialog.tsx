@@ -7,10 +7,11 @@ import { useStakedBalance } from "@/hooks/useStakedBalance";
 import { useStakeNear } from "@/hooks/useStakeNear";
 import { NEAR_TOKEN_METADATA } from "@/lib/constants";
 import Big from "big.js";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { UnstakeDialogHeader } from "./UnstakeDialogHeader";
 import { AssetIcon } from "../../common/AssetIcon";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 type UnstakeDialogProps = {
   closeDialog: () => void;
@@ -43,6 +44,33 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
     });
   const [showWarning, setShowWarning] = useState(false);
 
+  const {
+    trackUnstakeFlowStarted,
+    trackUnstakeTimerWarningShown,
+    trackUnstakeTimerWarningProceeded,
+    trackUnstakeTimerWarningCancelled,
+    trackUnstakeTransactionSuccess,
+    trackUnstakeTransactionFailed,
+  } = useAnalytics();
+
+  // Track flow started on mount
+  useEffect(() => {
+    if (stakingPoolId && stakedBalance) {
+      trackUnstakeFlowStarted({
+        pool_id: stakingPoolId,
+        staked_amount_yocto: stakedBalance,
+        has_pending_withdrawal:
+          isUnstakedBalanceAvailable && Big(unstakedBalance ?? "0").gt(0),
+      });
+    }
+  }, [
+    stakingPoolId,
+    stakedBalance,
+    isUnstakedBalanceAvailable,
+    unstakedBalance,
+    trackUnstakeFlowStarted,
+  ]);
+
   const validateAmount = (value: string) => {
     if (!value) {
       setAmountError(null);
@@ -70,43 +98,84 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
 
   const hasInsufficientBalance = !!amountError;
 
-  const proceedWithUnstake = async () => {
+  const proceedWithUnstake = useCallback(async () => {
     if (!amount || !lockupAccountId || amountError) return;
     try {
       let amountYocto = Big(amount).mul(Big(10).pow(24));
-      // Safety check
       const currentBalance = Big(stakedBalance ?? "0");
       if (amountYocto.gt(currentBalance)) {
         amountYocto = currentBalance;
       }
 
       await unstakeNear(amountYocto.toFixed(0));
+      trackUnstakeTransactionSuccess({
+        amount_yocto: amountYocto.toFixed(0),
+        pool_id: stakingPoolId ?? "",
+      });
       closeDialog();
       toast.success("Unstake transaction submitted");
     } catch (e: any) {
       console.error(e);
       const isUserRejected = e?.message?.includes("User rejected");
+      trackUnstakeTransactionFailed({
+        error_type: isUserRejected ? "user_rejected" : "contract_error",
+        error_message: e?.message || "Unknown error",
+      });
       if (!isUserRejected) {
         toast.error("Failed to unstake");
       }
     }
-  };
+  }, [
+    amount,
+    lockupAccountId,
+    amountError,
+    stakedBalance,
+    unstakeNear,
+    stakingPoolId,
+    closeDialog,
+    trackUnstakeTransactionSuccess,
+    trackUnstakeTransactionFailed,
+  ]);
 
-  const handleUnstakeClick = async () => {
+  const handleUnstakeClick = useCallback(async () => {
     if (!amount || !lockupAccountId || amountError) return;
 
-    // Check if there are funds available to withdraw
     if (
       isUnstakedBalanceAvailable &&
       unstakedBalance &&
       Big(unstakedBalance).gt(0)
     ) {
+      trackUnstakeTimerWarningShown({
+        pending_withdrawal_amount: unstakedBalance,
+      });
       setShowWarning(true);
       return;
     }
 
     await proceedWithUnstake();
-  };
+  }, [
+    amount,
+    lockupAccountId,
+    amountError,
+    isUnstakedBalanceAvailable,
+    unstakedBalance,
+    proceedWithUnstake,
+    trackUnstakeTimerWarningShown,
+  ]);
+
+  const handleWarningCancel = useCallback(() => {
+    trackUnstakeTimerWarningCancelled({
+      pending_withdrawal_amount: unstakedBalance ?? "0",
+    });
+    closeDialog();
+  }, [trackUnstakeTimerWarningCancelled, unstakedBalance, closeDialog]);
+
+  const handleWarningProceed = useCallback(() => {
+    trackUnstakeTimerWarningProceeded({
+      pending_withdrawal_amount: unstakedBalance ?? "0",
+    });
+    proceedWithUnstake();
+  }, [trackUnstakeTimerWarningProceeded, unstakedBalance, proceedWithUnstake]);
 
   const isLoading = isUnstakingNear;
 
@@ -128,7 +197,7 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
         </div>
         <div className="flex flex-col gap-2">
           <UpdatedButton
-            onClick={closeDialog}
+            onClick={handleWarningCancel}
             type="secondary"
             className="w-full"
             variant="rounded"
@@ -136,7 +205,7 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
             Cancel & Withdraw First
           </UpdatedButton>
           <UpdatedButton
-            onClick={proceedWithUnstake}
+            onClick={handleWarningProceed}
             type="primary"
             disabled={isLoading}
             loading={isLoading}

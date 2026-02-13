@@ -10,6 +10,8 @@ import { useNear } from "@/contexts/NearContext";
 import { useOpenDialog } from "@/components/Dialogs/DialogProvider/DialogProvider";
 import Tenant from "@/lib/tenant/tenant";
 import { useWalletPopup } from "@/hooks/useWalletPopup";
+import { useAnalytics } from "@/hooks/useAnalytics";
+import { useRef } from "react";
 
 export default function DelegateContent({
   isPendingFilter,
@@ -61,6 +63,20 @@ export default function DelegateContent({
     isDelegationEncouragementEnabled,
     hasDismissedPopup,
   ]);
+
+  const { trackDelegatePageViewed } = useAnalytics();
+  const hasTrackedInitialLoad = useRef(false);
+
+  useEffect(() => {
+    if (!isLoading && data && !hasTrackedInitialLoad.current) {
+      hasTrackedInitialLoad.current = true;
+      trackDelegatePageViewed({
+        delegates_count: data.length,
+        filter_applied: filterParam || "all",
+        sort_by: orderByParam || "default",
+      });
+    }
+  }, [isLoading, data, filterParam, orderByParam, trackDelegatePageViewed]);
 
   const onLoadMore = useCallback(() => {
     if (!hasNextPage || isLoading || isFetchingNextPage) {

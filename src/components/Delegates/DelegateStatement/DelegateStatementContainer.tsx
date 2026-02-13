@@ -4,6 +4,7 @@ import { useNear } from "@/contexts/NearContext";
 import { useDelegateStatementStore } from "@/stores/delegateStatement";
 import { useEffect } from "react";
 import DelegateStatement from "./DelegateStatement";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface Props {
   statement: string;
@@ -23,6 +24,8 @@ export default function DelegateStatementContainer({
   const setSaveSuccess = useDelegateStatementStore(
     (state) => state.setSaveSuccess
   );
+
+  const { trackBecomeDelegateCtaClicked } = useAnalytics();
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -50,9 +53,20 @@ export default function DelegateStatementContainer({
           <p className="break-words">No delegate statement for {address}</p>
           {isConnected && signedAccountId === address && (
             <p className="my-3">
-              <a className="underline" href="/delegates/create">
-                Create your delegate statement
-              </a>
+              <p className="my-3">
+                <a
+                  className="underline"
+                  href="/delegates/create"
+                  onClick={() => {
+                    trackBecomeDelegateCtaClicked({
+                      user_venear_balance: "0", // Placeholder, expensive to fetch here just for this
+                      has_existing_statement: false,
+                    });
+                  }}
+                >
+                  Create your delegate statement
+                </a>
+              </p>
             </p>
           )}
         </div>

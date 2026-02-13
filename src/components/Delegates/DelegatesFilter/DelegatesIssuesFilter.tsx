@@ -8,6 +8,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import Tenant from "@/lib/tenant/tenant";
 import { useDelegatesFilter } from "./useDelegatesFilter";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const CountBadge = ({ count }: { count: number }) => (
   <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-medium text-primary bg-wash border border-line rounded-full">
@@ -39,6 +40,8 @@ const DelegatesIssuesFilter = ({
   const { issuesParam, handleIssuesChange } = useDelegatesFilter({
     startTransition: startTransition || (() => {}),
   });
+
+  const { trackDelegateFilterApplied } = useAnalytics();
 
   const issuesFromUrl = useMemo(() => {
     return issuesParam ? issuesParam.split(",").filter(Boolean) : [];
@@ -105,6 +108,10 @@ const DelegatesIssuesFilter = ({
       .map(([key]) => key);
 
     handleIssuesChange(selectedIssues);
+    trackDelegateFilterApplied({
+      filter_type: "issues",
+      filter_value: selectedIssues.join(","),
+    });
   };
 
   const selectedIssueCategoriesCount = Object.entries(issueCategories).reduce(

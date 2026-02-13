@@ -5,6 +5,7 @@ import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import styles from "./ProposalDescription.module.scss";
 import ProposalChart from "../ProposalPage/ProposalChart/ProposalChart";
 import { ProposalTypeBadge } from "@/components/Proposals/ProposalTypeBadge";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { truncateAddress, truncateMiddle } from "@/lib/text";
 
 export default function ProposalDescription({
@@ -12,6 +13,8 @@ export default function ProposalDescription({
 }: {
   proposal: ProposalInfo;
 }) {
+  const { trackProposalForumLinkClicked } = useAnalytics();
+
   return (
     <div className="flex flex-col gap-4 w-full min-w-0 flex-1 break-words">
       <div className="flex-col items-start min-w-0">
@@ -27,6 +30,11 @@ export default function ProposalDescription({
             </span>
             {proposal.link && (
               <a
+                onClick={() => {
+                  trackProposalForumLinkClicked({
+                    proposal_id: String(proposal.id),
+                  });
+                }}
                 href={
                   proposal.link.startsWith("http") ||
                   proposal.link.startsWith("https")

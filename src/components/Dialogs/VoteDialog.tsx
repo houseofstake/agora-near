@@ -35,6 +35,10 @@ interface NearVoteDialogProps {
   onSuccess?: () => void;
 }
 
+import { useAnalytics } from "@/hooks/useAnalytics";
+import { useNear } from "@/contexts/NearContext";
+import { useVotingPower } from "@/hooks/useVotingPower";
+
 function NearVoteDialogComponent({
   proposal,
   config,
@@ -43,6 +47,10 @@ function NearVoteDialogComponent({
   onSuccess,
 }: NearVoteDialogProps) {
   const { castVote } = useCastVote({ onSuccess });
+  const { signedAccountId } = useNear();
+  const { data: votingPower } = useVotingPower(signedAccountId);
+  const { trackVoteCast, trackVoteFailed, trackVoteDialogOpened } =
+    useAnalytics();
 
   useEffect(() => {
     const castVoteOnMount = async () => {
@@ -56,15 +64,31 @@ function NearVoteDialogComponent({
         return;
       }
 
+      trackVoteDialogOpened({
+        proposal_id: String(proposal.id),
+        user_voting_power: votingPower || "0",
+      });
+
       try {
-        await castVote({
+        const result = await castVote({
           proposalId: proposal.id,
           voteIndex: preSelectedVote,
           blockId: proposal.snapshot_and_state.snapshot.block_height,
           voteStorageFee: config.vote_storage_fee,
         });
+
+        trackVoteCast({
+          proposal_id: String(proposal.id),
+          vote_choice: proposal.voting_options[preSelectedVote],
+          voting_power_used: votingPower || "0",
+          tx_hash: (result as any)?.transaction_outcome?.id || "unknown",
+        });
       } catch (error) {
         console.error(`Error casting vote: ${error}`);
+        trackVoteFailed({
+          proposal_id: String(proposal.id),
+          error_type: "vote_error",
+        });
       } finally {
         closeDialog();
       }
@@ -78,6 +102,11 @@ function NearVoteDialogComponent({
     preSelectedVote,
     proposal?.id,
     proposal?.snapshot_and_state?.snapshot.block_height,
+    trackVoteCast,
+    trackVoteFailed,
+    trackVoteDialogOpened,
+    votingPower,
+    proposal.voting_options,
   ]);
 
   return <LoadingVote />;

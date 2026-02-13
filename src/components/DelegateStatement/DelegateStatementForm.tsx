@@ -17,8 +17,10 @@ import TopIssuesFormSection from "./TopIssuesFormSection";
 import DelegateProfile from "../Delegates/DelegateProfile/DelegateProfile";
 import { DelegateProfile as DelegateProfileType } from "@/lib/api/delegates/types";
 import { MixpanelEvents } from "@/lib/analytics/mixpanel";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent as trackMixpanelEvent } from "@/lib/analytics";
 import { sanitizeString } from "@/lib/sanitizationUtils";
+import { useAnalytics } from "@/hooks/useAnalytics";
+import { useEffect, useRef } from "react";
 
 export default function DelegateStatementForm({
   form,
@@ -31,6 +33,18 @@ export default function DelegateStatementForm({
   const { ui } = Tenant.current();
   const { signMessage, signedAccountId, networkId } = useNear();
   const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const { trackDelegateStatementEditorOpened, trackDelegateStatementSaved } =
+    useAnalytics();
+  const hasTrackedOpen = useRef(false);
+
+  useEffect(() => {
+    if (!hasTrackedOpen.current) {
+      hasTrackedOpen.current = true;
+      trackDelegateStatementEditorOpened({
+        is_edit: !!delegate,
+      });
+    }
+  }, [delegate, trackDelegateStatementEditorOpened]);
 
   const hasTopIssues = Boolean(
     ui.governanceIssues && ui.governanceIssues.length > 0
@@ -107,9 +121,16 @@ export default function DelegateStatementForm({
       return;
     }
 
-    trackEvent({
+    trackMixpanelEvent({
       event_name: MixpanelEvents.CreatedDelegateStatement,
       event_data: { address: signedAccountId },
+    });
+    trackDelegateStatementSaved({
+      statement_length_chars: delegateStatement.length,
+      has_twitter: !!twitter,
+      has_discord: !!discord,
+      topics_selected_count: topIssues.length,
+      is_edit: !!delegate,
     });
     setSaveSuccess(true);
     router.push(`/delegates/${signedAccountId}`);

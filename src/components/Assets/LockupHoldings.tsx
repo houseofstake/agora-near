@@ -19,6 +19,7 @@ import { VeNearStakedAssetRow } from "./VeNearStakedAssetRow";
 import { NEAR_TOKEN_METADATA } from "@/lib/constants";
 import { ResponsiveAssetRow } from "./ResponsiveAssetRow";
 import { TrashIcon } from "@heroicons/react/24/outline";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface LockupHoldingsProps {
   openLockDialog: (preSelectedTokenId?: string | null) => void;
@@ -33,6 +34,7 @@ export const LockupHoldings = memo(
     openUnstakeDialog,
   }: LockupHoldingsProps) => {
     const { signedAccountId } = useNear();
+    const { trackGenericEvent } = useAnalytics();
 
     const { lockupAccountId, isLoading: isLoadingLockupAccountId } =
       useLockupAccount();
@@ -211,8 +213,15 @@ export const LockupHoldings = memo(
                 stakedBalance={unstakedBalance ?? "0"}
                 onUnstakeClick={async () => {
                   if (unstakedBalance) {
+                    trackGenericEvent("Withdrawal Initiated", {
+                      amount_near: filterDust({ amount: unstakedBalance }),
+                      pool_id: stakingPoolId,
+                    });
                     try {
                       await withdrawNear(unstakedBalance);
+                      trackGenericEvent("Withdrawal Success", {
+                        amount_near_yocto: unstakedBalance,
+                      });
                       toast.success("Withdraw complete");
                     } catch (e: any) {
                       if (
@@ -221,6 +230,10 @@ export const LockupHoldings = memo(
                       ) {
                         return;
                       }
+                      trackGenericEvent("Withdrawal Failed", {
+                        error_type: "transaction_failed",
+                        error_message: e?.message || "Unknown error",
+                      });
                       toast.error("Failed to withdraw");
                     }
                   }

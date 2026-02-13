@@ -22,6 +22,7 @@ import toast from "react-hot-toast";
 import { useLockupAccount } from "@/hooks/useLockupAccount";
 import { useCurrentStakingPoolId } from "@/hooks/useCurrentStakingPoolId";
 import { useStakedBalance } from "@/hooks/useStakedBalance";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 type EnterStakingAmountProps = {
   onContinue: (selectedProvider: StakingPool) => void;
@@ -89,8 +90,13 @@ export const EnterStakingAmount = ({
     return isValidNearAccountId(customPoolId);
   }, [customPoolId]);
 
+  const {
+    trackStakingPoolSelected,
+    trackCustomPoolEntered,
+    trackStakingAmountEntered,
+  } = useAnalytics();
+
   const handleUseCustomPool = useCallback(async () => {
-    // Format validation for pool and optional whitelist override
     if (!isCustomPoolValid) {
       setCustomPoolError("Enter a valid NEAR account ID for the staking pool.");
       toast.error("Invalid pool account ID format.");
@@ -101,6 +107,10 @@ export const EnterStakingAmount = ({
     setIsValidatingCustomPool(true);
     try {
       const allowed = await isWhitelisted(customPoolId);
+      trackCustomPoolEntered({
+        pool_id: customPoolId,
+        is_whitelisted: !!allowed,
+      });
       if (!allowed) {
         setCustomPoolError("Pool is not whitelisted for House of Stake.");
         toast.error("Pool is not whitelisted for House of Stake.");
@@ -114,17 +124,33 @@ export const EnterStakingAmount = ({
       toast.success(
         `Selected pool: ${customPoolId}. Continue to Stake to apply this pool.`
       );
-      setCustomPoolId(""); // Clear input after successful selection
-      setShowCustomPool(false); // Collapse section after successful selection
+      setCustomPoolId("");
+      setShowCustomPool(false);
     } finally {
       setIsValidatingCustomPool(false);
     }
-  }, [customPoolId, isCustomPoolValid, isWhitelisted, setSelectedPool]);
+  }, [
+    customPoolId,
+    isCustomPoolValid,
+    isWhitelisted,
+    setSelectedPool,
+    trackCustomPoolEntered,
+  ]);
 
   const handleContinue = useCallback(() => {
     if (!enteredAmount || !!amountError) return;
+    trackStakingAmountEntered({
+      amount_near: Number(enteredAmount),
+      pool_id: selectedPool.id,
+    });
     onContinue(selectedPool);
-  }, [enteredAmount, amountError, onContinue, selectedPool]);
+  }, [
+    enteredAmount,
+    amountError,
+    onContinue,
+    selectedPool,
+    trackStakingAmountEntered,
+  ]);
 
   return (
     <div className="flex-1 flex flex-col gap-2">
@@ -163,7 +189,14 @@ export const EnterStakingAmount = ({
               <StakingOptionCard
                 isEnabled={!hasAlreadySelectedStakingPool}
                 isSelected={selectedPool.id === pool.id}
-                onSelect={() => setSelectedPool(pool)}
+                onSelect={() => {
+                  setSelectedPool(pool);
+                  trackStakingPoolSelected({
+                    pool_type: "curated_lst",
+                    pool_id: pool.id,
+                    pool_apy: poolStats[pool.id]?.apy,
+                  });
+                }}
                 tokenMetadata={pool.metadata}
                 apy={poolStats[pool.id]?.apy}
                 totalVolumeYocto={poolStats[pool.id]?.totalVolumeYocto ?? "-"}

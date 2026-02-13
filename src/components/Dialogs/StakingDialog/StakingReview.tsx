@@ -16,6 +16,7 @@ import { StakingSubmitting } from "./StakingSubmitting";
 import { StakingSuccess } from "./StakingSuccess";
 import { StakingDisclosures } from "./StakingDisclosures";
 import Big from "big.js";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 export type StakingStep = "select_pool" | "stake";
 
@@ -44,6 +45,8 @@ export const StakingReview = ({
   const [showDisclosures, setShowDisclosures] = useState(false);
 
   const queryClient = useQueryClient();
+  const { trackStakingTransactionSuccess, trackStakingTransactionFailed } =
+    useAnalytics();
 
   const needsToSelectPool = useMemo(
     () =>
@@ -156,11 +159,22 @@ export const StakingReview = ({
         }
 
         setIsStakeCompleted(true);
+        trackStakingTransactionSuccess({
+          amount_near_yocto: enteredAmountYoctoNear,
+          pool_id: selectedPool.contract,
+        });
         console.log("[StakingReview] onStake completed successfully");
         // Invalidate wallet balance to update UI immediately
         queryClient.invalidateQueries({ queryKey: [NEAR_BALANCE_QK] });
       } catch (e) {
         console.error("[StakingReview] Staking error", e);
+        trackStakingTransactionFailed({
+          error_type: (e as any)?.message?.includes("User rejected")
+            ? "user_rejected"
+            : "contract_error",
+          error_message: (e as any)?.message || "Unknown error",
+          pool_id: selectedPool.contract,
+        });
       } finally {
         setIsSubmitting(false);
         console.log("[StakingReview] onStake end");
@@ -177,6 +191,8 @@ export const StakingReview = ({
       topUpAmount,
       transferNear,
       queryClient,
+      trackStakingTransactionSuccess,
+      trackStakingTransactionFailed,
     ]
   );
 

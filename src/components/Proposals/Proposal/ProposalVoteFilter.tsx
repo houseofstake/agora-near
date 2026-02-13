@@ -12,6 +12,8 @@ const voteFilterOptions = {
   },
 };
 
+import { useAnalytics } from "@/hooks/useAnalytics";
+
 const ProposalVoteFilter = ({
   initialSelection,
   onSelectionChange,
@@ -20,6 +22,7 @@ const ProposalVoteFilter = ({
   onSelectionChange: (value: string) => void;
 }) => {
   const [value, setValue] = useState(initialSelection);
+  const { trackProposalVoteFilterChanged } = useAnalytics();
 
   return (
     <Switch
@@ -29,6 +32,7 @@ const ProposalVoteFilter = ({
       onSelectionChanged={(value: any) => {
         setValue(value);
         onSelectionChange(value);
+        trackProposalVoteFilterChanged({ filter_option: value });
       }}
     />
   );
