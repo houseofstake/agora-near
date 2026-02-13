@@ -65,10 +65,15 @@ class AnalyticsManager {
     // 1) Mixpanel (wallet_address also injected via super properties)
     trackMixpanel.track(payload.event_name, payload.event_data);
 
-    // 2) Backend (optional, if API key is present)
+    // 2) Google Analytics
+    if (typeof window !== "undefined" && (window as any).gtag) {
+      (window as any).gtag("event", payload.event_name, payload.event_data);
+    }
+
+    // 3) Backend (optional, if API key is present)
     // Only enabled in production to prevent 404 spam in local development
     const apiKey = process.env.NEXT_PUBLIC_AGORA_API_KEY;
-    if (false && apiKey && process.env.NODE_ENV === "production") {
+    if (apiKey && process.env.NODE_ENV === "production") {
       try {
         await fetch("/api/analytics/track", {
           method: "POST",
