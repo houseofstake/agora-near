@@ -23,7 +23,6 @@ import { MixpanelEvents } from "@/lib/analytics/mixpanel";
 import { trackEvent as trackMixpanelEvent } from "@/lib/analytics";
 import { sanitizeString } from "@/lib/sanitizationUtils";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import { useEffect, useRef } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useWriteNearSocialProfile } from "@/hooks/useWriteNearSocialProfile";
 import { validatePayloadSize } from "@/lib/nearSocial";
