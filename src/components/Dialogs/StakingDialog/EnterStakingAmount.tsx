@@ -132,11 +132,11 @@ export const EnterStakingAmount = ({
       <div className="flex-1 flex flex-col">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            Stake NEAR for Rewards
+            Stake to earn staking rewards
           </h1>
           <p className="text-sm text-secondary mb-2">
-            Staking your locked NEAR allows you to earn rewards while
-            participating in governance.
+            Earn ongoing yields from your staking pool. This is separate from
+            veNEAR rewards and does not affect your voting power.
           </p>
         </div>
         {hasAlreadySelectedStakingPool && (

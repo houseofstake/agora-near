@@ -54,8 +54,10 @@ export const StakingDisclosures = memo(
               Unstake via House of Stake
             </h2>
             <p className="text-[#3C3C3C] leading-relaxed text-sm">
-              You must unstake your tokens directly through the House of Stake
-              interface to ensure they are returned to your lockup contract.
+              To unstake, use the Staking dialog in House of Stake (Advanced →
+              Unstake). You cannot unstake from the staking pool&apos;s website
+              (Meta Pool, LiNEAR, etc.) because your lockup contract owns the
+              tokens. Their UI will show zero balance for your wallet.
             </p>
           </div>
 

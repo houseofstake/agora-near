@@ -209,8 +209,9 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
           </svg>
         </div>
         <p className="text-xs text-blue-700 ml-2 leading-relaxed">
-          Unstaking from a provider begins a cooldown period (~4 days). You must
-          withdraw to your lockup contract after this period ends.
+          Unstaking begins a cooldown period (stNEAR: 48-72h, liNEAR: ~49h,
+          rNEAR: ~30h). You must withdraw to your lockup contract after this
+          period ends.
         </p>
       </div>
 

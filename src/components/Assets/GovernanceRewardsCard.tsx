@@ -49,7 +49,7 @@ export const GovernanceRewardsCard = memo(() => {
               </div>
             </div>
             <div className="text-sm text-gray-300 mb-6">
-              Your governance reward is ready to claim.
+              Your veNEAR reward is ready to claim.
             </div>
             <div className="flex justify-between">
               <UpdatedButton
@@ -86,9 +86,7 @@ export const GovernanceRewardsCard = memo(() => {
         <div className="relative z-10 flex">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              <div className="text-lg font-semibold">
-                veNEAR Governance Rewards
-              </div>
+              <div className="text-lg font-semibold">veNEAR Rewards</div>
             </div>
             <div className="text-sm text-gray-300 mb-6">
               Rewards already claimed, stay tuned for the next campaign
@@ -111,9 +109,7 @@ export const GovernanceRewardsCard = memo(() => {
       <div className="relative z-10 flex">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <div className="text-lg font-semibold">
-              veNEAR Governance Rewards
-            </div>
+            <div className="text-lg font-semibold">veNEAR Rewards</div>
           </div>
           <div className="text-sm text-gray-300 mb-6">
             Stay tuned for the next campaign
