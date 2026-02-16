@@ -5,6 +5,7 @@ import { useStakingPoolStats } from "@/hooks/useStakingPoolStats";
 import { useVenearAccountInfo } from "@/hooks/useVenearAccountInfo";
 import { useVenearSnapshot } from "@/hooks/useVenearSnapshot";
 import { LINEAR_POOL, STNEAR_POOL } from "@/lib/constants";
+import { useNearProtocolStats } from "@/hooks/useNearProtocolStats";
 import { getAPYFromGrowthRate } from "@/lib/lockUtils";
 import Big from "big.js";
 import { memo, useCallback, useMemo } from "react";
@@ -46,6 +47,24 @@ export const AssetsLandingPage = memo(
 
       return Big(maxApy * 100).toFixed(2);
     }, [stats]);
+
+    const { data: nearProtocolStats, isLoading: isLoadingNearProtocolStats } =
+      useNearProtocolStats();
+
+    const combinedApy = useMemo(() => {
+      try {
+        const baseApy = nearProtocolStats?.apy ?? 0;
+        const total = Big(maxStakingApy).plus(Big(baseApy));
+
+        if (total.eq(0)) {
+          return "7.50";
+        }
+
+        return total.toFixed(2);
+      } catch {
+        return "7.50";
+      }
+    }, [maxStakingApy, nearProtocolStats]);
 
     const handleStakeAndLock = useCallback(() => {
       if (!signedAccountId) {
@@ -133,8 +152,10 @@ export const AssetsLandingPage = memo(
                 </div>
                 <div className="w-[160px] sm:w-[200px] lg:w-[300px] sm:h-[320px] lg:h-[400px] lg:mt-4 flex grow">
                   <StakingRewardsCard
-                    apy={maxStakingApy}
-                    isLoadingApy={isLoadingStakingPoolStats}
+                    apy={combinedApy}
+                    isLoadingApy={
+                      isLoadingStakingPoolStats || isLoadingNearProtocolStats
+                    }
                   />
                 </div>
               </div>
