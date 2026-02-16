@@ -371,7 +371,7 @@ export const ReviewStep = memo(
             <div className="flex flex-col">
               <span className="font-bold text-primary">Amount to Lock</span>
               <span className="text-secondary text-xs">
-                {annualAPY}% Voting Power Growth
+                {annualAPY}% Annual Voting Power Growth
               </span>
               {selectedToken?.type === "lst" && lstPriceYocto && (
                 <span className="text-secondary text-xs">
