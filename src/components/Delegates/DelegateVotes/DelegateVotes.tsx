@@ -3,7 +3,6 @@
 import { HStack, VStack } from "../../Layout/Stack";
 import { formatDistanceToNow } from "date-fns";
 import InfiniteScroll from "react-infinite-scroller";
-const InfiniteScrollAny = InfiniteScroll as any;
 import VoteDetailsContainer from "./DelegateVotesDetailsContainer";
 import DelegateVoteIcon from "./DelegateVoteIcon";
 import { VoteHistory } from "@/lib/api/delegates/types";
@@ -18,6 +17,8 @@ export default function DelegateVotes({
   hasMore: boolean;
   onLoadMore: () => void;
 }) {
+  const InfiniteScrollAny = InfiniteScroll as any;
+
   return (
     <InfiniteScrollAny
       hasMore={hasMore}

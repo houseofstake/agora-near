@@ -3,7 +3,6 @@
 import { DialogProvider } from "@/components/Dialogs/DialogProvider/DialogProvider";
 import { DelegateProfile } from "@/lib/api/delegates/types";
 import InfiniteScroll from "react-infinite-scroller";
-const InfiniteScrollAny = InfiniteScroll as any;
 import DelegateCard from "./DelegateCard";
 import { EncourageDelegationBanner } from "./EncourageDelegationBanner";
 import Tenant from "@/lib/tenant/tenant";
@@ -29,6 +28,8 @@ export default function DelegateCardList({
   const isDelegationEncouragementEnabled = ui.toggle(
     "delegation-encouragement"
   )?.enabled;
+
+  const InfiniteScrollAny = InfiniteScroll as any;
 
   return (
     <DialogProvider>

@@ -1,60 +1,13 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { HStack, VStack } from "@/components/Layout/Stack";
+import { useLinkPreview } from "@/hooks/useLinkPreview";
+import { VStack } from "@/components/Layout/Stack";
 import LoadingSpinner from "./LoadingSpinner";
 
-interface LinkMetadata {
-  title?: string;
-  description?: string;
-  image?: string;
-}
-
 export default function LinkPreview({ url }: { url: string }) {
-  const [metadata, setMetadata] = useState<LinkMetadata | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    if (!url) {
-      setMetadata(null);
-      return;
-    }
-
-    try {
-      const parsedUrl = new URL(url);
-      const allowed = ["gov.near.org", "github.com"].includes(
-        parsedUrl.hostname
-      );
-      if (!allowed) {
-        setMetadata(null);
-        return;
-      }
-    } catch {
-      setMetadata(null);
-      return;
-    }
-
-    const fetchMetadata = async () => {
-      setLoading(true);
-      setError(false);
-      try {
-        const res = await fetch(
-          `/api/og-preview?url=${encodeURIComponent(url)}`
-        );
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        setMetadata(data);
-      } catch (err) {
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMetadata();
-  }, [url]);
+  const {
+    data: metadata,
+    isLoading: loading,
+    isError: error,
+  } = useLinkPreview(url);
 
   if (!url) return null;
   if (loading)

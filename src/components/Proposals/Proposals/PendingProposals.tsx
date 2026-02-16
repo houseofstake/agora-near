@@ -2,7 +2,6 @@
 
 import { useCallback } from "react";
 import InfiniteScroll from "react-infinite-scroller";
-const InfiniteScrollAny = InfiniteScroll as any;
 import { cn } from "@/lib/utils";
 import { usePendingProposals } from "@/hooks/usePendingProposals";
 import Link from "next/link";
@@ -73,6 +72,8 @@ export function PendingProposalsList() {
   if (!enabled || proposals?.length === 0) {
     return <div className="px-6 py-4">No pending proposals</div>;
   }
+
+  const InfiniteScrollAny = InfiniteScroll as any;
 
   return (
     <div>

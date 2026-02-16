@@ -12,7 +12,6 @@ import { useNear } from "@/contexts/NearContext";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import InfiniteScroll from "react-infinite-scroller";
-const InfiniteScrollAny = InfiniteScroll as any;
 import { Proposal } from "./Proposal";
 import { PendingProposalsList } from "./PendingProposals";
 import { cn } from "@/lib/utils";
@@ -67,6 +66,8 @@ function NearProposalsList() {
   if (status === "error") {
     return <div>{error?.message}</div>;
   }
+
+  const InfiniteScrollAny = InfiniteScroll as any;
 
   return (
     <div>
