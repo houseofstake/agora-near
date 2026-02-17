@@ -1,5 +1,11 @@
 import checkIcon from "@/assets/check.svg";
 import TokenAmount from "@/components/shared/TokenAmount";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { NEAR_TOKEN } from "@/lib/constants";
 import { ProposalInfo } from "@/lib/contracts/types/voting";
 import {
@@ -173,10 +179,19 @@ function AmountAndPercent({
   const formattedAmount = formatVotingPower(amountNumber, amountNumber);
 
   return (
-    <span>
-      {formattedAmount}
-      {showPercent && ` (${percent}%)`}
-    </span>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="cursor-default">
+            {formattedAmount}
+            {showPercent && ` (${percent}%)`}
+          </span>
+        </TooltipTrigger>
+        <TooltipContent>
+          <TokenAmount amount={amount} />
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
 

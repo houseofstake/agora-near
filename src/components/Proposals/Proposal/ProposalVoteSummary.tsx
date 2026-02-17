@@ -5,6 +5,12 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { NEAR_TOKEN } from "@/lib/constants";
 import { ProposalInfo } from "@/lib/contracts/types/voting";
 import { formatVotingPower } from "@/lib/utils";
@@ -44,12 +50,27 @@ export default function ProposalVoteSummary({
         <div className="flex flex-col rounded-md font-bold shrink-0 text-xs border border-line mx-4 shadow-newDefault">
           <HoverCardTrigger className="w-full cursor-pointer flex flex-col gap-2 px-4 pt-2">
             <div className="flex flex-row justify-between mt-2">
-              <div className="text-positive">
-                {proposal.voting_options[0]} - {formattedForVotes}
-              </div>
-              <div className="text-negative">
-                {proposal.voting_options[1]} - {formattedAgainstVotes}
-              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger className="text-positive cursor-default text-left">
+                    {proposal.voting_options[0]} - {formattedForVotes}
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <TokenAmount amount={proposal.votes[0].total_venear} />
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger className="text-negative cursor-default text-right">
+                    {proposal.voting_options[1]} - {formattedAgainstVotes}
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <TokenAmount amount={proposal.votes[1].total_venear} />
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
             <ProposalVoteBar proposal={proposal} />
             <div className="flex flex-col font-medium">
