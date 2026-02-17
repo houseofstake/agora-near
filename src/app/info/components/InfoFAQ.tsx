@@ -902,7 +902,6 @@ const InfoFAQ = () => {
         event_data: { id: value, question: faq?.question },
       });
     } else {
-      // Closing the currently open item
       if (openItem) {
         const faq = [...generalFaqs, ...rewardsFaqs, ...walletFaqs].find(
           (f) => f.id === openItem
