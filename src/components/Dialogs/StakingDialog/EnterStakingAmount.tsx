@@ -107,15 +107,28 @@ export const EnterStakingAmount = ({
     setIsValidatingCustomPool(true);
     try {
       const allowed = await isWhitelisted(customPoolId);
-      trackCustomPoolEntered({
-        pool_id: customPoolId,
-        is_whitelisted: !!allowed,
-      });
       if (!allowed) {
+        trackCustomPoolEntered({
+          pool_id: customPoolId,
+          is_whitelisted: false,
+        });
         setCustomPoolError("Pool is not whitelisted for House of Stake.");
         toast.error("Pool is not whitelisted for House of Stake.");
         return;
       }
+      
+      trackCustomPoolEntered({
+        pool_id: customPoolId,
+        is_whitelisted: true,
+      });
+
+      // Track selection as well
+      trackStakingPoolSelected({
+        pool_type: "non_liquid",
+        pool_id: customPoolId,
+        pool_apy: 0, // No APY data for custom pools usually
+      });
+
       setSelectedPool({
         id: customPoolId,
         contract: customPoolId,

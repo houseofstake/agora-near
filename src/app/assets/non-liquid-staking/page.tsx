@@ -21,6 +21,7 @@ import { ExternalLink } from "lucide-react";
 import { HoldingsSection } from "@/components/Assets/HoldingsSection";
 import toast from "react-hot-toast";
 import { UpdatedButton } from "@/components/Button";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 import { getRpcUrl } from "@/lib/utils";
 import { JsonRpcProvider } from "@near-js/providers";
@@ -32,6 +33,7 @@ export default function NonLiquidOnboardingPage() {
     networkId === "testnet"
       ? "https://testnet.nearblocks.io"
       : "https://nearblocks.io";
+  const { trackGenericEvent } = useAnalytics();
 
   const { lockupAccountId, isLoading: isLoadingLockup } = useLockupAccount();
 
@@ -52,6 +54,10 @@ export default function NonLiquidOnboardingPage() {
   const [isLockupDeployed, setIsLockupDeployed] = useState<boolean | null>(
     null
   );
+
+  useEffect(() => {
+    trackGenericEvent("Non-Liquid Staking Page Viewed", {});
+  }, [trackGenericEvent]);
 
   useEffect(() => {
     if (!lockupAccountId) {

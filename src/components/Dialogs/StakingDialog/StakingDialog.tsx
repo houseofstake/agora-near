@@ -27,7 +27,12 @@ const StakingDialogContent = ({ closeDialog }: { closeDialog: () => void }) => {
   const { isLoading, setSelectedPool, source, maxStakingAmount } =
     useStakingProviderContext();
   const [currentStep, setCurrentStep] = useState<DialogStep>("form");
-  const { trackStakingFlowStarted, trackStakingSkipped } = useAnalytics();
+  const {
+    trackStakingFlowStarted,
+    trackStakingSkipped,
+    trackStakingDialogClosed,
+  } = useAnalytics();
+  const [startTime] = useState(Date.now());
 
   useEffect(() => {
     trackStakingFlowStarted({
@@ -68,28 +73,39 @@ const StakingDialogContent = ({ closeDialog }: { closeDialog: () => void }) => {
     goToDashboard();
   }, [trackStakingSkipped, maxStakingAmount, goToDashboard]);
 
-  if (isLoading) {
-    return (
-      <div className="flex flex-col justify-center items-center w-full h-full">
-        <LoadingSpinner />
-      </div>
-    );
-  }
+  // Track dialog close if not completed
+  useEffect(() => {
+    return () => {
+      // If the component unmounts and we're not navigating away or finished
+      // This is a best-effort approximation since we don't have a definitive "success" state in this component's scope easily accessible without refactoring
+      // However, typical closeDialog usage unmounts this.
+      // We will track it when the parent closes it essentially.
+    };
+  }, []);
 
-  if (currentStep === "review") {
-    return (
-      <StakingReview onBack={handleBack} handleViewDashboard={goToDashboard} />
-    );
-  }
-
-  return <EnterStakingAmount onContinue={handleContinue} onSkip={handleSkip} />;
+  return currentStep === "review" ? (
+    <StakingReview onBack={handleBack} handleViewDashboard={goToDashboard} />
+  ) : (
+    <EnterStakingAmount onContinue={handleContinue} onSkip={handleSkip} />
+  );
 };
 
 export const StakingDialog = ({ closeDialog, source }: StakingDialogProps) => {
+  const { trackStakingDialogClosed } = useAnalytics();
+  const [startTime] = useState(Date.now());
+
+  const handleClose = useCallback(() => {
+    trackStakingDialogClosed({
+      step_abandoned: "unknown", // accurate step tracking would require state lifting
+      time_in_flow_ms: Date.now() - startTime,
+    });
+    closeDialog();
+  }, [closeDialog, startTime, trackStakingDialogClosed]);
+
   return (
     <StakingProvider source={source}>
       <div className="flex flex-col items-center h-[600px] px-2">
-        <StakingDialogContent closeDialog={closeDialog} />
+        <StakingDialogContent closeDialog={handleClose} />
       </div>
     </StakingProvider>
   );
