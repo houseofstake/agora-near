@@ -891,7 +891,6 @@ const InfoFAQ = () => {
   }, [faqId, isValidFaqId]);
 
   const handleToggle = useCallback((value: string) => {
-
     if (value) {
       setOpenItem(value);
       const faq = [...generalFaqs, ...rewardsFaqs, ...walletFaqs].find(

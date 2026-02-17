@@ -116,7 +116,6 @@ export const EnterStakingAmount = ({
         toast.error("Pool is not whitelisted for House of Stake.");
         return;
       }
-
       trackCustomPoolEntered({
         pool_id: customPoolId,
         is_whitelisted: true,
