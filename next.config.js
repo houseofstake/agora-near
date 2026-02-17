@@ -57,7 +57,7 @@ const nextConfig = {
   experimental: {
     instrumentationHook: true,
     // Necessary to prevent github.com/open-telemetry/opentelemetry-js/issues/4297
-    serverComponentsExternalPackages: ["@opentelemetry/sdk-node"],
+    serverComponentsExternalPackages: ["@opentelemetry/sdk-node", "jsdom"],
   },
   eslint: {
     // eslint was recently added so there are a lot of lint errors - adding this to prevent build failures for now
