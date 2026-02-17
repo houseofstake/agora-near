@@ -1,5 +1,10 @@
 "use client";
 
+import { ReactNode, useCallback, useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+
 import { QuorumExplanation } from "@/components/Proposals/Proposal/QuorumExplanation";
 import {
   Accordion,
@@ -7,13 +12,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { trackEvent } from "@/lib/analytics";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { trackEvent } from "@/lib/analytics";
 import { MixpanelEvents } from "@/lib/analytics/mixpanel";
-import Image from "next/image";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { ReactNode, useCallback, useEffect, useState } from "react";
 
 interface FAQ {
   id: string;
