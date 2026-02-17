@@ -3,11 +3,13 @@ import * as theme from "@/styles/theme";
 import Image from "next/image";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { icons } from "@/assets/icons";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 export const SocialLinks = () => {
   const isMobile = useMediaQuery({
     query: `(max-width: ${theme.maxWidth.md})`,
   });
+  const { trackGenericEvent } = useAnalytics();
 
   const socialLinks = [
     {
@@ -29,7 +31,19 @@ export const SocialLinks = () => {
   return (
     <HStack gap={3} alignItems="center">
       {socialLinks.map(({ icon, alt, url }, index) => (
-        <a key={index} href={url} target="_blank" rel="noopener noreferrer">
+        <a
+          key={index}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => {
+            trackGenericEvent("Share Action", {
+              method: alt, // 'discord' or 'twitter'
+              action_type: "open_community_link",
+              target_url: url,
+            });
+          }}
+        >
           <Image
             src={icon}
             alt={alt}

@@ -12,6 +12,7 @@ import telegramIcon from "@/assets/telegram.svg";
 import twitterIcon from "@/assets/x.svg";
 import TokenAmount from "@/components/shared/TokenAmount";
 import { useTotalSupply } from "@/hooks/useTotalNearSupply";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface MobileNavMenuProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ export function MobileNavMenu({ isOpen, onClose }: MobileNavMenuProps) {
     isLoadingVotableSupply,
     votableSupply,
   } = useTotalSupply();
+  const { trackGenericEvent } = useAnalytics();
 
   // Links
   const governanceForumLink = ui.link("governance-forum");
@@ -172,6 +174,13 @@ export function MobileNavMenu({ isOpen, onClose }: MobileNavMenuProps) {
                       target="_blank"
                       rel="noreferrer"
                       className="text-tertiary"
+                      onClick={() => {
+                        trackGenericEvent("Help/Support Accessed", {
+                          method: "bug_report",
+                          link: bugsLink.url,
+                          source: "mobile_menu",
+                        });
+                      }}
                     >
                       {bugsLink.title}
                     </a>
@@ -184,6 +193,13 @@ export function MobileNavMenu({ isOpen, onClose }: MobileNavMenuProps) {
                       target="_blank"
                       rel="noreferrer"
                       className="flex items-center gap-2 text-tertiary"
+                      onClick={() => {
+                        trackGenericEvent("Help/Support Accessed", {
+                          method: "discord",
+                          link: discordLink.url,
+                          source: "mobile_menu",
+                        });
+                      }}
                     >
                       {discordLink.title}
                       <Image
