@@ -6,6 +6,7 @@ interface CheckboxWithTitleProps {
   label: string;
   checked: boolean;
   onChange: (value: boolean) => void;
+  disabled?: boolean;
 }
 
 const CheckboxWithTitle: React.FC<CheckboxWithTitleProps> = ({
@@ -13,6 +14,7 @@ const CheckboxWithTitle: React.FC<CheckboxWithTitleProps> = ({
   label,
   checked,
   onChange,
+  disabled = false,
 }) => {
   const id = useId(); // Generate a unique ID
 
@@ -22,13 +24,19 @@ const CheckboxWithTitle: React.FC<CheckboxWithTitleProps> = ({
         {title}
       </h4>
       <div className="flex items-center mb-4 font-semibold text-primary">
-        <label htmlFor={id} className="flex items-center cursor-pointer">
+        <label
+          htmlFor={id}
+          className={`flex items-center ${
+            disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"
+          }`}
+        >
           {" "}
           <Checkbox
             id={id}
             checked={checked}
             onCheckedChange={onChange}
             className="mr-2"
+            disabled={disabled}
           />
           {label}
         </label>

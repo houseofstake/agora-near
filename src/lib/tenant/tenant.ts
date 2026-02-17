@@ -26,6 +26,10 @@ export default class Tenant {
     return env === "local" ? "dev(?)" : env;
   }
 
+  public get networkId(): "mainnet" {
+    return "mainnet";
+  }
+
   public get namespace(): TenantNamespace {
     return "near";
   }

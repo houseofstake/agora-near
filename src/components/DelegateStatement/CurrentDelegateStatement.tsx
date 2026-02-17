@@ -6,6 +6,7 @@ import DelegateStatementForm from "@/components/DelegateStatement/DelegateStatem
 import AgoraLoader from "@/components/shared/AgoraLoader/AgoraLoader";
 import { useNear } from "@/contexts/NearContext";
 import { useDelegateProfile } from "@/hooks/useDelegateProfile";
+import { useNearSocialProfile } from "@/hooks/useNearSocialProfile";
 import Tenant from "@/lib/tenant/tenant";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -18,18 +19,35 @@ import {
 
 export type DelegateStatementFormValues = z.infer<typeof formSchema>;
 
+export const DELEGATE_PROFILE_LIMITS = {
+  displayName: 80,
+  delegateStatement: 4000,
+  handle: 50,
+  email: 254,
+  topIssueType: 50,
+  topIssueValue: 280,
+  /**
+   * Max size in bytes for on-chain Near Social payload.
+   * Note: Near Social has no hard value limit (only MAX_KEY_LENGTH=256).
+   * Limit set to 10KB to stay within the 0.1 NEAR default storage deposit
+   * (~0.00001 NEAR/byte × 10,000 bytes = 0.1 NEAR).
+   */
+  nearSocialMaxBytes: 10000,
+} as const;
+
 const formSchema = z.object({
   agreeCodeConduct: z.boolean(),
-  discord: z.string(),
-  delegateStatement: z.string(),
-  email: z.string(),
-  twitter: z.string(),
-  warpcast: z.string(),
+  discord: z.string().max(DELEGATE_PROFILE_LIMITS.handle),
+  delegateStatement: z.string().max(DELEGATE_PROFILE_LIMITS.delegateStatement),
+  displayName: z.string().max(DELEGATE_PROFILE_LIMITS.displayName).optional(),
+  email: z.string().max(DELEGATE_PROFILE_LIMITS.email),
+  twitter: z.string().max(DELEGATE_PROFILE_LIMITS.handle),
+  warpcast: z.string().max(DELEGATE_PROFILE_LIMITS.handle),
   topIssues: z.array(
     z
       .object({
-        type: z.string(),
-        value: z.string(),
+        type: z.string().max(DELEGATE_PROFILE_LIMITS.topIssueType),
+        value: z.string().max(DELEGATE_PROFILE_LIMITS.topIssueValue),
       })
       .strict()
   ),
@@ -48,6 +66,8 @@ export default function CurrentDelegateStatement() {
   const { data: delegate, isLoading } = useDelegateProfile({
     accountId: signedAccountId,
   });
+
+  const { data: nearSocialProfile } = useNearSocialProfile(signedAccountId);
 
   const topIssues = ui.governanceIssues;
   const defaultIssues = useMemo(
@@ -71,6 +91,7 @@ export default function CurrentDelegateStatement() {
         agreeCodeConduct: !requireCodeOfConduct,
         discord: delegateProfile?.discord || "",
         delegateStatement: delegateProfile?.statement || "",
+        displayName: "",
         email: delegateProfile?.email || "",
         twitter: delegateProfile?.twitter || "",
         warpcast: delegateProfile?.warpcast || "",
@@ -99,6 +120,7 @@ export default function CurrentDelegateStatement() {
     mode: "onChange",
   });
 
+  // Reset form when off-chain delegate data changes
   useEffect(() => {
     form.reset(getDefaultValues(delegate));
   }, [form, getDefaultValues, delegate]);
@@ -111,5 +133,14 @@ export default function CurrentDelegateStatement() {
     return <ResourceNotFound message="Oops! Nothing's here" />;
   }
 
-  return <DelegateStatementForm form={form} delegate={delegate} />;
+  return (
+    <DelegateStatementForm
+      form={form}
+      delegate={delegate}
+      nearSocialProfile={nearSocialProfile}
+      onResetToOffChain={() => {
+        form.reset(getDefaultValues(delegate));
+      }}
+    />
+  );
 }

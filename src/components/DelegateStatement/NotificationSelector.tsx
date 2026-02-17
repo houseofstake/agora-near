@@ -6,8 +6,10 @@ import CheckboxWithTitle from "../ui/CheckboxWithTitle/CheckboxWithTitle";
 
 export default function NotificationSelector({
   form,
+  disabled = false,
 }: {
   form: UseFormReturn<DelegateStatementFormValues>;
+  disabled?: boolean;
 }) {
   const [subscribed, setSubscribed] = useState(false);
 
@@ -26,6 +28,9 @@ export default function NotificationSelector({
   }, [form]);
 
   const handleChange = (value: boolean) => {
+    if (disabled) {
+      return;
+    }
     setSubscribed(value);
     form.setValue(
       "notificationPreferences.wants_proposal_created_email",
@@ -44,6 +49,7 @@ export default function NotificationSelector({
         checked={subscribed}
         onChange={handleChange}
         title="Agree to receive proposal updates via email"
+        disabled={disabled}
       />
     </div>
   );

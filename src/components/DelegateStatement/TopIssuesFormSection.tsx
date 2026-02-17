@@ -2,7 +2,10 @@ import Image from "next/image";
 import { icons } from "@/assets/icons";
 import { Input } from "@/components/ui/input";
 import { type UseFormReturn, useWatch } from "react-hook-form";
-import { type DelegateStatementFormValues } from "./CurrentDelegateStatement";
+import {
+  DELEGATE_PROFILE_LIMITS,
+  type DelegateStatementFormValues,
+} from "./CurrentDelegateStatement";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -150,6 +153,7 @@ const IssueInput = ({
           inputSize="md"
           type="text"
           placeholder={`On ${title.toLowerCase()}, I believe...`}
+          maxLength={DELEGATE_PROFILE_LIMITS.topIssueValue}
           value={value}
           onChange={(e) => updateIssue(index, e.target.value)}
         />

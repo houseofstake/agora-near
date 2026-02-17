@@ -2,6 +2,7 @@ import { getDelegate } from "@/lib/api/delegates/requests";
 import { fetchVoteHistory } from "@/lib/api/delegates/requests";
 import { useQuery } from "@tanstack/react-query";
 import { DelegateProfile } from "@/lib/api/delegates/types";
+import { CACHE_TTL } from "@/lib/constants";
 
 export const QK_DELEGATE_PROFILE = "delegateProfile";
 
@@ -44,5 +45,6 @@ export const useDelegateProfile = ({ accountId }: { accountId?: string }) => {
       }
     },
     enabled: !!accountId,
+    staleTime: CACHE_TTL.SHORT,
   });
 };
