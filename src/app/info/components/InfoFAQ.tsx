@@ -891,8 +891,9 @@ const InfoFAQ = () => {
   }, [faqId, isValidFaqId]);
 
   const handleToggle = useCallback((value: string) => {
-    setOpenItem(value);
+
     if (value) {
+      setOpenItem(value);
       const faq = [...generalFaqs, ...rewardsFaqs, ...walletFaqs].find(
         (f) => f.id === value
       );
@@ -900,8 +901,20 @@ const InfoFAQ = () => {
         event_name: MixpanelEvents.FAQExpanded,
         event_data: { id: value, question: faq?.question },
       });
+    } else {
+      // Closing the currently open item
+      if (openItem) {
+        const faq = [...generalFaqs, ...rewardsFaqs, ...walletFaqs].find(
+          (f) => f.id === openItem
+        );
+        trackEvent({
+          event_name: "FAQ Collapsed",
+          event_data: { id: openItem, question: faq?.question },
+        });
+      }
+      setOpenItem(undefined);
     }
-  }, []);
+  }, [openItem]);
 
   return (
     <div className="mt-16 w-full">
