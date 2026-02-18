@@ -6,6 +6,7 @@ import { DelegateProfile } from "@/lib/api/delegates/types";
 import { useRouter } from "next/navigation";
 import { DelegateAddress } from "../DelegateCard/DelegateAddress";
 import { EndorsedTooltip } from "./EndorsedTooltip";
+import { useVotingPower } from "@/hooks/useVotingPower";
 
 export default function DelegateTableRow({
   delegate,
@@ -15,6 +16,7 @@ export default function DelegateTableRow({
   displayName?: string;
 }) {
   const router = useRouter();
+  const { data: votingPower } = useVotingPower(delegate.address);
   const endorsed = delegate.endorsed;
 
   return (
@@ -42,9 +44,9 @@ export default function DelegateTableRow({
         {endorsed && <EndorsedTooltip />}
       </TableCell>
       <TableCell>
-        {delegate.votingPower ? (
+        {votingPower || delegate.votingPower ? (
           <TokenAmount
-            amount={delegate.votingPower ?? "0"}
+            amount={votingPower ?? delegate.votingPower ?? "0"}
             minimumFractionDigits={1}
             maximumSignificantDigits={1}
             currency="veNEAR"

@@ -8,6 +8,7 @@ import { DelegateActions } from "../DelegateCard/DelegateActions";
 import { EndorsedTooltip } from "./EndorsedTooltip";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { DelegateAddress } from "../DelegateCard/DelegateAddress";
+import { useVotingPower } from "@/hooks/useVotingPower";
 
 type DelegateCardProps = {
   delegate: DelegateProfile;
@@ -20,6 +21,8 @@ const DelegateCard = ({
   isDelegatesFiltering,
   displayName,
 }: DelegateCardProps) => {
+  const { data: votingPower } = useVotingPower(delegate.address);
+
   const sanitizedTruncatedStatement = useMemo(() => {
     const truncatedStatement = stripMarkdown(delegate.statement ?? "").slice(
       0,
@@ -62,7 +65,7 @@ const DelegateCard = ({
             <div className="px-4 flex flex-row gap-4 min-h-[24px]">
               <span className="text-primary font-bold">
                 <TokenAmount
-                  amount={delegate.votingPower ?? "0"}
+                  amount={votingPower ?? delegate.votingPower ?? "0"}
                   minimumFractionDigits={1}
                   maximumSignificantDigits={1}
                   currency="veNEAR"
