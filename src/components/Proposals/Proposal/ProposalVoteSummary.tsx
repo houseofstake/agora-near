@@ -57,7 +57,11 @@ export default function ProposalVoteSummary({
                 <>
                   {proposal.quorumAmount && (
                     <div>
-                      Quorum <TokenAmount amount={proposal.quorumAmount} hideCurrency />
+                      Quorum{" "}
+                      <TokenAmount
+                        amount={proposal.quorumAmount}
+                        hideCurrency
+                      />
                     </div>
                   )}
                 </>
