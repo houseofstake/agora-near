@@ -5,9 +5,11 @@ import { ProposalInfo } from "@/lib/contracts/types/voting";
 import {
   getProposalTimes,
   getTotalVotes,
+  isApprovalThresholdMet,
   isQuorumFulfilled,
 } from "@/lib/proposalUtils";
 import { formatVotingPower } from "@/lib/utils";
+import { X } from "lucide-react";
 import Image from "next/image";
 import { useMemo } from "react";
 import ProposalVoteBar from "./ProposalVoteBar";
@@ -36,6 +38,21 @@ const ProposalPopover = ({ proposal }: { proposal: ProposalInfo }) => {
     againstVotingPower: proposal.votes[1].total_venear,
     abstainVotingPower: proposal.votes[2]?.total_venear ?? "0",
   });
+  const approvalThreshold = proposal.approvalThreshold
+    ? Number(proposal.approvalThreshold)
+    : 0;
+  const hasMetThreshold = isApprovalThresholdMet({
+    forVotingPower: proposal.votes[0].total_venear,
+    againstVotingPower: proposal.votes[1].total_venear,
+    approvalThreshold,
+  });
+  const forPlusAgainst = Big(proposal.votes[0].total_venear).add(
+    proposal.votes[1].total_venear
+  );
+  const voteThresholdPercent = forPlusAgainst.eq(0)
+    ? 0
+    : Big(proposal.votes[0].total_venear).div(forPlusAgainst).mul(100);
+  const apprThresholdPercent = approvalThreshold / 100;
   const totalVotes = getTotalVotes(
     proposal.votes[0].total_venear,
     proposal.votes[1].total_venear,
@@ -50,7 +67,14 @@ const ProposalPopover = ({ proposal }: { proposal: ProposalInfo }) => {
           {proposal.voting_options[0]}
           <AmountAndPercent
             amount={proposal.votes[0].total_venear}
-            total={proposal.total_votes.total_venear}
+            total={forPlusAgainst.toString()}
+          />
+        </div>
+        <div className="text-negative flex justify-between">
+          {proposal.voting_options[1]}
+          <AmountAndPercent
+            amount={proposal.votes[1].total_venear}
+            total={forPlusAgainst.toString()}
           />
         </div>
         {proposal.voting_options.length > 2 && (
@@ -59,16 +83,10 @@ const ProposalPopover = ({ proposal }: { proposal: ProposalInfo }) => {
             <AmountAndPercent
               amount={proposal.votes[2].total_venear}
               total={proposal.total_votes.total_venear}
+              showPercent={false}
             />
           </div>
         )}
-        <div className="text-negative flex justify-between">
-          {proposal.voting_options[1]}
-          <AmountAndPercent
-            amount={proposal.votes[1].total_venear}
-            total={proposal.total_votes.total_venear}
-          />
-        </div>
       </div>
       <div className="flex flex-col gap-2 w-[calc(100%+32px)] mt-4 bg-wash border-t border-b border-line -ml-4 p-4">
         <div className="flex justify-between">
@@ -76,12 +94,30 @@ const ProposalPopover = ({ proposal }: { proposal: ProposalInfo }) => {
             Quorum
           </div>
           <div className="flex items-center gap-1 ">
-            {hasMetQuorum && (
+            {hasMetQuorum ? (
               <Image width="12" height="12" src={checkIcon} alt="check icon" />
+            ) : (
+              <X className="h-4 w-4 text-negative" />
             )}
             <p className="text-xs font-semibold text-secondary">
               <TokenAmount amount={totalVotes.toFixed(0)} hideCurrency /> /{" "}
               <TokenAmount amount={quorum} hideCurrency />
+              Required
+            </p>
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <div className="flex flex-row gap-1 text-secondary font-semibold text-xs">
+            Threshold
+          </div>
+          <div className="flex flex-row gap-1 ">
+            {hasMetThreshold ? (
+              <Image width="12" height="12" src={checkIcon} alt="check icon" />
+            ) : (
+              <X className="h-4 w-4 text-negative" />
+            )}
+            <p className="text-xs font-semibold text-secondary">
+              {voteThresholdPercent.toFixed(2)}% / {`${apprThresholdPercent}%`}{" "}
               Required
             </p>
           </div>
@@ -119,9 +155,11 @@ export default ProposalPopover;
 function AmountAndPercent({
   amount,
   total,
+  showPercent = true,
 }: {
   amount: string;
   total: string;
+  showPercent?: boolean;
 }) {
   const parsedTotal = Big(total);
   const parsedAmount = Big(amount);
@@ -136,7 +174,8 @@ function AmountAndPercent({
 
   return (
     <span>
-      {formattedAmount} ({percent}%)
+      {formattedAmount}
+      {showPercent && ` (${percent}%)`}
     </span>
   );
 }

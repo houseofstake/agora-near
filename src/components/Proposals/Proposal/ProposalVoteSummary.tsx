@@ -26,7 +26,6 @@ export default function ProposalVoteSummary({
   const againstVotesNumber =
     Number(proposal.votes[1].total_venear) / Math.pow(10, NEAR_TOKEN.decimals);
 
-  const quorumAmount = proposal.quorumAmount ?? "0";
   // Format both values independently
   const formattedForVotes = formatVotingPower(forVotesNumber, forVotesNumber);
   const formattedAgainstVotes = formatVotingPower(
@@ -53,8 +52,23 @@ export default function ProposalVoteSummary({
               </div>
             </div>
             <ProposalVoteBar proposal={proposal} />
-            <div className="text-secondary font-normal pb-2">
-              Quorum <TokenAmount amount={quorumAmount} hideCurrency />
+            <div className="flex flex-col font-medium">
+              <div className="flex flex-row text-secondary pb-2 justify-between">
+                <>
+                  {proposal.quorumAmount && (
+                    <div>
+                      Quorum <TokenAmount amount={proposal.quorumAmount} hideCurrency />
+                    </div>
+                  )}
+                </>
+                <>
+                  {proposal.approvalThreshold && (
+                    <div>
+                      <p>{`Threshold ${Number(proposal.approvalThreshold) / 100}%`}</p>
+                    </div>
+                  )}
+                </>
+              </div>
             </div>
           </HoverCardTrigger>
           <div className="cursor-pointer flex flex-col gap-2 px-4">
