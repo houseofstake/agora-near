@@ -20,8 +20,8 @@ export default function ProposalDescription({
       <div className="flex-col items-start min-w-0">
         <div className="text-xs font-semibold text-secondary flex items-center gap-2 mb-1">
           <ProposalTypeBadge type={proposal.proposalType} />
-          <span className="flex items-center">
-            Proposal by{" "}
+          <span className="flex items-center gap-1">
+            Proposal by
             <span className="hidden sm:inline">
               {truncateAddress(proposal.proposer_id)}
             </span>
