@@ -9,8 +9,7 @@ export default function ProposalVoteBar({
 
   const forVotes = Number(proposal.votes[0].total_venear);
   const againstVotes = Number(proposal.votes[1].total_venear);
-  const abstainVotes = Number(proposal.votes[2]?.total_venear ?? "0");
-  const totalVotes = forVotes + againstVotes + abstainVotes;
+  const totalVotes = forVotes + againstVotes;
 
   // Threshold is at 50% of for+against votes (abstain doesn't count)
   const approvalPercentage = Number(proposal.approvalThreshold) / 10000;
@@ -37,12 +36,6 @@ export default function ProposalVoteBar({
             <div
               style={{ flex: againstVotes / totalVotes }}
               className="min-w-[1px] bg-negative h-[10px]"
-            ></div>
-          )}
-          {abstainVotes > 0 && (
-            <div
-              style={{ flex: abstainVotes / totalVotes }}
-              className="min-w-[1px] bg-secondary h-[10px]"
             ></div>
           )}
         </>
