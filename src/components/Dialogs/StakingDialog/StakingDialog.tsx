@@ -19,11 +19,18 @@ export type StakingSource =
 type StakingDialogProps = {
   closeDialog: () => void;
   source: StakingSource;
+  onStepChange?: (step: string) => void;
 };
 
 type DialogStep = "form" | "review";
 
-const StakingDialogContent = ({ closeDialog }: { closeDialog: () => void }) => {
+const StakingDialogContent = ({
+  closeDialog,
+  onStepChange,
+}: {
+  closeDialog: () => void;
+  onStepChange?: (step: string) => void;
+}) => {
   const { isLoading, setSelectedPool, source, maxStakingAmount } =
     useStakingProviderContext();
   const [currentStep, setCurrentStep] = useState<DialogStep>("form");
@@ -58,10 +65,12 @@ const StakingDialogContent = ({ closeDialog }: { closeDialog: () => void }) => {
   const handleContinue = (pool: StakingPool) => {
     setSelectedPool(pool);
     setCurrentStep("review");
+    onStepChange?.("review");
   };
 
   const handleBack = () => {
     setCurrentStep("form");
+    onStepChange?.("pool_selection");
   };
 
   const handleSkip = useCallback(() => {
@@ -90,13 +99,17 @@ const StakingDialogContent = ({ closeDialog }: { closeDialog: () => void }) => {
   );
 };
 
-export const StakingDialog = ({ closeDialog, source }: StakingDialogProps) => {
+export const StakingDialog = ({
+  closeDialog,
+  source,
+  onStepChange,
+}: StakingDialogProps) => {
   const { trackStakingDialogClosed } = useAnalytics();
   const [startTime] = useState(Date.now());
 
   const handleClose = useCallback(() => {
     trackStakingDialogClosed({
-      step_abandoned: "unknown", // accurate step tracking would require state lifting
+      step_abandoned: "unknown",
       time_in_flow_ms: Date.now() - startTime,
     });
     closeDialog();
@@ -105,7 +118,10 @@ export const StakingDialog = ({ closeDialog, source }: StakingDialogProps) => {
   return (
     <StakingProvider source={source}>
       <div className="flex flex-col items-center h-[600px] px-2">
-        <StakingDialogContent closeDialog={handleClose} />
+        <StakingDialogContent
+          closeDialog={handleClose}
+          onStepChange={onStepChange}
+        />
       </div>
     </StakingProvider>
   );

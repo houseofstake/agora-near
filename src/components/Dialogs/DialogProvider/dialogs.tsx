@@ -14,6 +14,7 @@ import SubscribeDialog from "@/components/Notifications/SubscribeDialog";
 import { ConfirmDialog } from "../ConfirmDialog/ConfirmDialog";
 import { UnstakeDialog } from "../UnstakeDialog";
 import { NearClaimDialog } from "../NearClaimDialog/NearClaimDialog";
+import { trackEvent } from "@/lib/analytics";
 
 export type DialogType =
   | DelegateDialogType
@@ -134,7 +135,17 @@ export type NearClaimDialogType = {
 };
 
 export const dialogs: DialogDefinitions<DialogType> = {
-  NEAR_DELEGATE: ({ delegateAddress }, closeDialog) => {
+  NEAR_DELEGATE: ({ delegateAddress }, closeDialog, registerOnDismiss) => {
+    const startTime = Date.now();
+    registerOnDismiss?.(() => {
+      trackEvent({
+        event_name: "Delegation Dialog Closed",
+        event_data: {
+          step_abandoned: "delegate_confirmation",
+          time_in_flow_ms: Date.now() - startTime,
+        },
+      });
+    });
     return (
       <DelegateDialog
         delegateAddress={delegateAddress}
@@ -142,7 +153,17 @@ export const dialogs: DialogDefinitions<DialogType> = {
       />
     );
   },
-  NEAR_UNDELEGATE: ({ delegateAddress }, closeDialog) => {
+  NEAR_UNDELEGATE: ({ delegateAddress }, closeDialog, registerOnDismiss) => {
+    const startTime = Date.now();
+    registerOnDismiss?.(() => {
+      trackEvent({
+        event_name: "Undelegation Dialog Closed",
+        event_data: {
+          step_abandoned: "undelegate_confirmation",
+          time_in_flow_ms: Date.now() - startTime,
+        },
+      });
+    });
     return (
       <UndelegateDialog
         delegateAddress={delegateAddress}
@@ -175,8 +196,27 @@ export const dialogs: DialogDefinitions<DialogType> = {
       closeDialog={closeDialog}
     />
   ),
-  NEAR_STAKING: (params, closeDialog) => {
-    return <StakingDialog closeDialog={closeDialog} {...params} />;
+  NEAR_STAKING: (params, closeDialog, registerOnDismiss) => {
+    const startTime = Date.now();
+    const stepRef = { current: "pool_selection" };
+    registerOnDismiss?.(() => {
+      trackEvent({
+        event_name: "Staking Dialog Closed",
+        event_data: {
+          step_abandoned: stepRef.current,
+          time_in_flow_ms: Date.now() - startTime,
+        },
+      });
+    });
+    return (
+      <StakingDialog
+        closeDialog={closeDialog}
+        {...params}
+        onStepChange={(step: string) => {
+          stepRef.current = step;
+        }}
+      />
+    );
   },
   VOTING_POWER_PROJECTIONS: ({ votingPower }, closeDialog) => {
     return (
