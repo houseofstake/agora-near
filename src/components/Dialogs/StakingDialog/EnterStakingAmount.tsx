@@ -6,7 +6,7 @@ import { StakingPool } from "@/lib/types";
 import { formatNumber } from "@/lib/utils";
 import Big from "big.js";
 import Image from "next/image";
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo, useEffect } from "react";
 import { useStakingProviderContext } from "../StakingProvider";
 import { StakingDialogHeader } from "./StakingDialogHeader";
 import { StakingOptionCard } from "./StakingOptionCard";
@@ -95,6 +95,21 @@ export const EnterStakingAmount = ({
     trackCustomPoolEntered,
     trackStakingAmountEntered,
   } = useAnalytics();
+
+  // When the lockup is already bound to a pool, the pool cards are disabled
+  // and the user can't click them — so we track the pre-selected pool on mount.
+  useEffect(() => {
+    if (hasAlreadySelectedStakingPool && selectedPool) {
+      const isCuratedLst = pools.some((p) => p.id === selectedPool.id);
+      trackStakingPoolSelected({
+        pool_type: isCuratedLst ? "curated_lst" : "non_liquid",
+        pool_id: selectedPool.id,
+        pool_apy: isCuratedLst ? poolStats[selectedPool.id]?.apy : undefined,
+      });
+    }
+    // Only fire once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleUseCustomPool = useCallback(async () => {
     if (!isCustomPoolValid) {
