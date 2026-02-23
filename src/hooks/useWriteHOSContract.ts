@@ -84,6 +84,14 @@ export function useWriteHOSContract<T extends ContractType>({
         contractCalls: {
           [contractId]: processedMethodCalls as MethodCall[],
         },
+      }).then((result) => {
+        // Some wallets (e.g. HOT Wallet) resolve with null on user rejection
+        // instead of throwing. Normalize this to a proper Error so React Query
+        // sets a truthy error state and analytics "Failed" events fire.
+        if (result === null || result === undefined) {
+          throw new Error("Transaction rejected by user");
+        }
+        return result;
       });
     },
   });

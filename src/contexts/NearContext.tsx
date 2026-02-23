@@ -385,7 +385,11 @@ export const NearProvider: React.FC<NearProviderProps> = ({
         return results;
       } catch (e) {
         console.error("Error calling methods:", e);
-        throw e;
+        // Wallet SDKs (e.g. HOT Wallet) may throw null on user rejection.
+        // React Query stores the thrown value as `error`, and downstream
+        // analytics checks use `if (error)` — which fails for null.
+        // Normalize to a proper Error so those checks always trigger.
+        throw e ?? new Error("Transaction rejected by user");
       }
     },
     [nearConnector]
