@@ -482,6 +482,23 @@ const trackUndelegationFailed = (props: {
   trackEvent({ event_name: "Undelegation Failed", event_data: props });
 };
 
+const trackDelegationDialogClosed = (props: {
+  step_abandoned: string;
+  time_in_flow_ms: number;
+}) => {
+  trackEvent({ event_name: "Delegation Dialog Closed", event_data: props });
+};
+
+const trackUndelegationDialogClosed = (props: {
+  step_abandoned: string;
+  time_in_flow_ms: number;
+}) => {
+  trackEvent({
+    event_name: "Undelegation Dialog Closed",
+    event_data: props,
+  });
+};
+
 // --- Delegate Discovery (P5 continued) ---
 
 const trackDelegatePageViewed = (props: {
@@ -697,6 +714,8 @@ export const useAnalytics = () => {
     trackUndelegationStarted,
     trackUndelegationSuccess,
     trackUndelegationFailed,
+    trackDelegationDialogClosed,
+    trackUndelegationDialogClosed,
     trackDelegatePageViewed,
     trackDelegateProfileViewed,
     trackDelegateSearchPerformed,
