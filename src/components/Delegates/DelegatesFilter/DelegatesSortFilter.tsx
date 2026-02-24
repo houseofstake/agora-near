@@ -10,6 +10,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useDelegatesSort } from "@/components/Delegates/DelegatesFilter/useDelegatesSort";
 import { DropdownMenuRadioItem } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 export type SortOptionProps = {
   label: string;
@@ -36,6 +37,7 @@ export default function DelegatesSortFilter({
 }) {
   const { ui } = Tenant.current();
   const [isOpen, setIsOpen] = useState(false);
+  const { trackDelegateSortChanged } = useAnalytics();
 
   // Use shared sort hook
   const { orderByParam, handleSortChange, resetSort } = useDelegatesSort({
@@ -58,7 +60,10 @@ export default function DelegatesSortFilter({
       <div className="self-stretch p-3 flex flex-col gap-2">
         <DropdownMenu.RadioGroup
           value={orderByParam}
-          onValueChange={(value) => handleSortChange(value)}
+          onValueChange={(value) => {
+            handleSortChange(value);
+            trackDelegateSortChanged({ sort_option: value });
+          }}
         >
           {Object.keys(delegatesSortOptions).map((key) => (
             <SortOption

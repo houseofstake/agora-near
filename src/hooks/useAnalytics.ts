@@ -318,6 +318,7 @@ const trackStakingAmountEntered = (props: {
 const trackStakingTransactionSuccess = (props: {
   amount_near_yocto: string;
   pool_id: string;
+  pool_type: "curated_lst" | "non_liquid";
   tx_hash?: string;
 }) => {
   trackEvent({
@@ -330,6 +331,7 @@ const trackStakingTransactionFailed = (props: {
   error_type: string;
   error_message: string;
   pool_id: string;
+  pool_type: "curated_lst" | "non_liquid";
 }) => {
   trackEvent({
     event_name: "Staking Transaction Failed",
@@ -478,6 +480,23 @@ const trackUndelegationFailed = (props: {
   error_message: string;
 }) => {
   trackEvent({ event_name: "Undelegation Failed", event_data: props });
+};
+
+const trackDelegationDialogClosed = (props: {
+  step_abandoned: string;
+  time_in_flow_ms: number;
+}) => {
+  trackEvent({ event_name: "Delegation Dialog Closed", event_data: props });
+};
+
+const trackUndelegationDialogClosed = (props: {
+  step_abandoned: string;
+  time_in_flow_ms: number;
+}) => {
+  trackEvent({
+    event_name: "Undelegation Dialog Closed",
+    event_data: props,
+  });
 };
 
 // --- Delegate Discovery (P5 continued) ---
@@ -695,6 +714,8 @@ export const useAnalytics = () => {
     trackUndelegationStarted,
     trackUndelegationSuccess,
     trackUndelegationFailed,
+    trackDelegationDialogClosed,
+    trackUndelegationDialogClosed,
     trackDelegatePageViewed,
     trackDelegateProfileViewed,
     trackDelegateSearchPerformed,

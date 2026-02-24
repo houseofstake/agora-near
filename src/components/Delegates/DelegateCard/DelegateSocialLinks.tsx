@@ -3,6 +3,7 @@ import discordIcon from "@/assets/discord.svg";
 import xIcon from "@/assets/x.svg";
 import telegramIcon from "@/assets/telegram.svg";
 import toast from "react-hot-toast";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const ICON_HEIGHT = 24;
 const ICON_WIDTH = 24;
@@ -16,6 +17,7 @@ export function DelegateSocialLinks({
   twitter?: string | null;
   warpcast?: string | null;
 }) {
+  const { trackGenericEvent } = useAnalytics();
   const telegramUsername = warpcast?.replace(/@/g, "");
   return (
     <div className="flex flex-row gap-4 h-auto items-center justify-center">
@@ -24,6 +26,11 @@ export function DelegateSocialLinks({
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
+            trackGenericEvent("Share Action", {
+              method: "twitter",
+              action_type: "open_profile",
+              target_url: `https://twitter.com/${twitter}`,
+            });
             window && window.open(`https://twitter.com/${twitter}`, "_blank");
           }}
         >
@@ -41,6 +48,11 @@ export function DelegateSocialLinks({
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
+            trackGenericEvent("Share Action", {
+              method: "telegram",
+              action_type: "open_profile",
+              target_url: `https://t.me/${telegramUsername}`,
+            });
             window && window.open(`https://t.me/${telegramUsername}`, "_blank");
           }}
         >
@@ -58,6 +70,11 @@ export function DelegateSocialLinks({
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
+            trackGenericEvent("Share Action", {
+              method: "discord",
+              action_type: "copy_handle",
+              target_handle: discord,
+            });
             toast("copied discord handle to clipboard");
             navigator.clipboard.writeText(discord);
           }}

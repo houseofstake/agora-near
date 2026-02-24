@@ -3,7 +3,9 @@
 import React, {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
+  useRef,
   useState,
   FC,
 } from "react";
@@ -70,18 +72,37 @@ const Modal: FC<
 
 export const DialogProvider: FC<Props> = ({ children }) => {
   const [currentDialog, setCurrentDialog] = useState<DialogType | null>(null);
+  const onDismissRef = useRef<(() => void) | null>(null);
+
+  const closeDialog = useCallback(() => {
+    onDismissRef.current = null;
+    setCurrentDialog(null);
+  }, []);
+
+  const registerOnDismiss = useCallback((callback: () => void) => {
+    onDismissRef.current = callback;
+  }, []);
+
+  const handleDismiss = useCallback(() => {
+    // Fire the dismiss callback (analytics) before closing
+    onDismissRef.current?.();
+    onDismissRef.current = null;
+    setCurrentDialog(null);
+  }, []);
 
   const renderedDialog =
     currentDialog &&
-    dialogs[currentDialog.type](currentDialog.params as any, () =>
-      setCurrentDialog(null)
+    dialogs[currentDialog.type](
+      currentDialog.params as any,
+      closeDialog,
+      registerOnDismiss
     );
 
   return (
     <DialogContext.Provider value={setCurrentDialog}>
       <Modal
         open={!!currentDialog}
-        onClose={() => setCurrentDialog(null)}
+        onClose={handleDismiss}
         transparent={(currentDialog as { transparent?: boolean })?.transparent}
         className={cn(
           "max-h-[95vh] overflow-y-auto",

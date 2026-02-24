@@ -1,5 +1,10 @@
 "use client";
 
+import { ReactNode, useCallback, useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+
 import { QuorumExplanation } from "@/components/Proposals/Proposal/QuorumExplanation";
 import {
   Accordion,
@@ -7,13 +12,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { trackEvent } from "@/lib/analytics";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { trackEvent } from "@/lib/analytics";
 import { MixpanelEvents } from "@/lib/analytics/mixpanel";
-import Image from "next/image";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { ReactNode, useCallback, useEffect, useState } from "react";
 
 interface FAQ {
   id: string;
@@ -890,18 +891,32 @@ const InfoFAQ = () => {
     }
   }, [faqId, isValidFaqId]);
 
-  const handleToggle = useCallback((value: string) => {
-    setOpenItem(value);
-    if (value) {
-      const faq = [...generalFaqs, ...rewardsFaqs, ...walletFaqs].find(
-        (f) => f.id === value
-      );
-      trackEvent({
-        event_name: MixpanelEvents.FAQExpanded,
-        event_data: { id: value, question: faq?.question },
-      });
-    }
-  }, []);
+  const handleToggle = useCallback(
+    (value: string) => {
+      if (value) {
+        setOpenItem(value);
+        const faq = [...generalFaqs, ...rewardsFaqs, ...walletFaqs].find(
+          (f) => f.id === value
+        );
+        trackEvent({
+          event_name: MixpanelEvents.FAQExpanded,
+          event_data: { id: value, question: faq?.question },
+        });
+      } else {
+        if (openItem) {
+          const faq = [...generalFaqs, ...rewardsFaqs, ...walletFaqs].find(
+            (f) => f.id === openItem
+          );
+          trackEvent({
+            event_name: "FAQ Collapsed",
+            event_data: { id: openItem, question: faq?.question },
+          });
+        }
+        setOpenItem(undefined);
+      }
+    },
+    [openItem]
+  );
 
   return (
     <div className="mt-16 w-full">

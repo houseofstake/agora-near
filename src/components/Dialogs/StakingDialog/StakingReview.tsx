@@ -38,6 +38,7 @@ export const StakingReview = ({
     resetForm,
     currentStakingPoolId,
     maxStakingAmount,
+    pools,
   } = useStakingProviderContext();
 
   const [stakingStep, setStakingStep] = useState<number>(0);
@@ -59,6 +60,12 @@ export const StakingReview = ({
 
   const selectedStats = poolStats[selectedPool.id];
   const selectedTokenMetadata = selectedPool.metadata;
+
+  const poolType = useMemo(() => {
+    return pools.some((p) => p.id === selectedPool.id)
+      ? "curated_lst"
+      : "non_liquid";
+  }, [pools, selectedPool.id]);
 
   const totalUsd = useMemo(() => {
     if (!price || !enteredAmountYoctoNear) return "0";
@@ -159,9 +166,11 @@ export const StakingReview = ({
         }
 
         setIsStakeCompleted(true);
+        setIsStakeCompleted(true);
         trackStakingTransactionSuccess({
           amount_near_yocto: enteredAmountYoctoNear,
           pool_id: selectedPool.contract,
+          pool_type: poolType,
         });
         console.log("[StakingReview] onStake completed successfully");
         // Invalidate wallet balance to update UI immediately
@@ -174,6 +183,7 @@ export const StakingReview = ({
             : "contract_error",
           error_message: (e as any)?.message || "Unknown error",
           pool_id: selectedPool.contract,
+          pool_type: poolType,
         });
       } finally {
         setIsSubmitting(false);
