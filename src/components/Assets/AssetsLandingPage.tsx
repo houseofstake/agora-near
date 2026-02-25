@@ -98,7 +98,7 @@ export const AssetsLandingPage = memo(
                 {Array.from({ length: 700 }).map((_, i) => (
                   <div
                     key={i}
-                    className="w-3 h-3 text-primary flex items-center justify-center"
+                    className="w-3 h-3 text-primary dark:opacity-20 flex items-center justify-center"
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -121,7 +121,7 @@ export const AssetsLandingPage = memo(
                   type="primary"
                   variant="rounded"
                   onClick={handleStakeAndLock}
-                  className="px-6 lg:px-8 py-3 text-base lg:text-lg font-semibold !bg-[#00E391] !text-primary rounded-lg"
+                  className="px-6 lg:px-8 py-3 text-base lg:text-lg font-semibold !bg-[#00E391] !text-primary dark:!text-black rounded-lg"
                 >
                   Lock & Stake
                 </UpdatedButton>

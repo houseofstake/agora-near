@@ -41,7 +41,7 @@ export const LockTokensCard = memo(({ className }: LockTokensCardProps) => {
   return (
     <Card
       className={cn(
-        "relative flex h-full border border-primary shadow-lg",
+        "relative flex h-full border border-primary dark:border-black shadow-lg",
         className
       )}
       style={{ backgroundColor: "#00E391" }}
@@ -54,7 +54,7 @@ export const LockTokensCard = memo(({ className }: LockTokensCardProps) => {
           height={32}
           className="sm:w-9 sm:h-9 lg:w-10 lg:h-10"
         />
-        <div className="text-primary flex flex-col items-center gap-3 text-center">
+        <div className="text-primary dark:text-black flex flex-col items-center gap-3 text-center">
           <h3 className="text-lg font-bold mb-2">
             Lock & Stake NEAR to participate in veNEAR governance rewards!
           </h3>
@@ -67,7 +67,7 @@ export const LockTokensCard = memo(({ className }: LockTokensCardProps) => {
             type="primary"
             variant="rounded"
             onClick={handleStakeAndLock}
-            className="!border-primary"
+            className="!border-primary dark:!border-black"
           >
             Lock & Stake
           </UpdatedButton>
