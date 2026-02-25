@@ -46,7 +46,7 @@ export const GovernanceRewardsCard = memo(() => {
 
   if (isLoading) {
     return (
-      <div className="flex-1 bg-black rounded-2xl p-6 text-white relative overflow-hidden h-full">
+      <div className="flex-1 bg-black dark:bg-white rounded-2xl border border-line p-6 text-white dark:text-black relative overflow-hidden h-full">
         <div className="relative z-10 flex justify-center items-center w-full h-full">
           <div className="flex-1 flex justify-center items-center">
             <LoadingSpinner />
@@ -61,7 +61,7 @@ export const GovernanceRewardsCard = memo(() => {
 
   if (hasUnclaimedRewards) {
     return (
-      <div className="flex-1 bg-black rounded-2xl p-6 text-white relative overflow-hidden">
+      <div className="flex-1 bg-black dark:bg-white rounded-2xl border border-line p-6 text-white dark:text-black relative overflow-hidden">
         <div className="relative z-10 flex">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
@@ -69,7 +69,7 @@ export const GovernanceRewardsCard = memo(() => {
                 Claim your veNEAR Rewards
               </div>
             </div>
-            <div className="text-sm text-gray-300 mb-6">
+            <div className="text-sm text-gray-300 dark:text-gray-600 mb-6">
               Your governance reward is ready to claim.
             </div>
             <div className="flex justify-between">
@@ -84,7 +84,7 @@ export const GovernanceRewardsCard = memo(() => {
               </UpdatedButton>
               <Link
                 href="/info#ve-near-rewards"
-                className="text-sm text-white hover:text-gray-200 flex items-center gap-1"
+                className="text-sm text-white dark:text-black hover:text-gray-200 dark:hover:text-gray-600 flex items-center gap-1"
               >
                 Learn more <ArrowRightIcon className="w-4 h-4" />
               </Link>
@@ -103,7 +103,7 @@ export const GovernanceRewardsCard = memo(() => {
 
   if (hasClaimedRewards) {
     return (
-      <div className="flex-1 bg-black rounded-2xl p-6 text-white relative overflow-hidden">
+      <div className="flex-1 bg-black dark:bg-white rounded-2xl border border-line p-6 text-white dark:text-black relative overflow-hidden">
         <div className="relative z-10 flex">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
@@ -111,12 +111,12 @@ export const GovernanceRewardsCard = memo(() => {
                 veNEAR Governance Rewards
               </div>
             </div>
-            <div className="text-sm text-gray-300 mb-6">
+            <div className="text-sm text-gray-300 dark:text-gray-600 mb-6">
               Rewards already claimed, stay tuned for the next campaign
             </div>
             <Link
               href="/info#ve-near-rewards"
-              className="text-sm text-white hover:text-gray-200 flex items-center gap-1"
+              className="text-sm text-white dark:text-black hover:text-gray-200 dark:hover:text-gray-600 flex items-center gap-1"
             >
               Learn more <ArrowRightIcon className="w-4 h-4" />
             </Link>
@@ -128,7 +128,7 @@ export const GovernanceRewardsCard = memo(() => {
   }
 
   return (
-    <div className="flex-1 bg-black rounded-2xl p-6 text-white relative overflow-hidden">
+    <div className="flex-1 bg-black dark:bg-white rounded-2xl border border-line p-6 text-white dark:text-black relative overflow-hidden">
       <div className="relative z-10 flex">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
@@ -136,12 +136,12 @@ export const GovernanceRewardsCard = memo(() => {
               veNEAR Governance Rewards
             </div>
           </div>
-          <div className="text-sm text-gray-300 mb-6">
+          <div className="text-sm text-gray-300 dark:text-gray-600 mb-6">
             Stay tuned for the next campaign
           </div>
           <Link
             href="/info#ve-near-rewards"
-            className="text-sm text-white hover:text-gray-200 flex items-center gap-1"
+            className="text-sm text-white dark:text-black hover:text-gray-200 dark:hover:text-gray-600 flex items-center gap-1"
           >
             Learn more <ArrowRightIcon className="w-4 h-4" />
           </Link>

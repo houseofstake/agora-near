@@ -120,9 +120,7 @@ export const AssetRow = memo(
     }, [buttonsToRender]);
 
     return (
-      <tr
-        className={`border-b border-gray-100 last:border-b-0 ${className || ""}`}
-      >
+      <tr className={`border-b border-line last:border-b-0 ${className || ""}`}>
         <td className="py-4 pr-16 w-1 whitespace-nowrap min-w-0 overflow-hidden">
           <div className="flex items-center gap-3">
             <div className="relative w-10 h-10 flex-shrink-0">
@@ -154,7 +152,7 @@ export const AssetRow = memo(
               )}
             </div>
             <div className="flex flex-col">
-              <span className="font-medium text-gray-900 break-words">
+              <span className="font-medium text-primary break-words">
                 {metadata?.name}
               </span>
             </div>
@@ -163,8 +161,8 @@ export const AssetRow = memo(
         {columns.map((col, index) => (
           <td key={index} className="py-4 px-2 w-[200px]">
             <div className="flex flex-col">
-              <span className="text-sm text-gray-600 mb-1">{col.title}</span>
-              <span className="font-medium text-gray-900">{col.subtitle}</span>
+              <span className="text-sm text-secondary mb-1">{col.title}</span>
+              <span className="font-medium text-primary">{col.subtitle}</span>
             </div>
           </td>
         ))}
@@ -182,7 +180,7 @@ export const AssetRow = memo(
                 overflowButtons &&
                 overflowButtons.length > 0 && (
                   <DropdownMenu>
-                    <DropdownMenuTrigger className="p-2 text-gray-400 hover:text-gray-600 transition-colors outline-none">
+                    <DropdownMenuTrigger className="p-2 text-tertiary hover:text-secondary transition-colors outline-none">
                       <EllipsisHorizontalIcon className="w-5 h-5" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
@@ -194,7 +192,7 @@ export const AssetRow = memo(
                         >
                           <span>{button.title}</span>
                           {button.showExternalIcon && (
-                            <ArrowTopRightOnSquareIcon className="w-4 h-4 ml-2 text-gray-400" />
+                            <ArrowTopRightOnSquareIcon className="w-4 h-4 ml-2 text-tertiary" />
                           )}
                         </DropdownMenuItem>
                       ))}

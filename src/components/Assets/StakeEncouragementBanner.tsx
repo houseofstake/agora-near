@@ -70,7 +70,7 @@ export default function StakeEncouragementBanner({ onStakeClick }: Props) {
   return (
     <div className="w-full rounded-lg border border-negative mt-3 mb-1 p-4">
       <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-        <div className="flex-1 flex items-start gap-2 text-neutral-900 min-w-0">
+        <div className="flex-1 flex items-start gap-2 text-primary min-w-0">
           <ExclamationCircleIcon className="w-6 h-6 stroke-negative flex-shrink-0 mt-0.5" />
           <div className="flex flex-col gap-1 flex-1">
             <div className="text-base font-bold leading-normal">

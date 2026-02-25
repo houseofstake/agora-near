@@ -79,22 +79,22 @@ export const MobileAssetRow = memo(
                   e.preventDefault();
                 }
               }}
-              className={`w-full bg-white border border-gray-200 rounded-xl p-4 mb-3 outline-none hover:bg-gray-50 transition-colors text-left`}
+              className={`w-full bg-neutral border border-line rounded-xl p-4 mb-3 outline-none hover:bg-wash transition-colors text-left`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <div className="mb-4">
-                    <span className="font-medium text-gray-900 text-lg">
+                    <span className="font-medium text-primary text-lg">
                       {metadata?.name}
                     </span>
                   </div>
                   <div className="space-y-3">
                     {columns.map((col, index) => (
                       <div key={index} className="flex flex-col">
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-secondary">
                           {col.title}
                         </span>
-                        <span className="font-medium text-gray-900">
+                        <span className="font-medium text-primary">
                           {col.subtitle}
                         </span>
                       </div>
@@ -127,7 +127,7 @@ export const MobileAssetRow = memo(
                 {({ close }) =>
                   createPortal(
                     <motion.div
-                      className="bg-white py-8 px-6 rounded-t-lg w-full fixed z-[70] bottom-0 left-0 border-t border-gray-200"
+                      className="bg-neutral py-8 px-6 rounded-t-lg w-full fixed z-[70] bottom-0 left-0 border-t border-line"
                       initial="hidden"
                       animate="show"
                       exit="exit"
@@ -135,7 +135,7 @@ export const MobileAssetRow = memo(
                       transition={{ duration: 0.2 }}
                     >
                       <div className="flex flex-col gap-4 min-h-[150px]">
-                        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-200">
+                        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-line">
                           <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
                             <Image
                               src={metadata?.icon ?? ""}
@@ -145,7 +145,7 @@ export const MobileAssetRow = memo(
                               className="w-full h-full object-cover"
                             />
                           </div>
-                          <span className="font-medium text-gray-900 text-lg">
+                          <span className="font-medium text-primary text-lg">
                             {metadata?.name}
                           </span>
                         </div>

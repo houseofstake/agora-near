@@ -49,14 +49,14 @@ export const HoldingsSection = memo(() => {
 
   return (
     <div className="flex-1 sm:px-6 pb-6">
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <div className="flex border-b border-gray-200">
+      <div className="bg-neutral rounded-2xl border border-line overflow-hidden">
+        <div className="flex border-b border-line">
           <button
             onClick={() => handleTabClick("Holdings")}
             className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
               activeTab === "Holdings"
-                ? "border-black text-gray-900"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                ? "border-primary text-primary"
+                : "border-transparent text-tertiary hover:text-secondary"
             }`}
           >
             Holdings
@@ -65,8 +65,8 @@ export const HoldingsSection = memo(() => {
             onClick={() => handleTabClick("Activity")}
             className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
               activeTab === "Activity"
-                ? "border-black text-gray-900"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                ? "border-primary text-primary"
+                : "border-transparent text-tertiary hover:text-secondary"
             }`}
           >
             Activity

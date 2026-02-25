@@ -35,18 +35,18 @@ export const DelegationSummaryCard = memo(() => {
   if (!accountInfo || isDismissed) return null;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-6 w-full relative">
+    <div className="bg-neutral rounded-2xl border border-line p-6 w-full relative">
       <button
         onClick={handleDismiss}
-        className="absolute top-4 right-4 p-1 hover:bg-gray-100 rounded-full transition-colors"
+        className="absolute top-4 right-4 p-1 hover:bg-wash rounded-full transition-colors"
         aria-label="Dismiss card"
       >
-        <XMarkIcon className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+        <XMarkIcon className="w-5 h-5 text-tertiary hover:text-secondary" />
       </button>
       <div className="flex items-start justify-between gap-4 pr-8">
         <div className="flex flex-col">
-          <div className="text-sm text-gray-600 mb-1">Delegation</div>
-          <div className="text-xl text-gray-900 font-medium">
+          <div className="text-sm text-secondary mb-1">Delegation</div>
+          <div className="text-xl text-primary font-medium">
             {hasActiveDelegation ? (
               <span
                 title={delegatee!}
