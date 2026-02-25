@@ -132,7 +132,7 @@ const IssueInput = ({
 }: IssueInputProps) => {
   return (
     <div className="flex flex-row gap-4 items-center">
-      <div className="flex justify-center items-center w-12 h-12 min-w-12 bg-white rounded-md border border-line shadow-newDefault p-2">
+      <div className="flex justify-center items-center w-12 h-12 min-w-12 bg-neutral rounded-md border border-line shadow-newDefault p-2">
         <Image src={icons[icon]} alt={title} />
       </div>
 

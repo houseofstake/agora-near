@@ -77,7 +77,7 @@ function DelegationsContainer({ address }: { address: string }) {
             <div className="w-full overflow-x-auto">
               <div className="min-w-[600px]">
                 <Table className="min-w-full">
-                  <TableHeader className="text-xs text-secondary sticky top-0 bg-white z-10">
+                  <TableHeader className="text-xs text-secondary sticky top-0 bg-neutral z-10">
                     <TableRow>
                       <TableHead className="h-10 text-secondary">
                         <TooltipProvider>
@@ -140,7 +140,7 @@ function DelegationsContainer({ address }: { address: string }) {
         <TabsContent value="delegatedTo">
           <div className="flex flex-col gap-3 border border-line shadow-sm rounded-xl overflow-auto max-h-[500px]">
             <Table>
-              <TableHeader className="text-xs text-secondary sticky top-0 bg-white z-10">
+              <TableHeader className="text-xs text-secondary sticky top-0 bg-neutral z-10">
                 <TableRow>
                   <TableHead className="h-10 text-secondary">
                     Voting Power
