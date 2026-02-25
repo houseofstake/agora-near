@@ -396,7 +396,7 @@ export default function BubbleChart({
         </svg>
       </div>
       {hasMoreVotes && (
-        <div className="mt-2 text-center text-xs text-gray-500">
+        <div className="mt-2 text-center text-xs text-tertiary">
           Highlighting the most impactful votes
         </div>
       )}

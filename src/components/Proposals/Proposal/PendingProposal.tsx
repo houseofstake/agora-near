@@ -46,7 +46,7 @@ export const PendingProposal = ({ proposal }: { proposal: ProposalInfo }) => {
           <p>Submitted by: {proposal.proposer_id}</p>
           <section className="mt-8 px-4 py-6 border border-secondary/20 rounded-md gap-4 flex flex-col">
             <div className="border border-secondary/20">
-              <header className="bg-gray-200 text-secondary p-2">
+              <header className="bg-wash text-secondary p-2">
                 Project Link
               </header>
               <a
