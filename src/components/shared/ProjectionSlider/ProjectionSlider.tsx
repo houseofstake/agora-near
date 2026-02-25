@@ -120,7 +120,7 @@ export const ProjectionSlider = memo(
         </div>
 
         <div className="relative">
-          <div className="relative h-2 bg-wash rounded-full mb-6">
+          <div className="relative h-2 bg-wash dark:bg-gray-700 rounded-full mb-6">
             <div
               className={cn(
                 "absolute h-2 rounded-full",
@@ -135,7 +135,7 @@ export const ProjectionSlider = memo(
             {/* Slider Handle */}
             <div
               className={cn(
-                "absolute w-6 h-6 bg-gray-800 rounded-full border-4 border-white shadow-lg transform -translate-y-2",
+                "absolute w-6 h-6 bg-gray-800 dark:bg-white rounded-full border-4 border-white dark:border-gray-800 shadow-lg transform -translate-y-2",
                 isDragging
                   ? "transition-none scale-110"
                   : "transition-all duration-150"
