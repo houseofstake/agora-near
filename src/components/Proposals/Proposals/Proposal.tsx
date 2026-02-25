@@ -7,6 +7,7 @@ import ProposalStatus from "./ProposalStatus";
 import { ProposalStatusText } from "./ProposalStatusText";
 import ProposalTimeStatus from "./ProposalTimeStatus";
 import { ProposalTypeBadge } from "../ProposalTypeBadge";
+import { truncateAddress } from "@/lib/text";
 
 export const Proposal = memo(({ proposal }: { proposal: ProposalType }) => {
   return (
@@ -20,7 +21,7 @@ export const Proposal = memo(({ proposal }: { proposal: ProposalType }) => {
         >
           <div className="flex flex-row items-center text-xs text-secondary gap-1">
             <div className="hidden sm:inline">
-              Proposal by {proposal.creatorId}
+              Proposal by {truncateAddress(proposal.creatorId)}
             </div>
             <div className="block sm:hidden">
               <ProposalStatusText proposal={proposal} />
