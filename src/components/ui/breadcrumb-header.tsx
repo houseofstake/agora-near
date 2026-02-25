@@ -18,14 +18,14 @@ const BreadcrumbHeader = React.memo<BreadcrumbHeaderProps>(
               className={cn(
                 "text-md transition-colors",
                 index === currentStepIndex
-                  ? "font-bold text-black"
-                  : "font-normal text-gray-500"
+                  ? "font-bold text-primary"
+                  : "font-normal text-tertiary"
               )}
             >
               {step}
             </span>
             {index < steps.length - 1 && (
-              <ArrowRightIcon className="w-5 h-5 text-black" />
+              <ArrowRightIcon className="w-5 h-5 text-primary" />
             )}
           </React.Fragment>
         ))}

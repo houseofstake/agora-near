@@ -11,7 +11,7 @@ export const AssetIcon = ({
 }) => {
   return (
     <div
-      className={`w-[${size}] h-[${size}] bg-gray-300 rounded-full overflow-hidden`}
+      className={`w-[${size}] h-[${size}] bg-tertiary rounded-full overflow-hidden`}
     >
       <Image
         src={icon}

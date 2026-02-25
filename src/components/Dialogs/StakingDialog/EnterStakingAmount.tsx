@@ -184,14 +184,14 @@ export const EnterStakingAmount = ({
       <StakingDialogHeader />
       <div className="flex-1 flex flex-col">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-primary mb-2">
             Stake assets and get liquid rewards
           </h1>
         </div>
         {hasAlreadySelectedStakingPool && (
-          <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-3 flex gap-3 items-start">
-            <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-            <div className="text-sm text-blue-700">
+          <div className="mb-6 bg-wash border border-line rounded-lg p-3 flex gap-3 items-start">
+            <Info className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
+            <div className="text-sm text-secondary">
               <p className="font-medium mb-1">Staking Pool Selected</p>
               <p>
                 Your lockup is currently bound to{" "}
@@ -239,7 +239,7 @@ export const EnterStakingAmount = ({
               <h3 className="text-sm font-medium text-[#9D9FA1] mb-2">
                 Active Non-liquid Staking Pool
               </h3>
-              <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <div className="p-4 border border-line rounded-lg bg-wash">
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex items-center gap-2">
                     {selectedPool.metadata?.icon && (
@@ -248,15 +248,15 @@ export const EnterStakingAmount = ({
                         alt={selectedPool.metadata.symbol}
                         width={24}
                         height={24}
-                        className="rounded-full border border-gray-200 bg-white"
+                        className="rounded-full border border-line bg-neutral"
                       />
                     )}
-                    <span className="font-semibold text-gray-900">
+                    <span className="font-semibold text-primary">
                       {selectedPool.metadata?.symbol === "NEAR"
                         ? selectedPool.contract
                         : selectedPool.metadata?.symbol}
                     </span>
-                    <span className="text-[10px] bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full uppercase tracking-wider font-medium">
+                    <span className="text-[10px] bg-wash text-secondary px-2 py-0.5 rounded-full uppercase tracking-wider font-medium">
                       Non-liquid
                     </span>
                   </div>
@@ -271,7 +271,7 @@ export const EnterStakingAmount = ({
                 </div>
                 <div className="text-xs text-[#9D9FA1]">
                   Pool ID:{" "}
-                  <span className="font-mono text-gray-600">
+                  <span className="font-mono text-secondary">
                     {selectedPool.contract}
                   </span>
                 </div>
@@ -319,7 +319,7 @@ export const EnterStakingAmount = ({
                     <span className="text-[11px] text-[#9D9FA1]">
                       Selected:
                     </span>
-                    <span className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium leading-none text-black bg-gray-100 border-gray-200 w-fit">
+                    <span className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium leading-none text-primary bg-wash border-line w-fit">
                       {selectedPool?.contract}
                     </span>
                   </div>
@@ -407,7 +407,7 @@ export const EnterStakingAmount = ({
 
           {(!totalAvailableToStake || Big(totalAvailableToStake).lte(0)) && (
             <div className="mb-3">
-              <div className="bg-white border border-gray-200 rounded-lg p-3">
+              <div className="bg-neutral border border-line rounded-lg p-3">
                 <p className="text-sm text-[#9D9FA1]">
                   No NEAR available to stake. To stake, lock more NEAR or
                   deposit additional funds into your lockup.
@@ -417,7 +417,7 @@ export const EnterStakingAmount = ({
           )}
 
           <div className="relative">
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center sm:justify-between rounded-lg border border-gray-200 p-4 gap-3 sm:gap-0">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center sm:justify-between rounded-lg border border-line p-4 gap-3 sm:gap-0">
               <div className="flex items-center gap-2 flex-shrink-0">
                 <Image
                   src={NEAR_TOKEN_METADATA.icon}

@@ -26,10 +26,10 @@ export const TransactionError = memo<TransactionErrorProps>(
           <h2 className="text-4xl font-semibold text-[#FF7966] text-center">
             Transaction Error
           </h2>
-          <p className="text-center font-normal text-black text-xl">
+          <p className="text-center font-normal text-primary text-xl">
             {message}
           </p>
-          <div className="bg-gray-500/20 rounded-lg p-4 max-w-md">
+          <div className="bg-wash0/20 rounded-lg p-4 max-w-md">
             <p className="text-sm text-center mb-2">
               <strong>Using a popup wallet like Meteor?</strong>
             </p>

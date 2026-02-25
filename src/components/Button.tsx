@@ -79,9 +79,9 @@ export function UpdatedButton({
               "bg-neutral text-primary hover:shadow-newDefault",
             type === "link" && "",
             type === "destructive" &&
-              "bg-white text-red-500 hover:text-red-700",
+              "bg-neutral text-red-500 hover:text-red-700",
             (type === "disabled" || props.disabled) &&
-              "bg-agora-stone-50 text-agora-stone-100 cursor-not-allowed",
+              "bg-wash text-tertiary cursor-not-allowed opacity-60",
             variant === "rounded" ? "rounded-full" : "rounded-lg",
             fullWidth && "w-full"
           )}
@@ -92,7 +92,7 @@ export function UpdatedButton({
             <span
               className={cn(
                 type === "primary" && !themeIsDark && "text-white",
-                type === "secondary" && !themeIsDark && "text-black",
+                type === "secondary" && !themeIsDark && "text-primary",
                 type === "destructive" && !themeIsDark && "text-red-500",
                 type === "link" && "",
                 "font-semibold flex flex-row space-x-2 items-center justify-center"
@@ -101,7 +101,7 @@ export function UpdatedButton({
               <LoadingSpinner
                 className={cn(
                   type === "primary" && !themeIsDark && "text-white",
-                  type === "secondary" && !themeIsDark && "text-black",
+                  type === "secondary" && !themeIsDark && "text-primary",
                   type === "destructive" && !themeIsDark && "text-red-500",
                   type === "link" && "",
                   "font-semibold"

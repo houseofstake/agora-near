@@ -138,7 +138,7 @@ export const EnterAmountStep = ({
             <div className="flex-shrink-0 w-full sm:w-auto">
               <button
                 onClick={openAssetSelector}
-                className="flex flex-row items-center gap-2 bg-[#F2F1EA] px-3 py-1.5 rounded-md hover:bg-opacity-80 w-full sm:w-auto justify-center sm:justify-start"
+                className="flex flex-row items-center gap-2 bg-wash px-3 py-1.5 rounded-md hover:bg-opacity-80 w-full sm:w-auto justify-center sm:justify-start"
               >
                 <AssetIcon
                   icon={selectedToken?.metadata?.icon ?? ""}

@@ -105,7 +105,7 @@ const InfoRoadmap = () => {
               {version.items.map((item, index) => (
                 <div
                   key={index}
-                  className="p-4 bg-white border border-line rounded-lg hover:shadow-sm transition-shadow"
+                  className="p-4 bg-neutral border border-line rounded-lg hover:shadow-sm transition-shadow"
                 >
                   <div className="flex items-start justify-between mb-2">
                     <h5 className="text-lg font-semibold text-primary flex-1">
@@ -134,7 +134,7 @@ const InfoRoadmap = () => {
         ))}
       </div> */}
 
-      <div className="mt-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
+      <div className="mt-8 p-6 bg-wash border border-line rounded-lg">
         <h4 className="text-lg font-semibold text-primary mb-3">
           Future Considerations
         </h4>

@@ -13,7 +13,7 @@ export const LiquidStakingTokenLockWarning = ({
   }, []);
 
   return (
-    <div className="flex flex-row items-start bg-[#F9F8F7] p-2 rounded-lg">
+    <div className="flex flex-row items-start bg-wash p-2 rounded-lg">
       <div>
         <ExclamationCircleIcon
           width={24}

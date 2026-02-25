@@ -120,7 +120,7 @@ export const ProjectionSlider = memo(
         </div>
 
         <div className="relative">
-          <div className="relative h-2 bg-gray-200 rounded-full mb-6">
+          <div className="relative h-2 bg-wash dark:bg-gray-700 rounded-full mb-6">
             <div
               className={cn(
                 "absolute h-2 rounded-full",
@@ -135,7 +135,7 @@ export const ProjectionSlider = memo(
             {/* Slider Handle */}
             <div
               className={cn(
-                "absolute w-6 h-6 bg-gray-800 rounded-full border-4 border-white shadow-lg transform -translate-y-2",
+                "absolute w-6 h-6 bg-gray-800 dark:bg-white rounded-full border-4 border-white dark:border-gray-800 shadow-lg transform -translate-y-2",
                 isDragging
                   ? "transition-none scale-110"
                   : "transition-all duration-150"
@@ -173,7 +173,7 @@ export const ProjectionSlider = memo(
                   key={label}
                   className={cn(
                     "flex flex-col items-center transition-colors duration-200 cursor-pointer hover:text-primary",
-                    isActive ? "text-primary font-bold" : "text-gray-400",
+                    isActive ? "text-primary font-bold" : "text-tertiary",
                     isActive && isDragging ? "scale-110" : ""
                   )}
                   onClick={(e) => {
@@ -190,13 +190,13 @@ export const ProjectionSlider = memo(
 
           {/* Always-visible Date Display */}
           <div className="mt-6 text-center">
-            <div className="text-sm text-gray-600 mb-1">
+            <div className="text-sm text-secondary mb-1">
               Target Date:{" "}
               <span className="font-semibold text-primary">
                 {formattedDate}
               </span>
               {selectedValue > 0 && (
-                <span className="text-gray-500 ml-2">
+                <span className="text-tertiary ml-2">
                   (
                   {selectedValue % 1 === 0
                     ? `${selectedValue} years`

@@ -132,7 +132,7 @@ export default function InfoBanner() {
                 {BANNER_CONFIG.message}
               </span>
 
-              <ChevronRightIcon className="h-4 w-4 text-gray-400" />
+              <ChevronRightIcon className="h-4 w-4 text-tertiary" />
             </div>
           </Link>
 
@@ -142,7 +142,7 @@ export default function InfoBanner() {
             className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md hover:bg-gray-800 transition-colors duration-200 group focus:outline-none focus:ring-2 focus:ring-gray-600"
             aria-label="Dismiss banner"
           >
-            <CloseIcon className="h-4 w-4 text-gray-500 group-hover:text-gray-300" />
+            <CloseIcon className="h-4 w-4 text-tertiary group-hover:text-tertiary" />
           </button>
         </div>
       </div>

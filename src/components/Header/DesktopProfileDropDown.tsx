@@ -20,6 +20,7 @@ import Link from "next/link";
 import CopyableHumanAddress from "../shared/CopyableHumanAddress";
 
 import NearAvatar from "../shared/NearAvatar";
+import { ThemeToggle } from "./ThemeToggle";
 
 type Props = {
   accountId?: string;
@@ -29,7 +30,7 @@ type Props = {
 const RenderEncourageDelegation = () => {
   return (
     <div className="p-4 rounded-lg border border-negative gap-2 bg-neutral">
-      <div className="flex flex-col text-neutral-900 leading-normal">
+      <div className="flex flex-col text-primary leading-normal">
         <div className="inline-flex gap-2">
           <ExclamationCircleIcon className="w-6 h-6 stroke-negative" />
           <div className="flex-1 inline-flex flex-col justify-start items-start gap-4">
@@ -200,15 +201,18 @@ export const DesktopProfileDropDown = ({ accountId, signOut }: Props) => {
                       </div>
 
                       <div className="p-6 py-[30px] border-t border-line bg-wash sm:rounded-bl-[16px] sm:rounded-br-[16px]">
-                        <div
-                          onClick={signOut}
-                          className="cursor-pointer flex font-bold"
-                        >
-                          <Logout
-                            fill={rgbStringToHex(ui?.customization?.primary)}
-                            className={"mr-[10px] self-center"}
-                          />
-                          <span className="text-primary">Logout</span>
+                        <div className="flex items-center justify-between">
+                          <div
+                            onClick={signOut}
+                            className="cursor-pointer flex font-bold"
+                          >
+                            <Logout
+                              fill={rgbStringToHex(ui?.customization?.primary)}
+                              className={"mr-[10px] self-center"}
+                            />
+                            <span className="text-primary">Logout</span>
+                          </div>
+                          <ThemeToggle />
                         </div>
                       </div>
                     </div>

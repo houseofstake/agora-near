@@ -49,7 +49,7 @@ export default function DelegatesSortFilter({
       triggerLabel="Sort by"
       triggerIcon={
         <div className="flex items-center gap-4">
-          <SortIcon fill={rgbStringToHex(ui?.customization?.primary)} />
+          <SortIcon fill="currentColor" />
         </div>
       }
       activeCount={0}

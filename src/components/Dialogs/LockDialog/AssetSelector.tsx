@@ -23,7 +23,7 @@ export const AssetSelector = ({
       <div className="flex items-center justify-between w-full mb-6">
         <button
           onClick={onBack}
-          className="flex items-center justify-center w-10 h-10 bg-black rounded-full text-white hover:bg-gray-800 transition-colors"
+          className="flex items-center justify-center w-10 h-10 bg-primary rounded-full text-neutral hover:opacity-80 transition-colors"
           aria-label="Go back"
         >
           <svg
@@ -53,7 +53,7 @@ export const AssetSelector = ({
               className="flex flex-row items-center justify-between w-full py-2 rounded-lg text-left"
             >
               <div className="flex flex-row items-center gap-3">
-                <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-sm shrink-0 relative">
+                <div className="w-10 h-10 bg-wash rounded-full flex items-center justify-center text-sm shrink-0 relative">
                   {token.metadata?.icon ? (
                     <div className="w-10 h-10 rounded-full overflow-hidden">
                       <Image
@@ -72,7 +72,7 @@ export const AssetSelector = ({
                   <p className="font-medium text-primary">
                     {token.metadata?.symbol}
                   </p>
-                  <p className="text-xs text-secondary text-[#676767]">
+                  <p className="text-xs text-secondary">
                     {token.type === "lockup" ? (
                       "Lockup Contract"
                     ) : (
@@ -96,7 +96,7 @@ export const AssetSelector = ({
                 {isLoadingPrice ? (
                   <Skeleton className="w-16 h-4" />
                 ) : (
-                  <p className="text-xs text-secondary tabular-nums text-[#676767]">
+                  <p className="text-xs text-secondary tabular-nums">
                     {yoctoNearToUsdFormatted(token.balance, String(price))}
                   </p>
                 )}

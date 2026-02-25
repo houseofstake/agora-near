@@ -41,7 +41,7 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
   }, []);
 
   const getAmountColorClass = useCallback((type: string | null) => {
-    if (!type) return "text-gray-500";
+    if (!type) return "text-tertiary";
 
     switch (type) {
       case "lock":
@@ -56,7 +56,7 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
         return "text-red-600";
 
       default:
-        return "text-gray-900";
+        return "text-primary";
     }
   }, []);
 
@@ -81,20 +81,20 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
   }, []);
 
   return (
-    <tr className="border-b border-gray-100 last:border-b-0">
-      <td className="hidden md:table-cell py-4 text-sm text-gray-900">
+    <tr className="border-b border-line last:border-b-0">
+      <td className="hidden md:table-cell py-4 text-sm text-primary">
         {activity.eventDate ? (
           <span>{format(new Date(activity.eventDate), "yyyy-MM-dd")}</span>
         ) : (
           "-"
         )}
       </td>
-      <td className="py-4 text-sm text-gray-900">
+      <td className="py-4 text-sm text-primary">
         {activity.transactionType
           ? getTransactionTypeDisplay(activity.transactionType)
           : "-"}
       </td>
-      <td className="py-4 text-sm text-gray-900">
+      <td className="py-4 text-sm text-primary">
         {activity.nearAmount ? (
           <span>
             <TokenAmount amount={activity.nearAmount} />
@@ -108,12 +108,12 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
           "py-4 text-sm",
           activity.transactionType
             ? getAmountColorClass(activity.transactionType)
-            : "text-gray-500"
+            : "text-tertiary"
         )}
       >
         {activity.transactionType === "staking_pool_withdraw" ||
         activity.transactionType === "unstake" ? (
-          <span className="text-gray-500">-</span>
+          <span className="text-tertiary">-</span>
         ) : activity.nearAmount ? (
           <span>
             {getAmountPrefix(activity.transactionType)}
@@ -123,7 +123,7 @@ const HosActivityRow = memo(({ activity }: HosActivityRowProps) => {
           "-"
         )}
       </td>
-      <td className="hidden md:table-cell py-4 text-sm text-gray-900">
+      <td className="hidden md:table-cell py-4 text-sm text-primary">
         {activity.lockedNearBalance ? (
           <TokenAmount amount={activity.lockedNearBalance} />
         ) : (
@@ -196,7 +196,7 @@ export const HosActivityTable = memo(({ address }: Props) => {
 
   if (filteredActivities.length === 0) {
     return (
-      <div className="text-center py-12 text-gray-500">No activity found</div>
+      <div className="text-center py-12 text-tertiary">No activity found</div>
     );
   }
 
@@ -204,20 +204,20 @@ export const HosActivityTable = memo(({ address }: Props) => {
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="border-b-2 border-gray-200">
-            <th className="hidden md:table-cell text-left py-3 text-sm font-semibold text-gray-900">
+          <tr className="border-b-2 border-line">
+            <th className="hidden md:table-cell text-left py-3 text-sm font-semibold text-primary">
               Date
             </th>
-            <th className="text-left py-3 text-sm font-semibold text-gray-900">
+            <th className="text-left py-3 text-sm font-semibold text-primary">
               Action
             </th>
-            <th className="text-left py-3 text-sm font-semibold text-gray-900">
+            <th className="text-left py-3 text-sm font-semibold text-primary">
               Amount
             </th>
-            <th className="text-left py-3 text-sm font-semibold text-gray-900">
+            <th className="text-left py-3 text-sm font-semibold text-primary">
               Change in Voting Power
             </th>
-            <th className="hidden md:table-cell text-left py-3 text-sm font-semibold text-gray-900">
+            <th className="hidden md:table-cell text-left py-3 text-sm font-semibold text-primary">
               New Locked Balance
             </th>
           </tr>

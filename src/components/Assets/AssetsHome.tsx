@@ -51,7 +51,7 @@ export const AssetsHome = memo(() => {
   return (
     <div className="flex flex-col w-full min-h-screen">
       {shouldShowLSTWarning && (
-        <div className="w-full bg-[#F9F8F7] border-b border-gray-200 px-4 py-3 mt-4 rounded-2xl">
+        <div className="w-full bg-wash border-b border-line px-4 py-3 mt-4 rounded-2xl">
           <div className="mx-auto">
             <LiquidStakingTokenLockWarning />
           </div>

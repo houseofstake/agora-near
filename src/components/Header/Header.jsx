@@ -17,7 +17,7 @@ export default function Header() {
   };
 
   return (
-    <VStack className="content-center rounded-full bg-white border border-line p-2 shadow-newDefault">
+    <VStack className="content-center rounded-full bg-neutral border border-line p-2 shadow-newDefault">
       <HStack className="flex flex-row w-full items-center gap-1  justify-between">
         <HamburgerIcon
           className="w-[24px] h-[24px] sm:hidden cursor-pointer stroke-primary"

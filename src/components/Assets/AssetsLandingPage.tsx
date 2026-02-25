@@ -79,7 +79,7 @@ export const AssetsLandingPage = memo(
     return (
       <div className="w-full min-h-screen relative">
         {shouldShowLSTWarning && (
-          <div className="w-full bg-[#F9F8F7] border-b border-gray-200 rounded-2xl px-4 py-3 mt-4">
+          <div className="w-full bg-wash border-b border-line rounded-2xl px-4 py-3 mt-4">
             <div className="max-w-6xl mx-auto">
               <LiquidStakingTokenLockWarning />
             </div>
@@ -98,7 +98,7 @@ export const AssetsLandingPage = memo(
                 {Array.from({ length: 700 }).map((_, i) => (
                   <div
                     key={i}
-                    className="w-3 h-3 text-black flex items-center justify-center"
+                    className="w-3 h-3 text-primary dark:opacity-20 flex items-center justify-center"
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -113,15 +113,15 @@ export const AssetsLandingPage = memo(
               </div>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-8 items-center px-4 lg:px-0">
-              <div className="text-center lg:text-left order-1 lg:order-1 z-10 bg-white py-6 lg:py-8 lg:ml-10">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-5xl font-bold text-black mb-4 lg:mb-6 leading-tight">
+              <div className="text-center lg:text-left order-1 lg:order-1 z-10 bg-neutral dark:bg-black py-6 lg:py-8 lg:ml-10">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-5xl font-bold text-primary mb-4 lg:mb-6 leading-tight">
                   Lock & stake tokens for boosted voting power & veNEAR rewards
                 </h1>
                 <UpdatedButton
                   type="primary"
                   variant="rounded"
                   onClick={handleStakeAndLock}
-                  className="px-6 lg:px-8 py-3 text-base lg:text-lg font-semibold !bg-[#00E391] !text-black rounded-lg"
+                  className="px-6 lg:px-8 py-3 text-base lg:text-lg font-semibold !bg-[#00E391] !text-primary dark:!text-black rounded-lg"
                 >
                   Lock & Stake
                 </UpdatedButton>
@@ -149,12 +149,12 @@ export const AssetsLandingPage = memo(
             />
           </div>
           <div className="mb-8 lg:mb-16 px-4 lg:px-0">
-            <p className="text-sm sm:text-base lg:text-sm text-gray-500 mb-2">
+            <p className="text-sm sm:text-base lg:text-sm text-tertiary mb-2">
               *Source of APY comes from non-liquid staking pools and is subject
               to change. For up to date APY, please refer to the staking pools
               directly.
             </p>
-            <p className="text-sm sm:text-base lg:text-sm text-gray-500">
+            <p className="text-sm sm:text-base lg:text-sm text-tertiary">
               **Rewards and any annualized equivalents are variable, not
               guaranteed, and may change based on program parameters and
               participation. Locking may reduce liquidity.

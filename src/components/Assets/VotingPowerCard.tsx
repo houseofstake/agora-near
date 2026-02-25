@@ -24,11 +24,11 @@ export const VotingPowerCard = memo(() => {
   }, [openDialog, votingPower]);
 
   return (
-    <div className="flex-1 bg-white rounded-2xl border border-gray-200 p-6">
+    <div className="flex-1 bg-neutral rounded-2xl border border-line p-6">
       <div className="flex flex-col">
-        <div className="text-sm text-gray-600 mb-2">Voting Power veNEAR</div>
+        <div className="text-sm text-secondary mb-2">Voting Power veNEAR</div>
         <div className="flex items-baseline gap-2 mb-4">
-          <span className="text-4xl font-light text-gray-900">
+          <span className="text-4xl font-light text-primary">
             {isLoading ? (
               <Skeleton className="w-24 h-10" />
             ) : (

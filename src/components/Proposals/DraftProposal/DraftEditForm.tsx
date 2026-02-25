@@ -154,7 +154,7 @@ function DraftDetailsForm() {
               name="description"
               render={({ field }) => (
                 <textarea
-                  className={`text-tertiary p-4 rounded-md outline-none w-full min-h-[16rem] border ${errors.description ? "border-negative" : "border-line"}`}
+                  className={`text-primary bg-neutral p-4 rounded-md outline-none w-full min-h-[16rem] border ${errors.description ? "border-negative" : "border-line"}`}
                   placeholder="I'm a proposal body, and I like markdown formatting..."
                   {...field}
                 />
@@ -231,7 +231,7 @@ function DraftDetailsForm() {
                       disabled={displayMode === "preview"}
                     >
                       <SelectTrigger
-                        className={`w-full bg-white ${errors.proposalType ? "border-negative" : ""}`}
+                        className={`w-full bg-neutral ${errors.proposalType ? "border-negative" : ""}`}
                       >
                         <SelectValue placeholder="Select a proposal type" />
                       </SelectTrigger>

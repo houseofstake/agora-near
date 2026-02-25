@@ -23,7 +23,7 @@ export const ProposalTypeBadge = ({
 
   // Fallback for unknown types (future proofing)
   const label = config?.label || type.replace(/([A-Z])/g, " $1").trim();
-  const style = config?.className || "border-gray-200 text-gray-700 bg-gray-50";
+  const style = config?.className || "border-line text-secondary bg-wash";
   return (
     <span
       className={cn(

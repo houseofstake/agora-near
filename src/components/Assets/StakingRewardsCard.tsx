@@ -17,7 +17,7 @@ export const StakingRewardsCard = memo(
     return (
       <Card
         className={cn(
-          "relative overflow-hidden border-0 shadow-lg bg-black text-white",
+          "relative overflow-hidden border-0 shadow-lg bg-black dark:bg-white text-white dark:text-black",
           className
         )}
       >
@@ -27,13 +27,11 @@ export const StakingRewardsCard = memo(
               <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-2">
                 Staking Rewards
               </h3>
-              <p className="text-xs sm:text-sm lg:text-sm mb-4 text-white">
+              <p className="text-xs sm:text-sm lg:text-sm mb-4">
                 Keep your tokens working!
               </p>
               <div className="flex flex-col items-center gap-1">
-                <span className="text-xs sm:text-sm lg:text-sm text-white">
-                  up to
-                </span>
+                <span className="text-xs sm:text-sm lg:text-sm">up to</span>
                 {isLoadingApy ? (
                   "--"
                 ) : (
@@ -41,9 +39,7 @@ export const StakingRewardsCard = memo(
                     {apy}%
                   </span>
                 )}
-                <span className="text-xs sm:text-sm lg:text-sm text-white">
-                  APY*
-                </span>
+                <span className="text-xs sm:text-sm lg:text-sm">APY*</span>
                 <Link
                   href="/info?item=contract-level-onboarding"
                   className="flex items-center font-medium hover:opacity-80 transition-opacity gap-2 mt-2"

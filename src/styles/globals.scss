@@ -4,6 +4,24 @@
 @import "@/styles/variables";
 
 //////////////////////////
+// Dark theme variable overrides
+//////////////////////////
+html.dark {
+  --primary: 255 255 255 !important;
+  --secondary: 156 163 175 !important;
+  --tertiary: 107 114 128 !important;
+  --neutral: 17 17 17 !important;
+  --wash: 0 0 0 !important;
+  --line: 55 65 81 !important;
+  --positive: 0 255 170 !important;
+  --negative: 239 68 68 !important;
+  --brand-primary: 255 255 255 !important;
+  --brand-secondary: 0 0 0 !important;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 60%;
+}
+
+//////////////////////////
 //bar styling
 //////////////////////////
 html {
@@ -27,6 +45,21 @@ html {
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
     background: #555;
+  }
+
+  &.dark {
+    ::-webkit-scrollbar-track {
+      background: #000;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #374151;
+      border-color: #000;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #888;
+    }
   }
 }
 
@@ -74,6 +107,14 @@ html {
   );
   z-index: -9;
   pointer-events: none;
+
+  html.dark & {
+    background: radial-gradient(
+      circle,
+      rgba(0, 0, 0, 0) 60%,
+      rgba(0, 0, 0, 1) 100%
+    );
+  }
 }
 
 .gl_bg-dotted-pattern {
@@ -86,6 +127,14 @@ html {
   background-color: #fcfcfc;
   background-image: radial-gradient(rgba(0, 0, 0, 10%) 0.5px, transparent 0);
   background-size: 8px 8px;
+
+  html.dark & {
+    background-color: #000;
+    background-image: radial-gradient(
+      rgba(255, 255, 255, 5%) 0.5px,
+      transparent 0
+    );
+  }
 }
 
 //////////////////////////

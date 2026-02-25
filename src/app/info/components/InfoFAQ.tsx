@@ -52,7 +52,7 @@ const ExternalLink = ({
 };
 
 const Code = ({ children }: { children: string }) => (
-  <code className="bg-gray-100 px-2 py-1 rounded">{children}</code>
+  <code className="bg-wash px-2 py-1 rounded">{children}</code>
 );
 
 const CodeLink = ({ href, code }: { href: string; code: string }) => (
@@ -69,7 +69,7 @@ const Callout = ({
   variant?: "default" | "info";
 }) => (
   <div
-    className={`border-l-4 border-primary p-6 rounded-r-lg ${variant === "info" ? "bg-blue-50" : "bg-gray-50 border border-gray-200"}`}
+    className={`border-l-4 border-primary p-6 rounded-r-lg ${variant === "info" ? "bg-blue-50" : "bg-wash border border-line"}`}
   >
     {children}
   </div>
@@ -82,7 +82,7 @@ const StepCard = ({
   title: string;
   children: ReactNode;
 }) => (
-  <div className="bg-gray-50 rounded-lg p-4">
+  <div className="bg-wash rounded-lg p-4">
     <p className="font-semibold mb-2 text-base">{title}</p>
     <Text>{children}</Text>
   </div>
@@ -96,31 +96,29 @@ interface APITableRow {
 }
 
 const APITable = ({ rows }: { rows: APITableRow[] }) => (
-  <div className="overflow-x-auto rounded-lg border border-gray-200">
+  <div className="overflow-x-auto rounded-lg border border-line">
     <table className="w-full border-collapse text-sm">
       <thead>
-        <tr className="bg-gray-100">
-          <th className="border-b border-gray-300 px-6 py-4 text-left font-semibold">
+        <tr className="bg-wash">
+          <th className="border-b border-line px-6 py-4 text-left font-semibold">
             Contract
           </th>
-          <th className="border-b border-gray-300 px-6 py-4 text-left font-semibold">
+          <th className="border-b border-line px-6 py-4 text-left font-semibold">
             API Method
           </th>
-          <th className="border-b border-gray-300 px-6 py-4 text-left font-semibold">
+          <th className="border-b border-line px-6 py-4 text-left font-semibold">
             Description
           </th>
         </tr>
       </thead>
       <tbody>
         {rows.map((row, idx) => (
-          <tr key={idx} className="hover:bg-gray-50">
-            <td className="border-b border-gray-200 px-6 py-4">
-              {row.contract}
-            </td>
-            <td className="border-b border-gray-200 px-6 py-4">
+          <tr key={idx} className="hover:bg-wash">
+            <td className="border-b border-line px-6 py-4">{row.contract}</td>
+            <td className="border-b border-line px-6 py-4">
               <CodeLink href={row.methodUrl} code={row.method} />
             </td>
-            <td className="border-b border-gray-200 px-6 py-4 leading-relaxed">
+            <td className="border-b border-line px-6 py-4 leading-relaxed">
               {row.description}
             </td>
           </tr>
@@ -180,7 +178,7 @@ const generalFaqs: FAQ[] = [
             rewards while participating in governance.
           </StepCard>
         </div>
-        <div className="mt-8 border border-gray-200 rounded-lg overflow-hidden">
+        <div className="mt-8 border border-line rounded-lg overflow-hidden">
           <Image
             src="/images/house_of_stake_onboarding.png"
             alt=""
@@ -498,7 +496,7 @@ const generalFaqs: FAQ[] = [
           </Text>
 
           <div className="mt-4 mb-6">
-            <p className="font-medium mb-2 text-sm text-gray-700 uppercase tracking-wide">
+            <p className="font-medium mb-2 text-sm text-secondary uppercase tracking-wide">
               Option A: Migrating from an External Wallet
             </p>
             <Text>
@@ -515,7 +513,7 @@ const generalFaqs: FAQ[] = [
             </ul>
           </div>
 
-          <p className="font-medium mb-2 text-sm text-gray-700 uppercase tracking-wide">
+          <p className="font-medium mb-2 text-sm text-secondary uppercase tracking-wide">
             Option B: Switching Pools within House of Stake
           </p>
           <Text>
@@ -941,7 +939,7 @@ const InfoFAQ = () => {
                     key={faq.id}
                     value={faq.id}
                     id={faq.id}
-                    className="w-full border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow data-[state=open]:shadow-md"
+                    className="w-full border border-line rounded-lg bg-neutral shadow-sm hover:shadow-md transition-shadow data-[state=open]:shadow-md"
                   >
                     <AccordionTrigger className="w-full text-left text-primary hover:text-secondary text-base font-semibold px-8 py-6 hover:no-underline">
                       {faq.question}
@@ -968,7 +966,7 @@ const InfoFAQ = () => {
                     key={faq.id}
                     value={faq.id}
                     id={faq.id}
-                    className="w-full border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow data-[state=open]:shadow-md"
+                    className="w-full border border-line rounded-lg bg-neutral shadow-sm hover:shadow-md transition-shadow data-[state=open]:shadow-md"
                   >
                     <AccordionTrigger className="w-full text-left text-primary hover:text-secondary text-base font-semibold px-8 py-6 hover:no-underline">
                       {faq.question}
@@ -982,7 +980,7 @@ const InfoFAQ = () => {
             </div>
           </div>
 
-          <div className="mt-12 text-base text-tertiary bg-gray-50 rounded-lg p-6">
+          <div className="mt-12 text-base text-tertiary bg-wash rounded-lg p-6">
             <Text>
               Have more questions? Join the discussion on our{" "}
               <ExternalLink href="https://gov.near.org/">
@@ -1015,7 +1013,7 @@ const InfoFAQ = () => {
                   key={faq.id}
                   value={faq.id}
                   id={faq.id}
-                  className="w-full border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow data-[state=open]:shadow-md"
+                  className="w-full border border-line rounded-lg bg-neutral shadow-sm hover:shadow-md transition-shadow data-[state=open]:shadow-md"
                 >
                   <AccordionTrigger className="w-full text-left text-primary hover:text-secondary text-base font-semibold px-8 py-6 hover:no-underline">
                     {faq.question}
