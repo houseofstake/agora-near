@@ -1,6 +1,7 @@
 import "@/styles/globals.scss";
 import ClientLayout from "./Web3Provider";
 import Header from "@/components/Header/Header";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import DAOMetricsHeader from "@/components/Metrics/DAOMetricsHeader";
 import Tenant from "@/lib/tenant/tenant";
 import { fontMapper, inter } from "@/styles/fonts";
@@ -88,7 +89,12 @@ export default async function RootLayout({
   } as React.CSSProperties;
 
   return (
-    <html lang="en" className="scroll-smooth" style={style}>
+    <html
+      lang="en"
+      className="scroll-smooth"
+      style={style}
+      suppressHydrationWarning
+    >
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link
@@ -126,15 +132,17 @@ export default async function RootLayout({
         <GoogleAnalytics />
         <NuqsAdapter>
           <ClientLayout>
-            <div className="my-3 sm:my-4 px-3 sm:px-8">
-              <div className="mx-auto max-w-desktop">
-                <Header />
+            <ThemeProvider>
+              <div className="my-3 sm:my-4 px-3 sm:px-8">
+                <div className="mx-auto max-w-desktop">
+                  <Header />
+                </div>
+                {children}
               </div>
-              {children}
-            </div>
-            <div className="hidden sm:block mx-auto max-w-desktop">
-              <DAOMetricsHeader />
-            </div>
+              <div className="hidden sm:block mx-auto max-w-desktop">
+                <DAOMetricsHeader />
+              </div>
+            </ThemeProvider>
           </ClientLayout>
         </NuqsAdapter>
       </body>

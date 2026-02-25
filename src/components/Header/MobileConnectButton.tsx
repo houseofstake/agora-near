@@ -1,6 +1,8 @@
 "use client";
 
 import { MobileProfileDropDown } from "./MobileProfileDropDown";
+import { ThemeToggle } from "./ThemeToggle";
+import { AnimatePresence, motion } from "framer-motion";
 
 type MobileConnectButtonProps = {
   accountId?: string;
@@ -16,7 +18,21 @@ export function MobileConnectButton({
   signOut,
 }: MobileConnectButtonProps) {
   return (
-    <div className="sm:hidden flex items-center opacity-100 transition-all active:opacity-60 ">
+    <div className="sm:hidden flex items-center gap-2 opacity-100 transition-all active:opacity-60">
+      {/* Theme toggle: visible when disconnected, slides out on connect, slides back on disconnect */}
+      <AnimatePresence>
+        {!isConnected && (
+          <motion.div
+            initial={{ opacity: 0, x: 10, scale: 0.9 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: 10, scale: 0.9 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            <ThemeToggle />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {isConnected ? (
         <MobileProfileDropDown accountId={accountId} signOut={signOut} />
       ) : (
