@@ -94,7 +94,7 @@ Discourse username:`;
           />
         </TabsContent>
         <TabsContent value="preview">
-          <Markdown content={delegateStatement} />
+          <Markdown content={delegateStatement || `*${defaultValue}*`} />
         </TabsContent>
       </Tabs>
     </div>
