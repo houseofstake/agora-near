@@ -196,7 +196,7 @@ export const ReviewStep = memo(
             </div>
           </div>
           <div className="flex-1 flex flex-col justify-end w-full items-center gap-4 pb-4">
-            <div className="bg-white w-full border border-gray-200 rounded-xl overflow-hidden flex items-center shadow-sm">
+            <div className="bg-neutral w-full border border-line rounded-xl overflow-hidden flex items-center shadow-sm">
               <div className="flex items-center justify-center bg-[#9797FF]/30 gap-3 w-[40px] h-[40px]">
                 <InformationCircleIcon className="w-5 h-5 text-[#9797FF]" />
               </div>

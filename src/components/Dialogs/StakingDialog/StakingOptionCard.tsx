@@ -22,7 +22,7 @@ export const StakingOptionCard = ({
   return (
     <div
       onClick={isEnabled ? onSelect : undefined}
-      className={`rounded-lg p-4 gap-4 flex flex-col cursor-pointer transition-all duration-200 border border-black ${
+      className={`rounded-lg p-4 gap-4 flex flex-col cursor-pointer transition-all duration-200 border border-primary ${
         isSelected
           ? "bg-[#00E391] text-black"
           : "bg-gray-50 text-black hover:bg-gray-100"
@@ -34,7 +34,7 @@ export const StakingOptionCard = ({
           alt={tokenMetadata.symbol}
           width={24}
           height={24}
-          className="rounded-full border border-black bg-white"
+          className="rounded-full border border-primary bg-neutral"
         />
         <span>{tokenMetadata.name}</span>
       </div>

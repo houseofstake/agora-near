@@ -282,7 +282,7 @@ export const ReviewStep = memo(
             </div>
           </div>
           <div className="flex-1 flex flex-col justify-end w-full items-center gap-4 pb-4">
-            <div className="bg-white w-full border border-gray-200 rounded-xl overflow-hidden flex items-center shadow-sm">
+            <div className="bg-neutral w-full border border-line rounded-xl overflow-hidden flex items-center shadow-sm">
               <div className="flex items-center justify-center bg-[#9797FF]/30 gap-3 w-[40px] h-[40px]">
                 <InformationCircleIcon className="w-5 h-5 text-[#9797FF]" />
               </div>
@@ -303,7 +303,7 @@ export const ReviewStep = memo(
                       <p className="text-sm">
                         Depending on what you&apos;re locking, this may include:
                       </p>
-                      <div className="border-b border-gray-200 my-2" />
+                      <div className="border-b border-line my-2" />
                       <ul className="text-md space-y-1 font-bold list-disc pl-4">
                         <li>Deploying your lockup contract (one-time)</li>
                         <li>Transferring tokens</li>
@@ -394,7 +394,7 @@ export const ReviewStep = memo(
           </div>
           {Big(depositTotal).gt(0) && (
             <>
-              <div className="border-t border-gray-200"></div>
+              <div className="border-t border-line"></div>
               <div className="flex flex-row justify-between items-center py-4">
                 <div className="flex items-center gap-1">
                   <span className="font-bold text-primary">Deposit fees</span>
@@ -428,7 +428,7 @@ export const ReviewStep = memo(
           )}
           {customStakingPoolId && (
             <>
-              <div className="border-t border-gray-200"></div>
+              <div className="border-t border-line"></div>
               <div className="flex flex-row justify-between items-center py-4">
                 <span className="font-bold text-primary">Staking Pool</span>
                 <span className="font-medium text-sm text-gray-900">

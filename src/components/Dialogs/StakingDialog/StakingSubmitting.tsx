@@ -42,7 +42,7 @@ export const StakingSubmitting = ({
         </div>
       </div>
       <div className="flex-1 flex flex-col justify-end w-full gap-4">
-        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden flex items-center shadow-sm">
+        <div className="bg-neutral border border-line rounded-xl overflow-hidden flex items-center shadow-sm">
           <div className="flex items-center justify-center bg-[#9797FF]/30 gap-3 w-[40px] h-[40px]">
             <InformationCircleIcon className="w-5 h-5 text-[#9797FF]" />
           </div>
@@ -57,7 +57,7 @@ export const StakingSubmitting = ({
                     You&apos;ll need to complete a few wallet signatures to
                     complete setup.
                   </h4>
-                  <div className="border-b border-gray-200 my-2" />
+                  <div className="border-b border-line my-2" />
                   <ul className="text-sm space-y-1 font-medium list-disc pl-4">
                     <li>Select your staking pool (if needed)</li>
                     <li>Transfer NEAR to your lockup (if needed)</li>
