@@ -121,7 +121,7 @@ export const SwitchPoolDialog = ({
             <AlertTriangle className="w-5 h-5 flex-shrink-0 text-orange-500 mt-0.5" />
             <div className="flex flex-col gap-1">
               <span className="font-semibold">Staked Balance:</span>
-              <TokenAmount amount={stakedBalance!} /> NEAR
+              <TokenAmount amount={stakedBalance!} />
             </div>
           </div>
           {unstakingAllError && (
@@ -152,7 +152,7 @@ export const SwitchPoolDialog = ({
             <Clock className="w-5 h-5 flex-shrink-0 text-blue-500 mt-0.5" />
             <div className="flex flex-col gap-1">
               <span className="font-semibold">Pending Withdrawal:</span>
-              <TokenAmount amount={unstakedBalance!} /> NEAR
+              <TokenAmount amount={unstakedBalance!} />
             </div>
           </div>
           <p className="text-xs text-secondary text-center">
@@ -180,7 +180,7 @@ export const SwitchPoolDialog = ({
           <div className="bg-green-50 p-4 rounded-lg flex gap-3 text-green-800 text-sm border border-green-200">
             <div className="flex flex-col gap-1">
               <span className="font-semibold">Available to Withdraw:</span>
-              <TokenAmount amount={unstakedBalance!} /> NEAR
+              <TokenAmount amount={unstakedBalance!} />
             </div>
           </div>
           {withdrawingAllError && (
