@@ -120,7 +120,7 @@ export const ProjectionSlider = memo(
         </div>
 
         <div className="relative">
-          <div className="relative h-2 bg-gray-200 rounded-full mb-6">
+          <div className="relative h-2 bg-wash rounded-full mb-6">
             <div
               className={cn(
                 "absolute h-2 rounded-full",
@@ -173,7 +173,7 @@ export const ProjectionSlider = memo(
                   key={label}
                   className={cn(
                     "flex flex-col items-center transition-colors duration-200 cursor-pointer hover:text-primary",
-                    isActive ? "text-primary font-bold" : "text-gray-400",
+                    isActive ? "text-primary font-bold" : "text-tertiary",
                     isActive && isDragging ? "scale-110" : ""
                   )}
                   onClick={(e) => {
@@ -190,13 +190,13 @@ export const ProjectionSlider = memo(
 
           {/* Always-visible Date Display */}
           <div className="mt-6 text-center">
-            <div className="text-sm text-gray-600 mb-1">
+            <div className="text-sm text-secondary mb-1">
               Target Date:{" "}
               <span className="font-semibold text-primary">
                 {formattedDate}
               </span>
               {selectedValue > 0 && (
-                <span className="text-gray-500 ml-2">
+                <span className="text-tertiary ml-2">
                   (
                   {selectedValue % 1 === 0
                     ? `${selectedValue} years`

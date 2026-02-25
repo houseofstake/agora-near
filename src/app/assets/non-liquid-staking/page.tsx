@@ -251,12 +251,12 @@ export default function NonLiquidOnboardingPage() {
                         Wallet connected
                       </span>
                     ) : (
-                      <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-xs font-medium text-gray-600">
+                      <span className="inline-flex items-center rounded-full border border-line bg-wash px-2 py-0.5 text-xs font-medium text-secondary">
                         Not connected
                       </span>
                     )}
                     {isLoadingLockup ? (
-                      <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-xs font-medium text-gray-600">
+                      <span className="inline-flex items-center rounded-full border border-line bg-wash px-2 py-0.5 text-xs font-medium text-secondary">
                         Lockup loading
                       </span>
                     ) : hasValidLockup ? (
@@ -269,7 +269,7 @@ export default function NonLiquidOnboardingPage() {
                       </span>
                     )}
                     {isLoadingPool ? (
-                      <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-xs font-medium text-gray-600">
+                      <span className="inline-flex items-center rounded-full border border-line bg-wash px-2 py-0.5 text-xs font-medium text-secondary">
                         Pool loading
                       </span>
                     ) : stakingPoolId ? (
@@ -277,7 +277,7 @@ export default function NonLiquidOnboardingPage() {
                         Pool selected
                       </span>
                     ) : (
-                      <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-xs font-medium text-gray-600">
+                      <span className="inline-flex items-center rounded-full border border-line bg-wash px-2 py-0.5 text-xs font-medium text-secondary">
                         No pool selected
                       </span>
                     )}
