@@ -12,6 +12,7 @@ import { AssetSelector } from "./AssetSelector";
 import { EnterAmountStep } from "./EnterAmountStep";
 import { LockDialogHeader } from "./LockDialogHeader";
 import { ReviewStep } from "./ReviewStep";
+import { SwitchPoolDialog } from "./SwitchPoolDialog";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useNear } from "@/contexts/NearContext";
 import { useEffect, useRef } from "react";
@@ -81,6 +82,7 @@ export function LockDialogContent({ closeDialog }: DialogContentProps) {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [isAssetSelectorOpen, setIsAssetSelectorOpen] = useState(false);
+  const [isSwitchPoolOpen, setIsSwitchPoolOpen] = useState(false);
 
   const openDialog = useOpenDialog();
 
@@ -148,12 +150,24 @@ export function LockDialogContent({ closeDialog }: DialogContentProps) {
       );
     }
 
+    if (isSwitchPoolOpen) {
+      return (
+        <SwitchPoolDialog
+          onClose={() => setIsSwitchPoolOpen(false)}
+          onSuccess={() => {
+            // Re-fetch or advance logic if necessary, otherwise just return to amount step
+          }}
+        />
+      );
+    }
+
     if (currentStep === 1) {
       return (
         <div className="flex flex-col gap-2 h-full">
           <LockDialogHeader />
           <EnterAmountStep
             openAssetSelector={openAssetSelector}
+            openSwitchPoolDialog={() => setIsSwitchPoolOpen(true)}
             handleReview={handleReview}
           />
         </div>
@@ -180,6 +194,7 @@ export function LockDialogContent({ closeDialog }: DialogContentProps) {
     openAssetSelector,
     proceedToStaking,
     closeAssetSelector,
+    isSwitchPoolOpen,
   ]);
 
   if (isLoading) {

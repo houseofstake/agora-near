@@ -35,6 +35,7 @@ export const useDeployLockupAndLockV2 = () => {
     signAndSendTransactions,
     buildTransferFungibleTokenTransaction,
     isUsingFireblocksWallet,
+    viewMethod,
   } = useNear();
 
   const buildTransactions = useCallback(
@@ -169,6 +170,31 @@ export const useDeployLockupAndLockV2 = () => {
         setIsSubmitting(true);
         setError(null);
 
+        // PRE-FLIGHT SAFETY CHECK
+        // Stop execution if selected LST doesn't match the lockup's current pool.
+        if (
+          selectedToken?.type === "lst" &&
+          lockupAccountId &&
+          requiredTransactions.includes("lock_near") &&
+          !requiredTransactions.includes("select_staking_pool")
+        ) {
+          try {
+            const currentPoolId = await viewMethod({
+              contractId: lockupAccountId,
+              method: "get_staking_pool_account_id",
+            });
+
+            if (currentPoolId && currentPoolId !== selectedToken.accountId) {
+              throw new Error(
+                "Cannot lock: selected token doesn't match the current staking pool."
+              );
+            }
+          } catch (e: any) {
+            if (e.message.includes("Cannot lock")) throw e;
+            console.warn("Failed to perform pre-flight pool check", e);
+          }
+        }
+
         // Build all transactions upfront to get the actual count
         const allTxns = await buildTransactions(requiredTransactions);
 
@@ -240,6 +266,10 @@ export const useDeployLockupAndLockV2 = () => {
       requiredTransactions,
       signAndSendTransactions,
       selectedToken?.metadata?.name,
+      selectedToken?.type,
+      selectedToken?.accountId,
+      lockupAccountId,
+      viewMethod,
     ]
   );
 

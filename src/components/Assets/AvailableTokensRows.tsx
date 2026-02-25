@@ -70,6 +70,12 @@ export const AvailableTokenRow = memo<AvailableTokenRowProps>(
             !!stakingPoolId &&
             token.type === "lst" &&
             stakingPoolId !== token.accountId,
+          tooltip:
+            !!stakingPoolId &&
+            token.type === "lst" &&
+            stakingPoolId !== token.accountId
+              ? "Token uses a different staking pool. Unstake current pool first to switch."
+              : undefined,
         }}
       />
     );

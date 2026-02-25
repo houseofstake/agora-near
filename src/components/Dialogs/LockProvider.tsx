@@ -69,6 +69,7 @@ type LockProviderContextType = {
   stakingPoolId?: string | null;
   depositTotal: string;
   requiredTransactions: LockTransaction[];
+  canLockSelectedToken: boolean;
   transferAmountYocto?: string;
   getAmountToLock: () => string | undefined;
   maxAmountToLock?: string;
@@ -108,6 +109,7 @@ export const LockProviderContext = createContext<LockProviderContextType>({
   stakingPoolId: undefined,
   depositTotal: "0",
   requiredTransactions: [],
+  canLockSelectedToken: true,
   transferAmountYocto: "0",
   getAmountToLock: () => "0",
   amountError: null,
@@ -570,7 +572,15 @@ export const LockProvider = ({
     }
   }, [enteredAmountYocto, selectedToken?.type, source, totalRegistrationCost]);
 
+  const canLockSelectedToken = useMemo(() => {
+    if (selectedToken?.type !== "lst") return true;
+    if (!stakingPoolId) return true; // No pool yet, will be selected
+    return stakingPoolId === selectedToken.accountId;
+  }, [selectedToken, stakingPoolId]);
+
   const requiredTransactions = useMemo(() => {
+    if (!canLockSelectedToken) return [];
+
     const transactions: LockTransaction[] = [];
 
     const isDeployingLockup = !venearAccountInfo;
@@ -616,6 +626,7 @@ export const LockProvider = ({
     transferAmountYocto,
     venearAccountInfo,
     customStakingPoolId,
+    canLockSelectedToken,
   ]);
 
   const getAmountToLock = useCallback(() => {
@@ -674,6 +685,7 @@ export const LockProvider = ({
         stakingPoolId,
         depositTotal,
         requiredTransactions,
+        canLockSelectedToken,
         totalRegistrationCost: totalRegistrationCost.toString(),
         transferAmountYocto,
         getAmountToLock,
