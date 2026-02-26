@@ -395,6 +395,7 @@ export const LockProvider = ({
       tokens.push(
         ...fungibleTokensResponse.tokens
           .filter((token) => token && token.balance && Big(token.balance).gt(0))
+          .filter((token) => stakingPoolId ? token.contract_id === stakingPoolId : true)
           .map((token) => {
             if (token.contract_id === linearTokenContractId) {
               return {

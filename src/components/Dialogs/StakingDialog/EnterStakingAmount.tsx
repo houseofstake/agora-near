@@ -207,7 +207,7 @@ export const EnterStakingAmount = ({
             Stake assets and get liquid rewards
           </h1>
         </div>
-        {hasAlreadySelectedStakingPool && !isLockupEmpty && (
+        {hasAlreadySelectedStakingPool && !isLockupEmpty ? (
           <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-3 flex gap-3 items-start">
             <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
             <div className="text-sm text-blue-700">
@@ -222,7 +222,7 @@ export const EnterStakingAmount = ({
               </p>
             </div>
           </div>
-        )}
+        ) : (
 
         <div className="grid grid-cols-2 gap-4 mb-6">
           {pools.map((pool) => (
@@ -248,6 +248,8 @@ export const EnterStakingAmount = ({
             </div>
           ))}
         </div>
+        )}
+
 
         {/* Active Custom Pool Card */}
         {hasAlreadySelectedStakingPool &&
