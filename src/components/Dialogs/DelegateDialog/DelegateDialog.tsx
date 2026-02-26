@@ -8,6 +8,7 @@ import { useCallback, useEffect } from "react";
 import toast from "react-hot-toast";
 import Big from "big.js";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { truncateAddress } from "@/lib/text";
 
 export function DelegateDialog({
   delegateAddress,
@@ -77,13 +78,13 @@ export function DelegateDialog({
             <p className="text-xl font-bold text-left text-primary">
               Set{" "}
               <span className="truncate max-w-[120px]" title={delegateAddress}>
-                {delegateAddress}
+                {truncateAddress(delegateAddress)}
               </span>{" "}
               as your delegate
             </p>
             <div className="text-secondary">
               <span className="truncate max-w-[120px]" title={delegateAddress}>
-                {delegateAddress}
+                {truncateAddress(delegateAddress)}
               </span>{" "}
               will be able to vote with any token owned by your address
             </div>
@@ -100,7 +101,7 @@ export function DelegateDialog({
                           className="truncate max-w-[120px]"
                           title={accountInfo.delegation.delegatee}
                         >
-                          {accountInfo.delegation.delegatee}
+                          {truncateAddress(accountInfo.delegation.delegatee)}
                         </span>
                       ) : (
                         "N/A"
@@ -122,7 +123,7 @@ export function DelegateDialog({
                       className="truncate max-w-[120px]"
                       title={delegateAddress}
                     >
-                      {delegateAddress}
+                      {truncateAddress(delegateAddress)}
                     </span>
                   </div>
                 </div>

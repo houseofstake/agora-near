@@ -8,6 +8,7 @@ import { useCallback, useEffect } from "react";
 import toast from "react-hot-toast";
 import Big from "big.js";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { truncateAddress } from "@/lib/text";
 
 export function UndelegateDialog({
   delegateAddress,
@@ -70,7 +71,7 @@ export function UndelegateDialog({
             <p className="text-xl font-bold text-left text-primary">
               Remove{" "}
               <span className="truncate max-w-[120px]" title={delegateAddress}>
-                {delegateAddress}
+                {truncateAddress(delegateAddress)}
               </span>{" "}
               as your delegate
             </p>
@@ -91,7 +92,7 @@ export function UndelegateDialog({
                           className="truncate max-w-[120px]"
                           title={accountInfo.delegation.delegatee}
                         >
-                          {accountInfo.delegation.delegatee}
+                          {truncateAddress(accountInfo.delegation.delegatee)}
                         </span>
                       ) : (
                         "N/A"
