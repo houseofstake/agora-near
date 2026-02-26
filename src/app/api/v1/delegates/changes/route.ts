@@ -50,7 +50,11 @@ export async function GET(request: NextRequest) {
     const { offset, page, lookback_days } = validationResult.data;
 
     // Fetch from backend
-    const data = await fetchDelegateStatementChanges(offset, page, lookback_days);
+    const data = await fetchDelegateStatementChanges(
+      offset,
+      page,
+      lookback_days
+    );
 
     return NextResponse.json(data);
   } catch (error) {

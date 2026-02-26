@@ -111,8 +111,6 @@ export const fetchDelegateStatementChanges = async (
 };
 
 export const fetchVotingPowerChart = async (accountId: string) => {
-  const { data } = await axios.get(
-    `${Endpoint.VotingPowerChart}/${accountId}`
-  );
+  const { data } = await axios.get(`${Endpoint.VotingPowerChart}/${accountId}`);
   return data;
 };
