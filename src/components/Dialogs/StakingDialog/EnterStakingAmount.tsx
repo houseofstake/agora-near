@@ -207,7 +207,7 @@ export const EnterStakingAmount = ({
             Stake assets and get liquid rewards
           </h1>
         </div>
-        {hasAlreadySelectedStakingPool && !isLockupEmpty && (
+        {hasAlreadySelectedStakingPool && !isLockupEmpty ? (
           <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-3 flex gap-3 items-start">
             <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
             <div className="text-sm text-blue-700">
@@ -222,32 +222,32 @@ export const EnterStakingAmount = ({
               </p>
             </div>
           </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            {pools.map((pool) => (
+              <div
+                key={pool.id}
+                className={!canChangePool ? "opacity-50 grayscale" : ""}
+              >
+                <StakingOptionCard
+                  isEnabled={canChangePool}
+                  isSelected={selectedPool.id === pool.id}
+                  onSelect={() => {
+                    setSelectedPool(pool);
+                    trackStakingPoolSelected({
+                      pool_type: "curated_lst",
+                      pool_id: pool.id,
+                      pool_apy: poolStats[pool.id]?.apy,
+                    });
+                  }}
+                  tokenMetadata={pool.metadata}
+                  apy={poolStats[pool.id]?.apy}
+                  totalVolumeYocto={poolStats[pool.id]?.totalVolumeYocto ?? "-"}
+                />
+              </div>
+            ))}
+          </div>
         )}
-
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          {pools.map((pool) => (
-            <div
-              key={pool.id}
-              className={!canChangePool ? "opacity-50 grayscale" : ""}
-            >
-              <StakingOptionCard
-                isEnabled={canChangePool}
-                isSelected={selectedPool.id === pool.id}
-                onSelect={() => {
-                  setSelectedPool(pool);
-                  trackStakingPoolSelected({
-                    pool_type: "curated_lst",
-                    pool_id: pool.id,
-                    pool_apy: poolStats[pool.id]?.apy,
-                  });
-                }}
-                tokenMetadata={pool.metadata}
-                apy={poolStats[pool.id]?.apy}
-                totalVolumeYocto={poolStats[pool.id]?.totalVolumeYocto ?? "-"}
-              />
-            </div>
-          ))}
-        </div>
 
         {/* Active Custom Pool Card */}
         {hasAlreadySelectedStakingPool &&
