@@ -1,8 +1,4 @@
-import {
-  CheckIcon,
-  XMarkIcon,
-  EllipsisVerticalIcon,
-} from "@heroicons/react/20/solid";
+import { CheckIcon, XMarkIcon, MinusIcon } from "@heroicons/react/20/solid";
 
 function DelegateVoteIcon({ support }: { support: string }) {
   if (support === "FOR")
@@ -19,8 +15,8 @@ function DelegateVoteIcon({ support }: { support: string }) {
     );
   if (support === "ABSTAIN")
     return (
-      <span className="h-5 w-5 flex items-center justify-center rounded-full bg-black self-start">
-        <EllipsisVerticalIcon className="h-3 w-3 text-neutral" />
+      <span className="h-5 w-5 flex items-center justify-center rounded-full bg-gray-500 self-start">
+        <MinusIcon className="h-4 w-4 text-neutral" />
       </span>
     );
 
