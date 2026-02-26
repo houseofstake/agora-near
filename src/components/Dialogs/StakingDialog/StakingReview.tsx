@@ -203,6 +203,7 @@ export const StakingReview = ({
       queryClient,
       trackStakingTransactionSuccess,
       trackStakingTransactionFailed,
+      poolType,
     ]
   );
 

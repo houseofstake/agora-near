@@ -83,6 +83,23 @@ export const useDeployLockupAndLockV2 = () => {
         txns.push(...ftTransferTransactions);
       }
 
+      if (transactions.includes("unselect_staking_pool")) {
+        txns.push({
+          receiverId: lockupAccountId || "",
+          actions: [
+            {
+              type: "FunctionCall",
+              params: {
+                methodName: "unselect_staking_pool",
+                args: {},
+                gas: convertUnit("75 Tgas"),
+                deposit: convertUnit("1"),
+              },
+            },
+          ],
+        });
+      }
+
       if (transactions.includes("select_staking_pool")) {
         txns.push({
           receiverId: lockupAccountId || "",
@@ -223,6 +240,8 @@ export const useDeployLockupAndLockV2 = () => {
                   txnText = "Storing account in veNEAR contract...";
                 } else if (methodName === "deploy_lockup") {
                   txnText = "Deploying lockup contract...";
+                } else if (methodName === "unselect_staking_pool") {
+                  txnText = "Unselecting current pool...";
                 } else if (methodName === "select_staking_pool") {
                   txnText = "Selecting staking pool...";
                 } else if (methodName === "refresh_staking_pool_balance") {

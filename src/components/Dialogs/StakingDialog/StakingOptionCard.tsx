@@ -22,10 +22,14 @@ export const StakingOptionCard = ({
   return (
     <div
       onClick={isEnabled ? onSelect : undefined}
-      className={`rounded-lg p-4 gap-4 flex flex-col cursor-pointer transition-all duration-200 border border-black ${
-        isSelected
+      className={`rounded-lg p-4 gap-4 flex flex-col transition-all duration-200 border border-black ${
+        !isEnabled ? "cursor-not-allowed" : "cursor-pointer"
+      } ${
+        isSelected && isEnabled
           ? "bg-[#00E391] text-black"
-          : "bg-gray-50 text-black hover:bg-gray-100"
+          : isSelected && !isEnabled
+            ? "bg-gray-200 text-gray-500 border-gray-300"
+            : "bg-gray-50 text-black hover:bg-gray-100"
       }`}
     >
       <div className="flex items-center gap-2">
