@@ -6,6 +6,8 @@ import { useFungibleTokens } from "@/hooks/useFungibleTokens";
 import { useLockNear } from "@/hooks/useLockNear";
 import { useStakingPool } from "@/hooks/useStakingPool";
 import { useVenearSnapshot } from "@/hooks/useVenearSnapshot";
+import { useStakedBalance } from "@/hooks/useStakedBalance";
+import { useUnstakedBalance } from "@/hooks/useUnstakedBalance";
 import {
   DEFAULT_GAS_RESERVE,
   LINEAR_TOKEN_CONTRACT,
@@ -42,6 +44,7 @@ export type LockTransaction =
   | "deploy_lockup"
   | "transfer_near"
   | "transfer_ft"
+  | "unselect_staking_pool"
   | "select_staking_pool"
   | "refresh_balance"
   | "lock_near";
@@ -69,6 +72,7 @@ type LockProviderContextType = {
   stakingPoolId?: string | null;
   depositTotal: string;
   requiredTransactions: LockTransaction[];
+  canLockSelectedToken: boolean;
   transferAmountYocto?: string;
   getAmountToLock: () => string | undefined;
   maxAmountToLock?: string;
@@ -108,6 +112,7 @@ export const LockProviderContext = createContext<LockProviderContextType>({
   stakingPoolId: undefined,
   depositTotal: "0",
   requiredTransactions: [],
+  canLockSelectedToken: true,
   transferAmountYocto: "0",
   getAmountToLock: () => "0",
   amountError: null,
@@ -303,6 +308,28 @@ export const LockProvider = ({
     lockupAccountId: lockupAccountId ?? "",
     enabled: !!venearAccountInfo,
   });
+
+  const { stakedBalance } = useStakedBalance({
+    stakingPoolId,
+    accountId: lockupAccountId,
+  });
+
+  const { unstakedBalance } = useUnstakedBalance({
+    stakingPoolId,
+    accountId: lockupAccountId,
+  });
+
+  const isLockupEmpty = useMemo(() => {
+    if (
+      stakedBalance === undefined ||
+      stakedBalance === null ||
+      unstakedBalance === undefined ||
+      unstakedBalance === null
+    ) {
+      return false;
+    }
+    return Big(stakedBalance).eq(0) && Big(unstakedBalance).eq(0);
+  }, [stakedBalance, unstakedBalance]);
 
   const lstPriceYocto = useMemo(() => {
     if (selectedToken?.type !== "lst") {
@@ -570,7 +597,17 @@ export const LockProvider = ({
     }
   }, [enteredAmountYocto, selectedToken?.type, source, totalRegistrationCost]);
 
+  const canLockSelectedToken = useMemo(() => {
+    if (selectedToken?.type !== "lst") return true;
+    if (!stakingPoolId) return true; // No pool yet, will be selected
+    if (stakingPoolId === selectedToken.accountId) return true; // Matches
+    if (isLockupEmpty) return true; // Empty lockup, can auto-switch
+    return false; // Mismatch and not empty
+  }, [selectedToken, stakingPoolId, isLockupEmpty]);
+
   const requiredTransactions = useMemo(() => {
+    if (!canLockSelectedToken) return [];
+
     const transactions: LockTransaction[] = [];
 
     const isDeployingLockup = !venearAccountInfo;
@@ -585,10 +622,20 @@ export const LockProvider = ({
     // 1. We're NOT deploying with a custom pool (which already batches it), AND
     // 2. Either it's an LST without a pool OR an existing lockup with a custom pool change
     const shouldBatchPoolSelection = isDeployingLockup && customStakingPoolId;
+    const isChangingPool =
+      !!stakingPoolId &&
+      ((selectedToken?.type === "lst" &&
+        stakingPoolId !== selectedToken.accountId) ||
+        (customStakingPoolId && stakingPoolId !== customStakingPoolId));
+
     if (
       !shouldBatchPoolSelection &&
-      ((selectedToken?.type === "lst" && !stakingPoolId) || customStakingPoolId)
+      ((selectedToken?.type === "lst" && (!stakingPoolId || isChangingPool)) ||
+        customStakingPoolId)
     ) {
+      if (isChangingPool) {
+        transactions.push("unselect_staking_pool");
+      }
       transactions.push("select_staking_pool");
     }
 
@@ -616,6 +663,7 @@ export const LockProvider = ({
     transferAmountYocto,
     venearAccountInfo,
     customStakingPoolId,
+    canLockSelectedToken,
   ]);
 
   const getAmountToLock = useCallback(() => {
@@ -674,6 +722,7 @@ export const LockProvider = ({
         stakingPoolId,
         depositTotal,
         requiredTransactions,
+        canLockSelectedToken,
         totalRegistrationCost: totalRegistrationCost.toString(),
         transferAmountYocto,
         getAmountToLock,

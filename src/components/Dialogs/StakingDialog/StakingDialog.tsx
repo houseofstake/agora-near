@@ -1,4 +1,3 @@
-import LoadingSpinner from "@/components/shared/LoadingSpinner";
 import { READ_NEAR_CONTRACT_QK } from "@/hooks/useReadHOSContract";
 import { CONTRACTS } from "@/lib/contractConstants";
 import { StakingPool } from "@/lib/types";
@@ -31,15 +30,10 @@ const StakingDialogContent = ({
   closeDialog: () => void;
   onStepChange?: (step: string) => void;
 }) => {
-  const { isLoading, setSelectedPool, source, maxStakingAmount } =
+  const { setSelectedPool, source, maxStakingAmount } =
     useStakingProviderContext();
   const [currentStep, setCurrentStep] = useState<DialogStep>("form");
-  const {
-    trackStakingFlowStarted,
-    trackStakingSkipped,
-    trackStakingDialogClosed,
-  } = useAnalytics();
-  const [startTime] = useState(Date.now());
+  const { trackStakingFlowStarted, trackStakingSkipped } = useAnalytics();
 
   useEffect(() => {
     trackStakingFlowStarted({

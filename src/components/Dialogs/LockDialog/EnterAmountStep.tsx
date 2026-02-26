@@ -12,6 +12,7 @@ import {
   ChevronDownIcon,
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
+import { AlertTriangle } from "lucide-react";
 import Big from "big.js";
 import { useCallback, useMemo } from "react";
 import { AssetIcon } from "../../common/AssetIcon";
@@ -24,11 +25,13 @@ import { useAnalytics } from "@/hooks/useAnalytics";
 
 type EnterAmountStepProps = {
   openAssetSelector: () => void;
+  openSwitchPoolDialog?: () => void;
   handleReview: () => void;
 };
 
 export const EnterAmountStep = ({
   openAssetSelector,
+  openSwitchPoolDialog,
   handleReview,
 }: EnterAmountStepProps) => {
   const {
@@ -45,6 +48,7 @@ export const EnterAmountStep = ({
     lstPriceYocto,
     lockupAccountId,
     stakingPoolId,
+    canLockSelectedToken,
   } = useLockProviderContext();
 
   useStakedBalance({
@@ -72,7 +76,11 @@ export const EnterAmountStep = ({
   }, [venearAmount]);
 
   const shouldDisableButton =
-    !enteredAmount || Number(enteredAmount) === 0 || isLoading || !!amountError;
+    !enteredAmount ||
+    Number(enteredAmount) === 0 ||
+    isLoading ||
+    !!amountError ||
+    !canLockSelectedToken;
 
   const showConversion = useMemo(() => {
     return selectedToken?.type === "lst" && !!lstPriceYocto;
@@ -204,6 +212,23 @@ export const EnterAmountStep = ({
           <span className="text-primary font-bold">{annualAPY}%</span>
         </div>
       </div>
+      {!canLockSelectedToken && (
+        <div className="flex flex-row items-center gap-3 p-4 bg-orange-50 border border-orange-200 rounded-lg text-orange-800 text-sm mt-2 mb-2">
+          <AlertTriangle className="w-5 h-5 flex-shrink-0 text-orange-500" />
+          <p className="flex-1">
+            You cannot lock {selectedToken?.metadata?.symbol ?? "this token"}{" "}
+            because you already have a different staking pool selected.
+          </p>
+          {openSwitchPoolDialog && (
+            <button
+              onClick={openSwitchPoolDialog}
+              className="whitespace-nowrap px-3 py-1.5 bg-orange-100 hover:bg-orange-200 text-orange-900 font-medium rounded-md transition-colors"
+            >
+              Switch Pool
+            </button>
+          )}
+        </div>
+      )}
       <div className="flex-1 flex flex-col justify-end pb-4">
         <UpdatedButton
           onClick={onProceed}

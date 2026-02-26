@@ -22,6 +22,7 @@ import toast from "react-hot-toast";
 import { useLockupAccount } from "@/hooks/useLockupAccount";
 import { useCurrentStakingPoolId } from "@/hooks/useCurrentStakingPoolId";
 import { useStakedBalance } from "@/hooks/useStakedBalance";
+import { useUnstakedBalance } from "@/hooks/useUnstakedBalance";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
 type EnterStakingAmountProps = {
@@ -67,6 +68,24 @@ export const EnterStakingAmount = ({
     stakingPoolId: currentPoolId,
     accountId: lockupAccountId,
   });
+  const { unstakedBalance } = useUnstakedBalance({
+    stakingPoolId: currentPoolId,
+    accountId: lockupAccountId,
+  });
+
+  const isLockupEmpty = useMemo(() => {
+    if (
+      stakedBalance === undefined ||
+      stakedBalance === null ||
+      unstakedBalance === undefined ||
+      unstakedBalance === null
+    ) {
+      return false;
+    }
+    return Big(stakedBalance).eq(0) && Big(unstakedBalance).eq(0);
+  }, [stakedBalance, unstakedBalance]);
+
+  const canChangePool = !hasAlreadySelectedStakingPool || isLockupEmpty;
 
   // Basic NEAR account ID format validation
   const isValidNearAccountId = (id: string) => {
@@ -81,8 +100,7 @@ export const EnterStakingAmount = ({
   }, [pools, selectedPool]);
 
   const [showCustomPool, setShowCustomPool] = useState<boolean>(
-    (!!prefilledCustomPoolId || isCustomPoolSelected) &&
-      !hasAlreadySelectedStakingPool
+    (!!prefilledCustomPoolId || isCustomPoolSelected) && canChangePool
   );
 
   const isCustomPoolValid = useMemo(() => {
@@ -162,6 +180,7 @@ export const EnterStakingAmount = ({
     isWhitelisted,
     setSelectedPool,
     trackCustomPoolEntered,
+    trackStakingPoolSelected,
   ]);
 
   const handleContinue = useCallback(() => {
@@ -188,7 +207,7 @@ export const EnterStakingAmount = ({
             Stake assets and get liquid rewards
           </h1>
         </div>
-        {hasAlreadySelectedStakingPool && (
+        {hasAlreadySelectedStakingPool && !isLockupEmpty && (
           <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-3 flex gap-3 items-start">
             <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
             <div className="text-sm text-blue-700">
@@ -209,12 +228,10 @@ export const EnterStakingAmount = ({
           {pools.map((pool) => (
             <div
               key={pool.id}
-              className={
-                hasAlreadySelectedStakingPool ? "opacity-50 grayscale" : ""
-              }
+              className={!canChangePool ? "opacity-50 grayscale" : ""}
             >
               <StakingOptionCard
-                isEnabled={!hasAlreadySelectedStakingPool}
+                isEnabled={canChangePool}
                 isSelected={selectedPool.id === pool.id}
                 onSelect={() => {
                   setSelectedPool(pool);
@@ -287,11 +304,9 @@ export const EnterStakingAmount = ({
                 <button
                   type="button"
                   onClick={() => setShowCustomPool((v) => !v)}
-                  disabled={hasAlreadySelectedStakingPool}
+                  disabled={!canChangePool}
                   className={`text-sm text-[#9D9FA1] mb-2 flex items-center gap-2 ${
-                    hasAlreadySelectedStakingPool
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
+                    !canChangePool ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 >
                   <span
@@ -299,7 +314,7 @@ export const EnterStakingAmount = ({
                   >
                     ▸
                   </span>
-                  {hasAlreadySelectedStakingPool
+                  {hasAlreadySelectedStakingPool && !isLockupEmpty
                     ? "Staking pool locked"
                     : "Enter staking pool account ID"}
                 </button>
@@ -314,7 +329,7 @@ export const EnterStakingAmount = ({
             <>
               <div className="flex flex-col gap-2">
                 {/* Selected pool badge and current staked summary */}
-                {!hasAlreadySelectedStakingPool && (
+                {canChangePool && (
                   <div className="mt-1 flex items-center gap-2">
                     <span className="text-[11px] text-[#9D9FA1]">
                       Selected:
