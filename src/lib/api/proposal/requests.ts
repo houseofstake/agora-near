@@ -195,3 +195,10 @@ export const getProposalQuorum = async (data: { proposalId: string }) =>
   axios.get<GetProposalQuorumResponse>(
     `${Endpoint.Proposals}/${data.proposalId}/quorum`
   );
+
+export const fetchVoteChanges = async (proposalId: string) => {
+  const { data } = await axios.get(
+    `${Endpoint.VoteChanges}/${proposalId}`
+  );
+  return data;
+};

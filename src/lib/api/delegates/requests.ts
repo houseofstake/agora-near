@@ -97,3 +97,22 @@ export const fetchHosActivity = async (
 
   return data;
 };
+
+export const fetchDelegateStatementChanges = async (
+  offset: number,
+  page: number,
+  lookbackDays?: number
+) => {
+  const lookbackParam = lookbackDays ? `&lookback_days=${lookbackDays}` : "";
+  const { data } = await axios.get(
+    `${Endpoint.DelegateStatementChanges}?offset=${offset}&page=${page}${lookbackParam}`
+  );
+  return data;
+};
+
+export const fetchVotingPowerChart = async (accountId: string) => {
+  const { data } = await axios.get(
+    `${Endpoint.VotingPowerChart}/${accountId}`
+  );
+  return data;
+};
