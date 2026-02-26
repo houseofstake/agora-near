@@ -29,23 +29,12 @@ export const SwitchPoolDialog = ({
     accountId: lockupAccountId,
   });
 
-  const {
-    unstakedBalance,
-    isAvailable,
-    isLoading: isLoadingUnstaked,
-  } = useUnstakedBalance({
+  const { unstakedBalance, isLoading: isLoadingUnstaked } = useUnstakedBalance({
     stakingPoolId,
     accountId: lockupAccountId,
   });
 
-  const {
-    unstakeAll,
-    withdrawAll,
-    isUnstakingAll,
-    isWithdrawingAll,
-    unstakingAllError,
-    withdrawingAllError,
-  } = useStakeNear({
+  const { unstakeAll, isUnstakingAll, unstakingAllError } = useStakeNear({
     lockupAccountId: lockupAccountId ?? "",
   });
 
@@ -61,14 +50,6 @@ export const SwitchPoolDialog = ({
   const handleUnstakeAll = async () => {
     try {
       await unstakeAll();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleWithdrawAll = async () => {
-    try {
-      await withdrawAll();
     } catch (e) {
       console.error(e);
     }
@@ -140,7 +121,7 @@ export const SwitchPoolDialog = ({
       );
     }
 
-    if (hasUnstakedBalance && !isAvailable) {
+    if (hasUnstakedBalance) {
       return (
         <div className="flex flex-col gap-4">
           <p className="text-sm text-secondary">
@@ -165,37 +146,6 @@ export const SwitchPoolDialog = ({
             className="w-full"
           >
             Close
-          </UpdatedButton>
-        </div>
-      );
-    }
-
-    if (hasUnstakedBalance && isAvailable) {
-      return (
-        <div className="flex flex-col gap-4">
-          <p className="text-sm text-secondary">
-            Your unstaked NEAR is ready to be withdrawn. Withdraw it to proceed
-            with unselecting your current pool.
-          </p>
-          <div className="bg-green-50 p-4 rounded-lg flex gap-3 text-green-800 text-sm border border-green-200">
-            <div className="flex flex-col gap-1">
-              <span className="font-semibold">Available to Withdraw:</span>
-              <TokenAmount amount={unstakedBalance!} />
-            </div>
-          </div>
-          {withdrawingAllError && (
-            <p className="text-red-500 text-sm">
-              {withdrawingAllError.message}
-            </p>
-          )}
-          <UpdatedButton
-            loading={isWithdrawingAll}
-            onClick={handleWithdrawAll}
-            type="primary"
-            variant="rounded"
-            className="w-full"
-          >
-            Withdraw All
           </UpdatedButton>
         </div>
       );

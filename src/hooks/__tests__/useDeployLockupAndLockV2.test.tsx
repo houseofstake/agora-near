@@ -23,7 +23,8 @@ describe("useDeployLockupAndLockV2", () => {
     vi.mocked(useNear).mockReturnValue({
       signedAccountId: "test.near",
       viewMethod: mockViewMethod,
-      buildTransferFungibleTokenTransaction: mockBuildTransferFungibleTokenTransaction,
+      buildTransferFungibleTokenTransaction:
+        mockBuildTransferFungibleTokenTransaction,
       signAndSendTransactions: mockSignAndSendTransactions,
       isUsingFireblocksWallet: vi.fn().mockResolvedValue(false),
     } as any);
@@ -67,9 +68,15 @@ describe("useDeployLockupAndLockV2", () => {
     const transactions = callArgs.transactions;
 
     expect(transactions).toHaveLength(2);
-    expect(transactions[0].actions[0].params.methodName).toBe("unselect_staking_pool");
-    expect(transactions[1].actions[0].params.methodName).toBe("select_staking_pool");
-    expect(transactions[1].actions[0].params.args.staking_pool_account_id).toBe("stnear.test.near");
+    expect(transactions[0].actions[0].params.methodName).toBe(
+      "unselect_staking_pool"
+    );
+    expect(transactions[1].actions[0].params.methodName).toBe(
+      "select_staking_pool"
+    );
+    expect(transactions[1].actions[0].params.args.staking_pool_account_id).toBe(
+      "stnear.test.near"
+    );
   });
 
   it("should abort transaction if pre-flight safety check fails (LST mismatch without unselect)", async () => {
@@ -95,7 +102,9 @@ describe("useDeployLockupAndLockV2", () => {
 
     // It should have caught the mismatch and aborted signAndSendTransactions
     expect(mockSignAndSendTransactions).not.toHaveBeenCalled();
-    expect(result.current.error).toBe("Something went wrong, please try again.");
+    expect(result.current.error).toBe(
+      "Something went wrong, please try again."
+    );
   });
 
   it("should bypass pre-flight safety check if unselect_staking_pool is in requiredTransactions", async () => {
@@ -106,7 +115,11 @@ describe("useDeployLockupAndLockV2", () => {
         type: "lst",
       },
       // Safe batch! Includes unselect and select
-      requiredTransactions: ["unselect_staking_pool", "select_staking_pool", "lock_near"],
+      requiredTransactions: [
+        "unselect_staking_pool",
+        "select_staking_pool",
+        "lock_near",
+      ],
       getAmountToLock: vi.fn(),
     } as any);
 
