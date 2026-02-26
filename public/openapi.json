@@ -605,6 +605,93 @@
           }
         }
       }
+    },
+    "/api/v1/delegates/changes": {
+      "get": {
+        "summary": "Get Delegate Statement Changes",
+        "description": "Public endpoint to list delegate statement changes",
+        "tags": ["Delegates"],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "lookback_days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/delegates/{address}/voting-power-chart": {
+      "get": {
+        "summary": "Get Delegate Voting Power Chart",
+        "description": "Public endpoint to get voting power chart data for a delegate",
+        "tags": ["Delegates"],
+        "parameters": [
+          {
+            "name": "address",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/proposal/{id}/vote-changes": {
+      "get": {
+        "summary": "Get Proposal Vote Changes",
+        "description": "Public endpoint to list vote changes for a proposal",
+        "tags": ["Proposals"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
