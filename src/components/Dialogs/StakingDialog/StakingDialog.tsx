@@ -33,10 +33,7 @@ const StakingDialogContent = ({
   const { setSelectedPool, source, maxStakingAmount } =
     useStakingProviderContext();
   const [currentStep, setCurrentStep] = useState<DialogStep>("form");
-  const {
-    trackStakingFlowStarted,
-    trackStakingSkipped,
-  } = useAnalytics();
+  const { trackStakingFlowStarted, trackStakingSkipped } = useAnalytics();
 
   useEffect(() => {
     trackStakingFlowStarted({
