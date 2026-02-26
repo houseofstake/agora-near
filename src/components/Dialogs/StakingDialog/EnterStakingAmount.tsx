@@ -223,33 +223,31 @@ export const EnterStakingAmount = ({
             </div>
           </div>
         ) : (
-
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          {pools.map((pool) => (
-            <div
-              key={pool.id}
-              className={!canChangePool ? "opacity-50 grayscale" : ""}
-            >
-              <StakingOptionCard
-                isEnabled={canChangePool}
-                isSelected={selectedPool.id === pool.id}
-                onSelect={() => {
-                  setSelectedPool(pool);
-                  trackStakingPoolSelected({
-                    pool_type: "curated_lst",
-                    pool_id: pool.id,
-                    pool_apy: poolStats[pool.id]?.apy,
-                  });
-                }}
-                tokenMetadata={pool.metadata}
-                apy={poolStats[pool.id]?.apy}
-                totalVolumeYocto={poolStats[pool.id]?.totalVolumeYocto ?? "-"}
-              />
-            </div>
-          ))}
-        </div>
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            {pools.map((pool) => (
+              <div
+                key={pool.id}
+                className={!canChangePool ? "opacity-50 grayscale" : ""}
+              >
+                <StakingOptionCard
+                  isEnabled={canChangePool}
+                  isSelected={selectedPool.id === pool.id}
+                  onSelect={() => {
+                    setSelectedPool(pool);
+                    trackStakingPoolSelected({
+                      pool_type: "curated_lst",
+                      pool_id: pool.id,
+                      pool_apy: poolStats[pool.id]?.apy,
+                    });
+                  }}
+                  tokenMetadata={pool.metadata}
+                  apy={poolStats[pool.id]?.apy}
+                  totalVolumeYocto={poolStats[pool.id]?.totalVolumeYocto ?? "-"}
+                />
+              </div>
+            ))}
+          </div>
         )}
-
 
         {/* Active Custom Pool Card */}
         {hasAlreadySelectedStakingPool &&
