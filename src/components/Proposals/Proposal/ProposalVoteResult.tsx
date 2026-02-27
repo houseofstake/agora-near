@@ -10,7 +10,8 @@ import InfiniteScroll from "react-infinite-scroller";
 import { useProposalVotes } from "@/hooks/useProposalVotes";
 import { HStack } from "@/components/Layout/Stack";
 import { VStack } from "@/components/Layout/Stack";
-import { HoverCard, HoverCardTrigger } from "@/components/ui/hover-card";
+import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
+import { HoverCardSocialProfile } from "./HoverCardSocialProfile";
 import {
   Tooltip,
   TooltipContent,
@@ -162,6 +163,9 @@ const ProposalVoteResult = ({
                                 />
                               </HStack>
                             </HoverCardTrigger>
+                            <HoverCardContent className="w-auto p-0 rounded-xl" side="top">
+                              <HoverCardSocialProfile address={nonVoter.registeredVoterId} />
+                            </HoverCardContent>
                           </HoverCard>
                         </VStack>
                       </VStack>
@@ -279,6 +283,9 @@ const ProposalVoteResult = ({
                                 </HStack>
                               </HStack>
                             </HoverCardTrigger>
+                            <HoverCardContent className="w-auto p-0 rounded-xl" side="top">
+                              <HoverCardSocialProfile address={vote.accountId} />
+                            </HoverCardContent>
                           </HoverCard>
                         </VStack>
                       </VStack>
