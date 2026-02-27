@@ -58,6 +58,7 @@ const DelegateCard = ({
                   shouldTruncate={true}
                   displayName={displayName}
                   fetchDisplayName={false}
+                  inlineDisplay={true}
                 />
               </div>
               {endorsed && <EndorsedTooltip />}
