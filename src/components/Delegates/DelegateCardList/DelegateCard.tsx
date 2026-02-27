@@ -21,8 +21,6 @@ const DelegateCard = ({
   isDelegatesFiltering,
   displayName,
 }: DelegateCardProps) => {
-  const { data: votingPower } = useVotingPower(delegate.address);
-
   const sanitizedTruncatedStatement = useMemo(() => {
     const truncatedStatement = stripMarkdown(delegate.statement ?? "").slice(
       0,
@@ -66,7 +64,7 @@ const DelegateCard = ({
             <div className="px-4 flex flex-row gap-4 min-h-[24px]">
               <span className="text-primary font-bold">
                 <TokenAmount
-                  amount={votingPower ?? delegate.votingPower ?? "0"}
+                  amount={delegate.votingPower ?? "0"}
                   minimumFractionDigits={1}
                   maximumSignificantDigits={1}
                   currency="veNEAR"

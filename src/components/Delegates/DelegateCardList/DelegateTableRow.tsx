@@ -16,7 +16,6 @@ export default function DelegateTableRow({
   displayName?: string;
 }) {
   const router = useRouter();
-  const { data: votingPower } = useVotingPower(delegate.address);
   const endorsed = delegate.endorsed;
 
   return (
@@ -44,9 +43,9 @@ export default function DelegateTableRow({
         {endorsed && <EndorsedTooltip />}
       </TableCell>
       <TableCell>
-        {votingPower || delegate.votingPower ? (
+        {delegate.votingPower ? (
           <TokenAmount
-            amount={votingPower ?? delegate.votingPower ?? "0"}
+            amount={delegate.votingPower ?? "0"}
             minimumFractionDigits={1}
             maximumSignificantDigits={1}
             currency="veNEAR"
