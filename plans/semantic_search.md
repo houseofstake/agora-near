@@ -1,15 +1,16 @@
-# Semantic Search for Delegate Statements
+# Semantic Search, Sort, and Filter for Delegates
 
-Implement semantic search over delegate statements using Meilisearch (vector store + hybrid search). Other options were evaluated but Meilisearch chosen for single-system hybrid search, typo tolerance, and fast results.
+Add Meilisearch-powered semantic search over delegate statements with hybrid (lexical + vector) search, sorting by VP/last vote/last delegation/herd alignment, filtering by endorsed/issueTypes, plus extend the existing Postgres GET /api/delegates with the same sort/filter options for non-search browsing.
 
 ## Current State
 
-- **Delegate data**: `statement` (free text, 4k chars) + `topIssues` (type/value pairs) per delegate
-- **Backend**: External API (`near-api-*.run.app`) – [src/lib/api/constants.ts](src/lib/api/constants.ts), [src/lib/api/delegates/requests.ts](src/lib/api/delegates/requests.ts)
+- **Delegate data**: `delegate_statements` table (statement, topIssues, socials, endorsed) FULL OUTER JOINed with `registered_voters` view (votingPower, participationRate)
+- **Existing sorts**: `most_voting_power`, `least_voting_power`, weighted random (default)
+- **Existing filters**: `endorsed`, `issue_type`
+- **No text/semantic search exists**
+- **~400 delegates** currently
 - **Search today**: Exact address match only in [DelegatesSearch.jsx](src/components/Delegates/DelegatesSearch/DelegatesSearch.jsx) – redirects to `/delegates/{address}`
 - **Filtering**: `filter_by`, `issue_type` – structured only, no text search on statements
-
----
 
 ## Chosen Approach: Meilisearch
 
@@ -23,26 +24,33 @@ Implement semantic search over delegate statements using Meilisearch (vector sto
 4. **Flexible embedders** – OpenAI (best quality) or HuggingFace (open-source, no API cost)
 5. **Vector store** – Native storage of embeddings; no external Pinecone/pgvector
 
-### Architecture
+## Architecture
 
 ```mermaid
 flowchart TB
-    subgraph Sync [Sync - Backend responsibility]
-        A[Backend indexes to Meilisearch]
-        A --> B[Vector store populated]
+    subgraph Browse ["Browse (no text query)"]
+        A["GET /api/delegates"] --> B["Postgres raw SQL"]
+        B --> C["Conditional CTEs for aggregates"]
+        C --> D["Sort/filter/paginate"]
     end
-    subgraph Search [Search request]
-        U[User types query] --> E{Address pattern?}
-        E -->|Yes| F[Redirect to /delegates/addr]
-        E -->|No| G[POST /api/delegates/search]
-        G --> H[Meilisearch hybrid search]
-        H --> I[Delegate IDs + scores]
-        I --> J[Enrich from delegates API if needed]
-        J --> K[Return results]
+    subgraph Search ["Search (text query)"]
+        E["POST /api/delegates/search"] --> F["Meilisearch hybrid search"]
+        F --> G["Sort + filter via Meilisearch"]
+        G --> H["Return results"]
+    end
+    subgraph SyncOnchain ["Sync On-chain Data (CRON, ~3h)"]
+        I["Query Postgres aggregates"] --> J["Batch update Meilisearch docs"]
+    end
+    subgraph SyncStatement ["On Statement Write"]
+        L["POST /api/delegates/statement"] --> M["Upsert Postgres"]
+        M --> N["Upsert single doc in Meilisearch"]
     end
 ```
 
----
+Two indexing paths because the data comes from two sources:
+
+- **Statement data** (statement, topIssues, endorsed) changes via the backend API -- index immediately on write
+- **On-chain data** (VP, lastVote, lastDelegation, herdAlignment, participationRate) changes via the fastnear indexer -- sync every ~3 hours
 
 ## Implementation Plan
 
@@ -54,27 +62,166 @@ flowchart TB
 
 ### 2. Index configuration
 
-- Create index `delegates` (via SDK or backend on first write)
-- Embedder: `sentence-transformers/all-MiniLM-L6-v2`, 384 dimensions. Meilisearch handles both doc and query embedding
-- Searchable attributes: `address`, `statement`, `topIssues` (concatenated)
-- Document template for embedding: `"Delegate statement: {{doc.statement}}. Top issues: {{doc.topIssuesText}}"`
+**Index**: `delegates`
 
-### 3. Sync / indexing (backend responsibility)
+#### Document shape (lean -- only what search/sort/filter needs):
 
-**On write**: When a delegate creates/updates their statement via the backend, backend indexes that delegate to Meilisearch immediately
+```typescript
+{
+  id: string;                           // address (primary key)
+  address: string;
+  statement: string | null;
+  topIssuesText: string;                // "governance: improve voting. technical: protocol upgrades."
+  endorsed: boolean;
+  issueTypes: string[];                 // ["governance", "technical"]
+  votingPower: number;                  // numeric
+  participationRate: number;
+  lastVoteTimestamp: number | null;      // unix epoch seconds
+  lastDelegationTimestamp: number | null;
+  herdAlignmentRate: number | null;     // 0-1
+}
+```
+
+#### Index settings:
+
+- **Searchable**: `address`, `statement`, `topIssuesText`
+- **Sortable**: `votingPower`, `lastVoteTimestamp`, `lastDelegationTimestamp`, `herdAlignmentRate`, `participationRate`
+- **Filterable**: `endorsed`, `issueTypes`
+- **Embedder**: HuggingFace `sentence-transformers/all-MiniLM-L6-v2`, 384 dims
+  - Document template: `"Delegate statement: {{doc.statement}}. Top issues: {{doc.topIssuesText}}"`
+  - Meilisearch handles both document and query embedding (no external embedding service needed)
+
+### 3. On-chain Sync Job (every ~3 hours)
+
+CRON job, `cron: "0 */3 * * *"`.
+
+This job only syncs **on-chain derived fields** that the backend doesn't control:
+
+1. Run a single Postgres query with CTEs to get all ~400 delegates with their aggregates:
+
+```sql
+WITH last_votes AS (
+  SELECT voter_id, MAX(voted_at) as last_vote_at
+  FROM fastnear.proposal_voting_history
+  GROUP BY voter_id
+),
+last_delegations AS (
+  SELECT delegatee_id, MAX(event_timestamp) as last_delegation_at
+  FROM fastnear.delegation_events
+  WHERE delegate_event = 'ft_mint'
+  GROUP BY delegatee_id
+),
+proposal_outcomes AS (
+  SELECT proposal_id,
+    CASE
+      WHEN for_voting_power >= against_voting_power
+        AND for_voting_power >= COALESCE(abstain_voting_power, 0) THEN 0
+      WHEN against_voting_power > for_voting_power
+        AND against_voting_power >= COALESCE(abstain_voting_power, 0) THEN 1
+      ELSE 2
+    END as winning_option
+  FROM fastnear.proposals WHERE has_votes = true
+),
+herd_alignment AS (
+  SELECT pvh.voter_id,
+    COUNT(*) FILTER (WHERE pvh.vote_option = po.winning_option)::float
+      / NULLIF(COUNT(*), 0) as alignment_rate
+  FROM fastnear.proposal_voting_history pvh
+  JOIN proposal_outcomes po ON pvh.proposal_id = po.proposal_id
+  GROUP BY pvh.voter_id
+)
+SELECT
+  COALESCE(rv.registered_voter_id, ds.address) as address,
+  rv.current_voting_power,
+  rv.proposal_participation_rate,
+  lv.last_vote_at,
+  ld.last_delegation_at,
+  ha.alignment_rate,
+  ds.statement,
+  ds."topIssues",
+  ds.endorsed
+FROM fastnear.registered_voters rv
+FULL OUTER JOIN web2.delegate_statements ds ON rv.registered_voter_id = ds.address
+LEFT JOIN last_votes lv ON lv.voter_id = COALESCE(rv.registered_voter_id, ds.address)
+LEFT JOIN last_delegations ld ON ld.delegatee_id = COALESCE(rv.registered_voter_id, ds.address)
+LEFT JOIN herd_alignment ha ON ha.voter_id = COALESCE(rv.registered_voter_id, ds.address)
+```
+
+1. Map rows to Meilisearch document shape
+2. `index.updateDocuments(documents)` -- full batch upsert (~400 docs, completes in seconds)
+
+Statement fields (`statement`, `topIssues`, `endorsed`) are included in the sync too since they're needed for the document but the **primary writer** for those fields is the on-write path. The sync just ensures consistency.
 
 ### 4. Search API route
 
 - **Path**: `src/app/api/delegates/search/route.ts`
-- **Method**: POST, body `{ q: string, limit?: number }`
-- **Flow**:
-  1. Validate query (non-empty, reasonable length)
-  2. Call Meilisearch hybrid search:
-  - `semanticRatio: 0.7` (tune: more semantic vs more lexical)
-  1. Return `{ delegates: DelegateProfile[], total: number }`
-  2. Enrich from delegates API
 
-### 5. Frontend changes
+### Request
+
+```typescript
+POST /api/delegates/search
+{
+  q: string;                  // required, non-empty
+  sort?: string[];            // e.g. ["votingPower:desc"]
+  filter?: string;            // Meilisearch filter syntax, e.g. "endorsed = true"
+  limit?: number;             // default 10
+  offset?: number;            // default 0
+  semanticRatio?: number;     // default 0.7
+}
+```
+
+### Response
+
+```typescript
+{
+  delegates: {
+    address: string;
+    statement: string | null;
+    topIssuesText: string;
+    endorsed: boolean;
+    issueTypes: string[];
+    votingPower: number;
+    participationRate: number;
+    lastVoteTimestamp: number | null;
+    lastDelegationTimestamp: number | null;
+    herdAlignmentRate: number | null;
+  }[];
+  total: number;
+  query: string;
+}
+```
+
+#### Controller logic
+
+1. Validate `q` is non-empty, `limit` <= 100
+2. Call `index.search(q, { sort, filter, limit, offset, hybrid: { semanticRatio, embedder: "default" } })`
+3. Map hits to response shape
+4. Return
+
+---
+
+### 5. Extend `GET /api/delegates` (Postgres path)
+
+New `order_by` values (conditional CTEs, only built when needed):
+
+| `order_by` value          | SQL                                              | CTE needed                                      |
+| ------------------------- | ------------------------------------------------ | ----------------------------------------------- |
+| `most_recent_vote`        | `ORDER BY lv.last_vote_at DESC NULLS LAST`       | `last_votes`                                    |
+| `least_recent_vote`       | `ORDER BY lv.last_vote_at ASC NULLS FIRST`       | `last_votes`                                    |
+| `most_recent_delegation`  | `ORDER BY ld.last_delegation_at DESC NULLS LAST` | `last_delegations`                              |
+| `least_recent_delegation` | `ORDER BY ld.last_delegation_at ASC NULLS FIRST` | `last_delegations`                              |
+| `most_aligned`            | `ORDER BY ha.alignment_rate DESC NULLS LAST`     | `herd_alignment` (includes `proposal_outcomes`) |
+| `least_aligned`           | `ORDER BY ha.alignment_rate ASC NULLS FIRST`     | `herd_alignment`                                |
+
+New response fields (returned alongside existing fields):
+
+- `lastVoteAt` -- timestamp or null
+- `lastDelegationAt` -- timestamp or null
+- `herdAlignmentRate` -- float 0-1 or null
+
+These fields are always returned (via LEFT JOINs to the aggregate CTEs) regardless of sort, so the frontend can display them. The CTEs are lightweight for ~400 delegates.
+
+### 6. Frontend changes
 
 - **DelegatesSearch.jsx**:
   - Detect if input looks like NEAR address (e.g. `*.near` or 64-char hex)
@@ -84,12 +231,6 @@ flowchart TB
 - **DelegateContent.tsx** / delegate list:
   - When `searchQuery` is set: render search results instead of paginated list
   - Clear search to return to normal list
-
-### 6. Dependencies
-
-- `meilisearch` (official JS SDK) – add to package.json
-
----
 
 ## Options Considered (Not Chosen)
 
