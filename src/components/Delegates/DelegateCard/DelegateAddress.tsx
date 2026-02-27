@@ -26,7 +26,9 @@ export function DelegateAddress({
   return (
     <div className="flex flex-row gap-4 items-center">
       <div
-        className={inlineDisplay ? "flex flex-row items-baseline gap-2" : "flex flex-col"}
+        className={
+          inlineDisplay ? "flex flex-row items-baseline gap-2" : "flex flex-col"
+        }
       >
         {resolvedDisplayName && (
           <div className="text-primary font-semibold leading-tight">
