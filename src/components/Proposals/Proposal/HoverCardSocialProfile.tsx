@@ -18,10 +18,16 @@ export const HoverCardSocialProfile = ({ address }: Props) => {
 
   return (
     <div className="flex flex-col p-3 gap-1">
-      <div className="font-semibold text-primary text-sm">
-        {profile?.name || address}
-      </div>
-      {profile?.name && <div className="text-secondary text-xs">{address}</div>}
+      {profile?.name ? (
+        <>
+          <div className="font-semibold text-primary text-sm">
+            {profile.name}
+          </div>
+          <div className="text-secondary text-xs">{address}</div>
+        </>
+      ) : (
+        <div className="font-semibold text-primary text-sm">{address}</div>
+      )}
     </div>
   );
 };
