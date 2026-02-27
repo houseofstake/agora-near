@@ -10,9 +10,8 @@ export const HoverCardSocialProfile = ({ address }: Props) => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-2 p-3">
+      <div className="p-3">
         <Skeleton className="h-4 w-[120px]" />
-        <Skeleton className="h-3 w-[80px]" />
       </div>
     );
   }
@@ -22,9 +21,7 @@ export const HoverCardSocialProfile = ({ address }: Props) => {
       <div className="font-semibold text-primary text-sm">
         {profile?.name || address}
       </div>
-      <div className="text-secondary text-xs">
-        {profile?.name ? address : "No NEAR profile"}
-      </div>
+      {profile?.name && <div className="text-secondary text-xs">{address}</div>}
     </div>
   );
 };
