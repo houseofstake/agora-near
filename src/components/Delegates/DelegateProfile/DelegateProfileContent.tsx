@@ -20,10 +20,7 @@ export const DelegateProfileContent = ({ address }: { address: string }) => {
     accountId: address,
   });
 
-  const { data: votingPower, isLoading: isLoadingVotingPower } =
-    useVotingPower(address);
-
-  if (isLoadingProfile || isLoadingVotingPower) {
+  if (isLoadingProfile) {
     return (
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 justify-between mt-12 w-full max-w-full">
         <Skeleton className="w-[350px] h-[50vh]" />
@@ -59,7 +56,7 @@ export const DelegateProfileContent = ({ address }: { address: string }) => {
             votingPower: delegate.votingPower,
           }}
           stats={{
-            votingPower,
+            votingPower: delegate.votingPower,
             numOfDelegators: delegate.delegatedFromCount?.toString() ?? "0",
             participationRate: delegate.participationRate,
             votedFor: delegate.forCount?.toString() ?? "0",
