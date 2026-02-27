@@ -37,7 +37,7 @@ export const ProjectionSlider = memo(
     const calculateProjection = useCallback(
       (years: number) => {
         if (years === 0) return startingAmount;
-        return startingAmount * Math.pow(1 + apy, years);
+        return startingAmount * (1 + apy * years);
       },
       [apy, startingAmount]
     );
