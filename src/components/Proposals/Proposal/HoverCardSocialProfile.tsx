@@ -10,24 +10,21 @@ export const HoverCardSocialProfile = ({ address }: Props) => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-2 p-2">
-        <Skeleton className="h-4 w-[150px]" />
-      </div>
-    );
-  }
-
-  if (!profile || !profile.name) {
-    return (
-      <div className="flex flex-col p-2 text-sm text-secondary">
-        No NEAR.Social profile found.
+      <div className="flex flex-col gap-2 p-3">
+        <Skeleton className="h-4 w-[120px]" />
+        <Skeleton className="h-3 w-[80px]" />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col p-2">
-      <div className="font-semibold text-primary">{profile.name}</div>
-      <div className="text-secondary text-xs">{address}</div>
+    <div className="flex flex-col p-3 gap-1">
+      <div className="font-semibold text-primary text-sm">
+        {profile?.name || address}
+      </div>
+      <div className="text-secondary text-xs">
+        {profile?.name ? address : "No NEAR profile"}
+      </div>
     </div>
   );
 };
