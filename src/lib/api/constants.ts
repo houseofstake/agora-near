@@ -28,4 +28,7 @@ export const Endpoint = Object.freeze({
   Staking: `${baseApiUrl}/staking`,
   Nonce: `${baseApiUrl}/nonce`,
   Transactions: `${baseApiUrl}/transactions`,
+  DelegateStatementChanges: `${baseApiUrl}/delegate_statement_changes`,
+  VotingPowerChart: `${baseApiUrl}/get_voting_power_chart`,
+  VoteChanges: `${baseApiUrl}/vote_changes`,
 });
