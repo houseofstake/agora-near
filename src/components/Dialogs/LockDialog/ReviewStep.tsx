@@ -184,7 +184,8 @@ export const ReviewStep = memo(
                   Locked, and loaded.
                 </h2>
                 <p className="text-base text-gray-600 max-w-sm">
-                  Your rewards are flowing and your vote just got stronger!
+                  Successfully locked! You now have veNEAR voting power and are
+                  eligible for rewards.
                 </p>
               </div>
             </div>

@@ -86,7 +86,9 @@ export function DelegateDialog({
               <span className="truncate max-w-[120px]" title={delegateAddress}>
                 {truncateAddress(delegateAddress)}
               </span>{" "}
-              will be able to vote with any token owned by your address
+              will vote on your behalf using your veNEAR voting power. Your
+              locked NEAR and rewards remain yours. You can undelegate at any
+              time.
             </div>
             <div className="flex flex-col relative border border-line rounded-lg">
               <div className="flex flex-row items-center gap-3 p-2 border-b border-line">

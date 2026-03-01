@@ -19,7 +19,7 @@ export function LoadingVote() {
           className={`flex flex-row justify-center w-full py-3 bg-line rounded-lg`}
         >
           <div className="font-medium text-secondary">
-            Writing your vote to the chain...
+            Recording your vote on the NEAR blockchain...
           </div>
         </div>
       </div>

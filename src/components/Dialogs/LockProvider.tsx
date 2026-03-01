@@ -207,7 +207,9 @@ export const LockProvider = ({
       await queryClient.invalidateQueries({
         queryKey: [READ_NEAR_CONTRACT_QK, CONTRACTS.VENEAR_CONTRACT_ID],
       });
-      toast.success("Lock successful");
+      toast.success(
+        "Your NEAR is locked! You now have veNEAR voting power and are eligible for rewards."
+      );
       onLockSuccess?.();
     },
   });

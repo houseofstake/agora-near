@@ -38,8 +38,10 @@ export const DisclosuresContent = memo(
                 You Can Unlock Anytime
               </h2>
               <p className="text-sm text-gray-600 leading-relaxed">
-                You can unlock your NEAR whenever you want. There is no fixed
-                lock period.
+                You can initiate unlocking anytime. There&apos;s no minimum lock
+                period. Once you start unlocking, there&apos;s a 45-day cooldown
+                before withdrawal. If you staked, add 30-72 hours (varies by
+                pool) to unstake before you can withdraw.
               </p>
             </div>
 

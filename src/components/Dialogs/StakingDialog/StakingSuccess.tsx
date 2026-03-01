@@ -20,9 +20,8 @@ export const StakingSuccess = ({
             Staked, locked, and loaded.
           </h1>
           <p className="text-md text-gray-500">
-            Your rewards are flowing and
-            <br />
-            your vote just got stronger!
+            You&apos;re now earning staking rewards. Note: Staking doesn&apos;t
+            affect your voting power.
           </p>
         </div>
       </div>

@@ -78,7 +78,11 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
 
   return (
     <div className="flex flex-col gap-6 h-full w-full">
-      <p className="text-2xl font-bold text-left text-primary">Unlock tokens</p>
+      <p className="text-2xl font-bold text-left text-primary">Unlock NEAR</p>
+      <p className="text-sm text-secondary">
+        Unlocking starts the 45-day cooldown. You will lose voting power
+        immediately.
+      </p>
       <div className="flex flex-col gap-1">
         <div className="flex items-center text-sm text-secondary">
           <span>Available to unlock</span>
@@ -90,13 +94,12 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
                 </h4>
                 <p className="text-sm">
                   You can unlock this balance but will lose voting power and
-                  rewards. Any staked assets you have locked will not be
-                  available until they are unlocked through the staking pool.
-                  Currently, this is not possible through this UI, instead the
-                  operation can be done by directly interacting with the
-                  contracts. It is expected that staking balances will be zero
-                  on the third-party platforms due to your lock-up contract
-                  being the owner. See the{" "}
+                  rewards eligibility. If you staked your tokens, you&apos;ll
+                  need to unstake them first using the Staking dialog (Advanced
+                  → Unstake). Note: You cannot unstake from the LST
+                  provider&apos;s website (Meta Pool, LiNEAR, etc.) because your
+                  lockup contract owns the tokens. Their UI will show zero
+                  balance for your wallet. See the{" "}
                   <a
                     href="/info"
                     target="_blank"
@@ -104,7 +107,8 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
                     className="text-blue-700"
                   >
                     FAQ
-                  </a>
+                  </a>{" "}
+                  for the full withdrawal timeline.
                 </p>
               </div>
             }

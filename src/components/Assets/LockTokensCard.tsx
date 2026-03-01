@@ -56,7 +56,7 @@ export const LockTokensCard = memo(({ className }: LockTokensCardProps) => {
         />
         <div className="text-black flex flex-col items-center gap-3 text-center">
           <h3 className="text-lg font-bold mb-2">
-            Lock & Stake NEAR to participate in veNEAR governance rewards!
+            Lock & Stake NEAR to participate in veNEAR rewards!
           </h3>
           <p className="text-sm mb-2">
             Rewards are variable and may be equivalent to up to ~7.5%**

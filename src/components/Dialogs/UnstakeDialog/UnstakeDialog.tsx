@@ -191,7 +191,8 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
             <p className="text-sm text-secondary">
               You have funds ready to withdraw. If you unstake more now, ALL
               your pending funds (including the ones ready now) will be locked
-              for another ~52-65 hours.
+              for another period (stNEAR: 48-72h, liNEAR: ~49h, rNEAR: ~30h).
+              This is due to the NEAR network&apos;s unbonding period.
             </p>
           </div>
         </div>
@@ -257,6 +258,30 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
             />
           </div>
         </div>
+      </div>
+
+      <div className="flex flex-row items-start bg-blue-50 p-3 rounded-lg border border-blue-200">
+        <div className="text-blue-500 mt-0.5">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="w-5 h-5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+            />
+          </svg>
+        </div>
+        <p className="text-xs text-blue-700 ml-2 leading-relaxed">
+          Unstaking begins a cooldown period (stNEAR: 48-72h, liNEAR: ~49h,
+          rNEAR: ~30h). You must withdraw to your lockup contract after this
+          period ends.
+        </p>
       </div>
 
       {unstakingNearError && (

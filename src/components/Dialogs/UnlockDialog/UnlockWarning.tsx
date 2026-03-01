@@ -11,8 +11,9 @@ export const UnlockWarning = () => {
         />
       </div>
       <p className="text-sm ml-2">
-        Unlocking tokens will decrease your voting power. Unlocking takes
-        45-days.
+        Unlocking removes your voting power immediately and ends eligibility for
+        future veNEAR reward rounds. Timeline: 45 days to unlock, then if you
+        staked, add 30-72 hours to unstake before withdrawal.
       </p>
     </div>
   );

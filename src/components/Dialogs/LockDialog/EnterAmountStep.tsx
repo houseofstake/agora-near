@@ -109,6 +109,11 @@ export const EnterAmountStep = ({
       <p className="text-2xl font-bold text-left text-primary">
         Lock assets and gain voting power
       </p>
+      <p className="text-sm text-secondary">
+        Lock NEAR to receive veNEAR, which gives you voting power in House of
+        Stake governance. You&apos;ll also be eligible for veNEAR rewards during
+        the campaign.
+      </p>
       <div className="flex flex-col gap-1">
         <div className="flex items-center text-sm text-secondary">
           <span>Available to lock</span>
