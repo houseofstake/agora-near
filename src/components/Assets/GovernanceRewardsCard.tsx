@@ -102,54 +102,10 @@ export const GovernanceRewardsCard = memo(() => {
   }
 
   if (hasClaimedRewards) {
-    return (
-      <div className="flex-1 bg-black rounded-2xl p-6 text-white relative overflow-hidden">
-        <div className="relative z-10 flex">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="text-lg font-semibold">
-                veNEAR Governance Rewards
-              </div>
-            </div>
-            <div className="text-sm text-gray-300 mb-6">
-              Rewards already claimed, stay tuned for the next campaign
-            </div>
-            <Link
-              href="/info#ve-near-rewards"
-              className="text-sm text-white hover:text-gray-200 flex items-center gap-1"
-            >
-              Learn more <ArrowRightIcon className="w-4 h-4" />
-            </Link>
-          </div>
-          <AnimatedStars />
-        </div>
-      </div>
-    );
+    return null;
   }
 
-  return (
-    <div className="flex-1 bg-black rounded-2xl p-6 text-white relative overflow-hidden">
-      <div className="relative z-10 flex">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="text-lg font-semibold">
-              veNEAR Governance Rewards
-            </div>
-          </div>
-          <div className="text-sm text-gray-300 mb-6">
-            Stay tuned for the next campaign
-          </div>
-          <Link
-            href="/info#ve-near-rewards"
-            className="text-sm text-white hover:text-gray-200 flex items-center gap-1"
-          >
-            Learn more <ArrowRightIcon className="w-4 h-4" />
-          </Link>
-        </div>
-        <AnimatedStars />
-      </div>
-    </div>
-  );
+  return null;
 });
 
 GovernanceRewardsCard.displayName = "GovernanceRewardsCard";

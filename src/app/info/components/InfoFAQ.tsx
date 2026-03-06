@@ -137,9 +137,8 @@ const generalFaqs: FAQ[] = [
     answer: (
       <Text>
         NEAR House of Stake governance is a decentralized governance system that
-        empowers token holders to lock NEAR for voting rights, delegate votes to
-        trusted representatives, and earn rewards for active participation. It
-        enables the community to collectively make decisions about the
+        empowers token holders to lock NEAR for voting rights, and delegate votes to
+        trusted representatives. It enables the community to collectively make decisions about the
         protocol&apos;s future.
       </Text>
     ),
@@ -343,8 +342,7 @@ const generalFaqs: FAQ[] = [
       <Text>
         You can participate by locking your NEAR tokens to gain voting power,
         delegating your voting power to trusted delegates who align with your
-        values, or becoming a delegate yourself. All participants earn rewards
-        for their active involvement in the governance process.
+        values, or becoming a delegate yourself.
       </Text>
     ),
   },
@@ -390,7 +388,7 @@ const generalFaqs: FAQ[] = [
       <Text>
         When you lock NEAR tokens for governance, they are locked for a specific
         period. During this time, you cannot transfer or use these tokens for
-        other purposes, but you maintain voting rights and earn rewards. The
+        other purposes, but you maintain voting rights. The
         locking period helps ensure long-term alignment with the protocol&apos;s
         success.
       </Text>
@@ -568,8 +566,7 @@ const generalFaqs: FAQ[] = [
         locked at a time. Concurrent locking of multiple LSTs is not supported
         in House of Stake V1. When you lock NEAR tokens for governance, they are
         locked for a specific period. During this time, you cannot transfer or
-        use these tokens for other purposes, but you maintain voting rights and
-        earn rewards. The locking period helps ensure long-term alignment with
+        use these tokens for other purposes, but you maintain voting rights. The locking period helps ensure long-term alignment with
         the protocol&apos;s success.
       </Text>
     ),
@@ -591,119 +588,6 @@ const generalFaqs: FAQ[] = [
       </Text>
     ),
   },
-];
-
-const rewardsFaqs: FAQ[] = [
-  {
-    id: "what-are-venear-rewards",
-    question: "What are veNEAR rewards?",
-    answer: (
-      <Text>
-        Locking your NEAR demonstrates long-term commitment to the NEAR
-        ecosystem. When you lock NEAR, you receive veNEAR in return. For a
-        limited time, House of Stake is offering additional rewards for every
-        NEAR you lock.
-      </Text>
-    ),
-  },
-  {
-    id: "how-to-receive-venear-rewards",
-    question: "How can I receive veNEAR Rewards?",
-    answer: (
-      <Text>
-        To receive veNEAR rewards, you need to lock NEAR.{" "}
-        <Link
-          href="/assets"
-          className="text-primary underline hover:text-secondary font-medium"
-        >
-          Start here
-        </Link>{" "}
-        by clicking “Lock & Stake” and follow the guided process. This{" "}
-        <ExternalLink href="https://www.youtube.com/watch?v=UMDX3uFvS3w">
-          tutorial video
-        </ExternalLink>{" "}
-        walks you through each step. First, lock your NEAR to mint veNEAR.
-        Second, optionally, stake your NEAR to receive additional governance
-        rewards. Staking is not required to receive veNEAR rewards. That&apos;s
-        it!
-      </Text>
-    ),
-  },
-  {
-    id: "how-to-claim-venear-rewards",
-    question: "How can I claim my veNEAR Rewards?",
-    answer: (
-      <Text>
-        Go to the{" "}
-        <Link
-          className="text-primary underline hover:text-secondary font-medium"
-          href="/assets"
-        >
-          House of Stake assets page
-        </Link>
-        , and connect your wallet. When rewards are available, a “Claim” button
-        will appear. Click it to initiate the transfer of your rewards. You’ll
-        receive NEAR directly into your lockup address, and your wallet balance
-        will update accordingly. Rewards will be released in multiple rounds
-        over a three-month period. By keeping your veNEAR locked, you’ll
-        automatically participate in all upcoming rounds until the veNEAR
-        rewards campaign concludes.
-      </Text>
-    ),
-  },
-  {
-    id: "how-to-increase-governance-rewards",
-    question: "How can I increase my governance rewards?",
-    answer: (
-      <div className="space-y-4">
-        <Text>
-          Your rewards increase based on how much NEAR you lock and how long you
-          lock it for. Please note: The total amount of veNEAR rewards
-          distributed depends on the overall NEAR participation in the rewards
-          campaign.
-        </Text>
-        <Text>
-          Your individual allocation scales with your lock amount and lock
-          duration.
-        </Text>
-        <Text>
-          You can also increase your overall participation rewards by staking
-          NEAR (optional). Combining locking and staking may increase your
-          overall participation rewards, depending on program parameters. For
-          more details on how rewards are calculated,{" "}
-          <ExternalLink href="https://github.com/houseofstake/proposals/blob/e82f6a2978d62617f9b79a8b39016e383d3189ee/HSPs/hsp-003.md">
-            check out this link
-          </ExternalLink>
-          .
-        </Text>
-      </div>
-    ),
-  },
-  {
-    id: "unlock-venear-immediately",
-    question: "Can I unlock my veNEAR immediately after claiming rewards?",
-    answer: (
-      <Text>
-        Yes. Claiming rewards is independent of locking mechanics. You can
-        unlock your veNEAR at any time. However, we encourage you to keep your
-        veNEAR locked and delegate it to participate in governance and
-        decision-making at House of Stake. Staying locked and delegated
-        strengthens the ecosystem and gives you an active voice in shaping
-        NEAR&apos;s future.
-      </Text>
-    ),
-  },
-  {
-    id: "unlock-before-claiming",
-    question:
-      "If I unlock my veNEAR before claiming my rewards, will I lose them?",
-    answer: (
-      <Text>
-        No. Rewards that have already been assigned to you remain claimable even
-        after you unlock your veNEAR.
-      </Text>
-    ),
-  },
   {
     id: "withdraw-immediately-after-unlock",
     question: "Can I withdraw my NEAR immediately after unlocking veNEAR?",
@@ -715,29 +599,30 @@ const rewardsFaqs: FAQ[] = [
     ),
   },
   {
-    id: "min-amount-near",
-    question:
-      "What is the minimum amount of NEAR required to receive veNEAR rewards?",
-    answer: (
-      <Text>
-        You must have at least 2.1 NEAR available in your wallet to qualify for
-        veNEAR rewards.
-      </Text>
-    ),
-  },
-  {
     id: "delegate-venear-consequences",
     question: "What happens when I delegate veNEAR to a delegator?",
     answer: (
       <Text>
         Your veNEAR is burned, and new veNEAR is minted for the delegate. Your
-        locked NEAR balance remains unchanged within the lockup contract. Your
-        reward calculation is unaffected; delegating does not change the amount
-        of rewards you receive. You can undelegate your veNEAR at any time.
+        locked NEAR balance remains unchanged within the lockup contract. You can undelegate your veNEAR at any time.
+      </Text>
+    ),
+  },
+  {
+    id: "venear-rewards-discontinuation",
+    question: "What happened to the veNEAR rewards?",
+    answer: (
+      <Text>
+        The veNEAR rewards program has concluded. For more details on the program's culmination, please refer to the{" "}
+        <ExternalLink href="[FORUM_POST_URL_TBD]">
+          forum post
+        </ExternalLink>.
       </Text>
     ),
   },
 ];
+
+const rewardsFaqs: FAQ[] = [];
 
 const walletFaqs: FAQ[] = [
   {
@@ -793,16 +678,7 @@ const walletFaqs: FAQ[] = [
             </ExternalLink>
             )
           </li>
-          <li>
-            Earn veNEAR rewards (
-            <Link
-              className="text-primary underline hover:text-secondary font-medium"
-              href="/assets"
-            >
-              learn more here
-            </Link>
-            )
-          </li>
+
         </ul>
       </div>
     ),
