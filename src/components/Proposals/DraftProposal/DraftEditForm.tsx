@@ -371,27 +371,6 @@ const DraftEditForm = forwardRef<DraftEditFormRef, DraftEditFormProps>(
               </li>
             </ul>
           </div>
-          <div className="bg-wash rounded-xl border border-line p-6 mt-6">
-            <h2 className="text-2xl font-extrabold mb-4 text-primary">
-              How to pick your type
-            </h2>
-            <div className="space-y-4 text-sm text-muted-foreground">
-              <div>
-                <h3 className="font-semibold text-primary">Simple Majority</h3>
-                <p>
-                  Requires &gt; 50% of participating votes (excluding
-                  abstentions) to pass. Best for general decisions.
-                </p>
-              </div>
-              <div>
-                <h3 className="font-semibold text-primary">Super Majority</h3>
-                <p>
-                  Requires &ge; 66.67% of participating votes to pass (excluding
-                  abstentions). Required to amend the constitutional documents.
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
       </HStack>
     );
