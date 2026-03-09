@@ -8,7 +8,7 @@ import { memo, useMemo } from "react";
 import { LiquidStakingTokenLockWarning } from "../Dialogs/LockDialog/LiquidStakingTokenLockWarning";
 import AgoraLoader from "../shared/AgoraLoader/AgoraLoader";
 import { AssetsLandingPage } from "./AssetsLandingPage";
-import { GovernanceRewardsCard } from "./GovernanceRewardsCard";
+// GovernanceRewardsCard removed in phase 2
 import { HoldingsSection } from "./HoldingsSection";
 import { VotingPowerCard } from "./VotingPowerCard";
 import { DelegationSummaryCard } from "./DelegationSummaryCard";
@@ -62,7 +62,7 @@ export const AssetsHome = memo(() => {
           <VotingPowerCard />
         </div>
         <div className="w-full sm:w-[30%] flex">
-          <GovernanceRewardsCard />
+          {/* <GovernanceRewardsCard /> removed in phase 2 */}
         </div>
       </div>
       <div className="flex flex-col sm:px-6 -mt-2 mb-4">
