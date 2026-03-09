@@ -39,6 +39,7 @@ export const ReviewStep = memo(
       formattedUnlockDuration,
       maxAmountToUnlock,
       unlockDurationNs,
+      isUnlockingMax,
     } = useUnlockProviderContext();
 
     const {
@@ -81,14 +82,16 @@ export const ReviewStep = memo(
         setIsSubmitting(true);
         setError(null);
 
-        let amountInYocto = parseNearAmount(enteredAmount);
+        let amountInYocto = isUnlockingMax
+          ? maxAmountToUnlock
+          : parseNearAmount(enteredAmount);
 
         if (!amountInYocto) {
           throw new Error("Invalid unlock amount");
         }
 
         // Safety check
-        if (maxAmountToUnlock) {
+        if (maxAmountToUnlock && !isUnlockingMax) {
           const maxVal = Big(maxAmountToUnlock);
           const currentVal = Big(amountInYocto);
           if (currentVal.gt(maxVal)) {
