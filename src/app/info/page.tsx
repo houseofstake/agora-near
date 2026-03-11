@@ -1,10 +1,10 @@
 import React from "react";
-import { InfoWelcomeHero } from "@/app/info/components/InfoWelcomeHero";
 import { GovernanceProcess } from "@/app/info/components/GovernanceProcess";
-import { CommitteeDashboards } from "@/app/info/components/CommitteeDashboards";
 import InfoVideos from "@/app/info/components/InfoVideos";
 import { InfoScopeAndParams } from "@/app/info/components/InfoScopeAndParams";
 import Tenant from "@/lib/tenant/tenant";
+import { InfoHero } from "./components/InfoHero";
+import InfoRoadmap from "./components/InfoRoadmap";
 
 export async function generateMetadata() {
   const tenant = Tenant.current();
@@ -47,11 +47,11 @@ export default async function Page() {
 
   return (
     <div className="flex flex-col">
-      <InfoWelcomeHero />
+      <InfoHero />
       <GovernanceProcess />
-      <CommitteeDashboards />
-      <InfoVideos />
       <InfoScopeAndParams />
+      <InfoVideos />
+      <InfoRoadmap />
     </div>
   );
 }

@@ -214,7 +214,9 @@ export const EnterAmountStep = ({
         </div>
         <div className="flex flex-row justify-between">
           <span className="text-secondary">Unlock wait period</span>
-          <span className="text-primary font-bold">{formattedUnlockDuration}</span>
+          <span className="text-primary font-bold">
+            {formattedUnlockDuration}
+          </span>
         </div>
       </div>
       {!canLockSelectedToken && (

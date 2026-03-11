@@ -66,10 +66,7 @@ export const fetchProposalVotes = async (
     searchParams.set("search", params.search.trim());
   }
   if (params?.voteOption && params.voteOption !== "all") {
-    searchParams.set(
-      "vote_option",
-      params.voteOption === "for" ? "0" : "1"
-    );
+    searchParams.set("vote_option", params.voteOption === "for" ? "0" : "1");
   }
   if (params?.sortBy) {
     searchParams.set("sort_by", params.sortBy);

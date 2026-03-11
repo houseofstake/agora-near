@@ -1,0 +1,79 @@
+import React from "react";
+import Image, { StaticImageData } from "next/image";
+import Link from "next/link";
+import Tenant from "@/lib/tenant/tenant";
+import { icons } from "@/assets/icons";
+
+export const InfoHero = () => {
+  const { ui } = Tenant.current();
+  const page = ui!.page("info");
+
+  const rotationClasses = [
+    "sm:-rotate-2",
+    "sm:rotate-4",
+    "sm:-rotate-5",
+    "sm:rotate-1",
+  ];
+
+  return (
+    <div className="flex flex-col sm:flex-row mt-12 gap-y-6 sm:gap-y-0 gap-x-0 sm:gap-x-6 flex-wrap sm:flex-nowrap">
+      <div className="flex flex-col w-full sm:w-2/5">
+        <h1 className="text-4xl leading-[36px] sm:text-[40px] sm:leading-[40px] font-black text-primary">
+          {page!.title}
+        </h1>
+        <p className="text-base text-secondary mt-4">{page!.description}</p>
+      </div>
+
+      <div className="grid grid-cols-2 sm:flex sm:flex-row self-start justify-between sm:justify-end w-full sm:w-3/5 gap-4">
+        {page!.links!.map((link, idx) => (
+          <Card
+            className={rotationClasses[idx % rotationClasses.length]}
+            image={link.image || ""}
+            key={`card-${idx}`}
+            link={link.url}
+            linkText={link.title}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const Card = ({
+  className,
+  link,
+  linkText,
+  image,
+}: {
+  className?: string;
+  link: string;
+  linkText: string;
+  image: StaticImageData | string;
+}) => {
+  return (
+    <Link
+      target="_blank"
+      href={link}
+      className={`flex flex-col sm:w-fit grow-0 p-1.5 bg-neutral border border-line rounded-[6px] shadow-[0px_3.044px_9.131px_0px_rgba(0,0,0,0.02),0px_1.522px_1.522px_0px_rgba(0,0,0,0.03)]} hover:rotate-0 transition-all hover:z-10 hover:scale-110 ${className}`}
+    >
+      <div className="relative w-full sm:h-[150px] sm:w-[150px] aspect-square">
+        <Image
+          src={image}
+          className="w-full rounded scale"
+          fill={true}
+          alt=""
+        />
+      </div>
+      <div className="w-full flex flex-row justify-between gap-1 items-center text-xs font-medium text-secondary mt-1.5">
+        <span>{linkText}</span>
+        <Image
+          src={icons.northEast}
+          width={12}
+          height={12}
+          alt="arrow pointing right"
+          className="self-start mt-1"
+        />
+      </div>
+    </Link>
+  );
+};

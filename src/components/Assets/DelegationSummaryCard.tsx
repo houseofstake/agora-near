@@ -45,9 +45,7 @@ export const DelegationSummaryCard = memo(() => {
           <div className="text-sm text-gray-600 mb-1">Delegation</div>
           <div className="text-xl text-gray-900 font-medium">
             {hasActiveDelegation ? (
-              <span title={delegatee!}>
-                Delegated to {delegatee}
-              </span>
+              <span title={delegatee!}>Delegated to {delegatee}</span>
             ) : (
               <span>Not delegated</span>
             )}
@@ -57,7 +55,9 @@ export const DelegationSummaryCard = memo(() => {
           {hasActiveDelegation ? (
             <>
               <Link href="/delegates">
-                <UpdatedButton type="secondary">Change Delegation</UpdatedButton>
+                <UpdatedButton type="secondary">
+                  Change Delegation
+                </UpdatedButton>
               </Link>
               <UpdatedButton type="secondary" onClick={handleUndelegate}>
                 Undelegate
