@@ -1,7 +1,4 @@
 import nearLogo from "@/assets/near_logo.svg";
-import infoPageCard00 from "@/assets/info_0.png";
-import infoPageCard01 from "@/assets/info_1.png";
-import infoPageCard02 from "@/assets/info_2.png";
 import { TenantUI } from "@/lib/tenant/tenantUI";
 
 export const nearTenantUIConfig = new TenantUI({
@@ -162,19 +159,16 @@ export const nearTenantUIConfig = new TenantUI({
           name: "Governance Forums",
           title: "Governance Forums",
           url: "https://gov.near.org/",
-          image: infoPageCard01,
         },
         {
           name: "House of Stake Docs",
           title: "House of Stake Docs",
           url: "https://houseofstake.org/",
-          image: infoPageCard02,
         },
         {
-          name: "Community Discord",
-          title: "Community Discord",
-          url: "https://discord.gg/nearprotocol",
-          image: infoPageCard00,
+          name: "Community Telegram",
+          title: "Community Telegram",
+          url: "https://t.me/NEAR_HouseOfStake",
         },
       ],
     },

@@ -1,5 +1,5 @@
 import { memo, useMemo } from "react";
-import { ProjectionSlider } from "../shared/ProjectionSlider/ProjectionSlider";
+import { VeNearCalculator } from "../Assets/VeNearCalculator";
 import { useVenearSnapshot } from "@/hooks/useVenearSnapshot";
 import { getAPYFromGrowthRate } from "@/lib/lockUtils";
 import { formatNearAmount } from "@near-js/utils";
@@ -38,11 +38,7 @@ export const VotingPowerProjectionsDialog = memo(
 
     return (
       <div className="flex flex-col p-6">
-        <ProjectionSlider
-          apy={apyDecimal}
-          startingAmount={startingAmount}
-          className="w-full"
-        />
+        <VeNearCalculator defaultAmount={startingAmount.toString()} />
       </div>
     );
   }
