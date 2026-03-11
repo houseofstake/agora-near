@@ -4,7 +4,7 @@ import Tenant from "./tenant/tenant";
 import { NANO_SECONDS_IN_DAY } from "./constants";
 import Big from "big.js";
 import { baseApiUrl } from "./api/constants";
-import { NEAR_NOMINATION_EXP, formatNearAmount } from "@near-js/utils";
+import { NEAR_NOMINATION_EXP } from "@near-js/utils";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -437,6 +437,15 @@ export const getPopupHelpLink = (browserType: string | null) => {
 };
 
 export const convertYoctoToNear = (yocto: string, precision?: number) => {
-  const formatted = formatNearAmount(yocto, precision);
-  return formatted ? formatted.replace(/,/g, "") : "0";
+  if (!yocto) return "0";
+  const originalDP = Big.DP;
+  Big.DP = 40; // Ensure enough precision for yocto to NEAR division
+  try {
+    const result = Big(yocto)
+      .div(10 ** NEAR_NOMINATION_EXP)
+      .toFixed(precision);
+    return result;
+  } finally {
+    Big.DP = originalDP;
+  }
 };

@@ -5,7 +5,12 @@ import { describe, it, expect } from "vitest";
 const toYocto = (nearAmount: bigint) => (nearAmount * 10n ** 24n).toString();
 
 describe("convertYoctoToNear", () => {
-  it("should convert small amounts correctly (1 yoctoNEAR -> 0.000000000000000000000001)", () => {
+  it("should convert small amounts correctly (1 yoctoNEAR -> 0.000000000000000000000001) with precision specified", () => {
+    const result = convertYoctoToNear("1", 24);
+    expect(result).toBe("0.000000000000000000000001");
+  });
+
+  it("should keep full 24 decimal precision when no precision is specified for 1 yocto", () => {
     const result = convertYoctoToNear("1");
     expect(result).toBe("0.000000000000000000000001");
   });
