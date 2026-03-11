@@ -5,9 +5,9 @@ import { describe, it, expect } from "vitest";
 const toYocto = (nearAmount: bigint) => (nearAmount * 10n ** 24n).toString();
 
 describe("convertYoctoToNear", () => {
-  it("should convert small amounts correctly (1 yoctoNEAR -> 0)", () => {
+  it("should convert small amounts correctly (1 yoctoNEAR -> 0.000000000000000000000001)", () => {
     const result = convertYoctoToNear("1");
-    expect(result).toBe("0");
+    expect(result).toBe("0.000000000000000000000001");
   });
 
   it("should convert exactly 1 NEAR correctly", () => {
