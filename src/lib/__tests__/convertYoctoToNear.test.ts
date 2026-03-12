@@ -5,9 +5,14 @@ import { describe, it, expect } from "vitest";
 const toYocto = (nearAmount: bigint) => (nearAmount * 10n ** 24n).toString();
 
 describe("convertYoctoToNear", () => {
-  it("should convert small amounts correctly (1 yoctoNEAR -> 0)", () => {
+  it("should convert small amounts correctly (1 yoctoNEAR -> 0.000000000000000000000001) with precision specified", () => {
+    const result = convertYoctoToNear("1", 24);
+    expect(result).toBe("0.000000000000000000000001");
+  });
+
+  it("should keep full 24 decimal precision when no precision is specified for 1 yocto", () => {
     const result = convertYoctoToNear("1");
-    expect(result).toBe("0");
+    expect(result).toBe("0.000000000000000000000001");
   });
 
   it("should convert exactly 1 NEAR correctly", () => {
@@ -26,5 +31,12 @@ describe("convertYoctoToNear", () => {
     const result = convertYoctoToNear(toYocto(nearValue));
     expect(result).toBe(nearValue.toString());
     expect(result).not.toContain(",");
+  });
+
+  it("should preserve exact 24 decimal precision for mixed dust amounts without scientific notation", () => {
+    // 2 NEAR + 1 Yocto NEAR in the middle
+    const yoctoWithDust = "2000010932708511800000001";
+    const result = convertYoctoToNear(yoctoWithDust);
+    expect(result).toBe("2.000010932708511800000001");
   });
 });

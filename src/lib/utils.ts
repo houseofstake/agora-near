@@ -437,7 +437,15 @@ export const getPopupHelpLink = (browserType: string | null) => {
 };
 
 export const convertYoctoToNear = (yocto: string, precision?: number) => {
-  return Big(yocto)
-    .div(10 ** NEAR_NOMINATION_EXP)
-    .toFixed(precision);
+  if (!yocto) return "0";
+  const originalDP = Big.DP;
+  Big.DP = 40; // Ensure enough precision for yocto to NEAR division
+  try {
+    const result = Big(yocto).div(10 ** NEAR_NOMINATION_EXP);
+    return precision !== undefined
+      ? result.toFixed(precision)
+      : result.toFixed(NEAR_NOMINATION_EXP).replace(/\.?0+$/, "") || "0";
+  } finally {
+    Big.DP = originalDP;
+  }
 };

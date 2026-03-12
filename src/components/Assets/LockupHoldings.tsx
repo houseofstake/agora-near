@@ -48,7 +48,7 @@ export const LockupHoldings = memo(
         lockupAccountId: lockupAccountId ?? "",
       });
 
-    const { data: accountInfo, isLoading: isLoadingAccountInfo } =
+    const { isLoading: isLoadingAccountInfo } =
       useVenearAccountInfo(signedAccountId);
 
     const {
@@ -116,13 +116,14 @@ export const LockupHoldings = memo(
       [
         filteredLiquidLockupBalance.lockableNearBalance,
         filteredLiquidLockupBalance.stakableNearBalance,
+        filteredLiquidLockupBalance.withdrawableNearBalance,
       ]
     );
 
     const showDeleteLockup = useMemo(() => {
-      const staked = Big(filterDust({ amount: stakedBalance ?? "0" }));
-      const unstaked = Big(filterDust({ amount: unstakedBalance ?? "0" }));
-      const pending = Big(filterDust({ amount: pendingBalance ?? "0" }));
+      const staked = Big(stakedBalance ?? "0");
+      const unstaked = Big(unstakedBalance ?? "0");
+      const pending = Big(pendingBalance ?? "0");
 
       const availableToUnlockAmount = Big(availableToUnlock ?? "0");
 
