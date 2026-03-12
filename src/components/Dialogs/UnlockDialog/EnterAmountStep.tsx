@@ -6,7 +6,7 @@ import {
   NEAR_TOKEN_METADATA,
   VENEAR_TOKEN_METADATA,
 } from "@/lib/constants";
-import { formatNumber } from "@/lib/utils";
+import { formatNumber, convertYoctoToNear } from "@/lib/utils";
 import { ArrowDownIcon } from "@heroicons/react/20/solid";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import Big from "big.js";
@@ -74,7 +74,7 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
   }, [nearAmount]);
 
   const shouldDisableButton =
-    !enteredAmount || Number(enteredAmount) === 0 || isLoading || !!amountError;
+    !enteredAmount || Big(enteredAmount).lte(0) || isLoading || !!amountError;
 
   return (
     <div className="flex flex-col gap-6 h-full w-full">
@@ -144,10 +144,7 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
                 value={
                   // Override value for display purposes when unlocking max
                   isUnlockingMax
-                    ? formatNumber(
-                        maxAmountToUnlock ?? "0",
-                        NEAR_TOKEN.decimals
-                      )
+                    ? convertYoctoToNear(maxAmountToUnlock ?? "0", NEAR_TOKEN.decimals)
                     : enteredAmount
                 }
                 onChange={handleAmountChange}

@@ -6,6 +6,7 @@ import {
   formatNanoSecondsToTimeUnit,
   isValidNearAmount,
 } from "@/lib/utils";
+import { NEAR_TOKEN } from "@/lib/constants";
 import { parseNearAmount } from "@near-js/utils";
 import Big from "big.js";
 import {
@@ -101,9 +102,17 @@ export const UnlockProvider = ({ children }: UnlockProviderProps) => {
       try {
         if (!isValidNearAmount(amount)) {
           setAmountError("Please enter a valid amount");
-        } else if (
-          Big(parseNearAmount(amount) ?? "0").gt(Big(maxAmountToUnlock))
-        ) {
+          return;
+        }
+        
+        // If they click Max, the exact string might be "0.000...1" which parseNearAmount can mangle.
+        // We explicitly check if it matches the converted max amount, and if so, it's valid.
+        const exactMaxString = convertYoctoToNear(maxAmountToUnlock ?? "0", NEAR_TOKEN.decimals);
+        const isExactMax = amount === exactMaxString;
+
+        const parsedAmount = isExactMax ? maxAmountToUnlock : parseNearAmount(amount);
+
+        if (Big(parsedAmount ?? "0").gt(Big(maxAmountToUnlock ?? "0"))) {
           setAmountError("Not enough veNEAR available to unlock");
         } else if (Big(amount).lte(0)) {
           setAmountError("Amount must be greater than 0");
