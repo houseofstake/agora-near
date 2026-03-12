@@ -117,9 +117,10 @@ export const LockupHoldings = memo(
     );
 
     const showDeleteLockup = useMemo(() => {
-      const staked = Big(filterDust({ amount: stakedBalance ?? "0" }));
-      const unstaked = Big(filterDust({ amount: unstakedBalance ?? "0" }));
-      const pending = Big(filterDust({ amount: pendingBalance ?? "0" }));
+      const staked = Big(stakedBalance ?? "0");
+      const unstaked = Big(unstakedBalance ?? "0");
+      const pending = Big(pendingBalance ?? "0");
+      const veNear = Big(balanceWithRewards ?? "0");
 
       const totalBalance = Big(accountInfo?.totalBalance.near ?? "0");
       const MAX_REMAINING_FOR_DELETE = Big("2.1").mul(Big(10).pow(24));
@@ -128,6 +129,7 @@ export const LockupHoldings = memo(
         staked.eq(0) &&
         unstaked.eq(0) &&
         pending.eq(0) &&
+        veNear.eq(0) &&
         totalBalance.lte(MAX_REMAINING_FOR_DELETE) &&
         !!lockupAccountId
       );
@@ -135,6 +137,7 @@ export const LockupHoldings = memo(
       stakedBalance,
       unstakedBalance,
       pendingBalance,
+      balanceWithRewards,
       accountInfo?.totalBalance.near,
       lockupAccountId,
     ]);

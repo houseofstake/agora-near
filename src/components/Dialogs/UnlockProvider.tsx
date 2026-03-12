@@ -110,7 +110,12 @@ export const UnlockProvider = ({ children }: UnlockProviderProps) => {
         const exactMaxString = convertYoctoToNear(maxAmountToUnlock ?? "0", NEAR_TOKEN.decimals);
         const isExactMax = amount === exactMaxString;
 
-        const parsedAmount = isExactMax ? maxAmountToUnlock : parseNearAmount(amount);
+        if (isExactMax && Big(maxAmountToUnlock ?? "0").gt(0)) {
+          setAmountError(null);
+          return;
+        }
+
+        const parsedAmount = parseNearAmount(amount);
 
         if (Big(parsedAmount ?? "0").gt(Big(maxAmountToUnlock ?? "0"))) {
           setAmountError("Not enough veNEAR available to unlock");
@@ -133,7 +138,8 @@ export const UnlockProvider = ({ children }: UnlockProviderProps) => {
   }, []);
 
   const onUnlockMax = useCallback(() => {
-    setEnteredAmount(convertYoctoToNear(maxAmountToUnlock ?? "0"));
+    const maxAmountStr = convertYoctoToNear(maxAmountToUnlock ?? "0");
+    setEnteredAmount(maxAmountStr);
     setIsUnlockingMax(true);
     setAmountError(null);
   }, [maxAmountToUnlock]);
@@ -141,7 +147,8 @@ export const UnlockProvider = ({ children }: UnlockProviderProps) => {
   const onEnteredAmountUpdated = useCallback(
     (amount: string) => {
       setEnteredAmount(amount);
-      setIsUnlockingMax(false);
+      const exactMaxString = convertYoctoToNear(maxAmountToUnlock ?? "0", NEAR_TOKEN.decimals);
+      setIsUnlockingMax(amount === exactMaxString);
       validateAmount(amount);
     },
     [validateAmount]

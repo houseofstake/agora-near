@@ -190,11 +190,15 @@ export const ReviewStep = memo(
                 Unlocking tokens...
               </p>
               <div className="text-4xl font-bold text-gray-900 text-center">
-                <TokenAmount
-                  amount={parseNearAmount(enteredAmount) ?? "0"}
-                  minimumFractionDigits={4}
-                  currency="veNEAR"
-                />
+                {isUnlockingMax && maxAmountToUnlock && Big(maxAmountToUnlock).gt(0) && Big(maxAmountToUnlock).lt(Big(10).pow(20)) ? (
+                  <span>~0 veNEAR</span>
+                ) : (
+                  <TokenAmount
+                    amount={parseNearAmount(enteredAmount) ?? "0"}
+                    minimumFractionDigits={4}
+                    currency="veNEAR"
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -266,11 +270,24 @@ export const ReviewStep = memo(
             <div className="flex flex-col">
               <span className="font-bold text-primary">Amount unlocking</span>
             </div>
-            <TokenAmount
-              amount={parseNearAmount(enteredAmount) ?? "0"}
-              currency="veNEAR"
-              className="font-bold"
-            />
+            {isUnlockingMax && maxAmountToUnlock && Big(maxAmountToUnlock).gt(0) && Big(maxAmountToUnlock).lt(Big(10).pow(20)) ? (
+              <TooltipWithTap
+                content={
+                  <div className="flex flex-col text-right p-2">
+                    <p className="font-semibold text-sm">Dust Amount</p>
+                    <p className="font-mono text-xs">{maxAmountToUnlock} yoctoNEAR</p>
+                  </div>
+                }
+              >
+                <span className="cursor-pointer font-bold">~0 veNEAR</span>
+              </TooltipWithTap>
+            ) : (
+              <TokenAmount
+                amount={parseNearAmount(enteredAmount) ?? "0"}
+                currency="veNEAR"
+                className="font-bold"
+              />
+            )}
           </div>
           <div className="flex flex-row justify-between items-start">
             <span className="font-bold text-primary">
@@ -285,7 +302,20 @@ export const ReviewStep = memo(
           <div className="text-sm text-[#737373]">Total</div>
           <div className="flex flex-col items-end">
             <div className="text-2xl font-bold text-gray-900">
-              <TokenAmount amount={nearAmount ?? "0"} />
+              {isUnlockingMax && nearAmount && Big(nearAmount).gt(0) && Big(nearAmount).lt(Big(10).pow(20)) ? (
+                <TooltipWithTap
+                  content={
+                    <div className="flex flex-col text-right p-2">
+                      <p className="font-semibold text-sm">Dust Amount</p>
+                      <p className="font-mono text-xs">{nearAmount} yoctoNEAR</p>
+                    </div>
+                  }
+                >
+                  <span className="cursor-pointer">~0 NEAR</span>
+                </TooltipWithTap>
+              ) : (
+                <TokenAmount amount={nearAmount ?? "0"} />
+              )}
             </div>
             {isLoadingNearPrice ? (
               <Skeleton className="w-16 h-4" />

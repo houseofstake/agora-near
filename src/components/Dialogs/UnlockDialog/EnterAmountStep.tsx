@@ -38,12 +38,19 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    
+    // Prevent React's synthetic event from overriding 'Max' flag with invalid "0" 
+    // when setting the bypass layout string
+    if (isUnlockingMax && value === convertYoctoToNear(maxAmountToUnlock ?? "0", NEAR_TOKEN.decimals)) {
+      return;
+    }
+    
     setEnteredAmount(value);
   };
 
   const onContinue = useCallback(() => {
     const maxNear = Big(maxAmountToUnlock ?? "0").div(Big(10).pow(24));
-    const entered = Big(enteredAmount || "0");
+    const entered = isUnlockingMax ? maxNear : Big(enteredAmount || "0");
     const remaining = maxNear.minus(entered);
 
     trackUnlockAmountEntered({
@@ -55,6 +62,7 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
     enteredAmount,
     handleReview,
     maxAmountToUnlock,
+    isUnlockingMax,
     trackUnlockAmountEntered,
   ]);
 
@@ -63,6 +71,12 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
   }, [onUnlockMax]);
 
   const formattedNearAmount = useMemo(() => {
+    // If unlocking max and the equivalent is incredibly small, explicitly write it without truncating tokens
+    if (isUnlockingMax && nearAmount && Big(nearAmount).gt(0) && Big(nearAmount).lt(Big(10).pow(20))) {
+      const explicitNumStr = convertYoctoToNear(nearAmount, NEAR_TOKEN.decimals);
+      return <span className="tabular-nums text-lg font-mono">{explicitNumStr}</span>;
+    }
+
     return (
       <TokenAmount
         amount={Big(nearAmount ?? "0").lte(0) ? "0" : (nearAmount ?? "0")}
@@ -71,10 +85,13 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
         className="tabular-nums text-lg"
       />
     );
-  }, [nearAmount]);
+  }, [nearAmount, isUnlockingMax]);
 
   const shouldDisableButton =
-    !enteredAmount || Big(enteredAmount).lte(0) || isLoading || !!amountError;
+    (!enteredAmount && !isUnlockingMax) || 
+    (enteredAmount && !isUnlockingMax && Big(enteredAmount).lte(0)) || 
+    isLoading || 
+    !!amountError;
 
   return (
     <div className="flex flex-col gap-6 h-full w-full">
@@ -114,11 +131,26 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
         </div>
         <div>
           <span className="text-3xl font-bold text-primary">
-            <TokenAmount
-              amount={maxAmountToUnlock ?? "0"}
-              minimumFractionDigits={4}
-              currency="veNEAR"
-            />
+            {maxAmountToUnlock && Big(maxAmountToUnlock).gt(0) && Big(maxAmountToUnlock).lt(Big(10).pow(20)) ? (
+              <TooltipWithTap
+                content={
+                  <div className="flex flex-col text-left p-2">
+                    <p className="font-semibold text-sm">Dust Amount</p>
+                    <p className="font-mono text-xs">{maxAmountToUnlock} yoctoNEAR</p>
+                  </div>
+                }
+              >
+                <span className="cursor-pointer">
+                  ~0 veNEAR
+                </span>
+              </TooltipWithTap>
+            ) : (
+              <TokenAmount
+                amount={maxAmountToUnlock ?? "0"}
+                minimumFractionDigits={4}
+                currency="veNEAR"
+              />
+            )}
           </span>
           <div className="h-[16px]">
             <p className="text-sm text-red-500">{amountError}</p>
