@@ -134,7 +134,7 @@ const InfoRoadmap = () => {
         ))}
       </div> */}
 
-      <div className="mt-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
+      <div className="mt-8 p-6 bg-wash border border-line rounded-lg">
         <h4 className="text-lg font-semibold text-primary mb-3">
           Future Considerations
         </h4>

@@ -50,6 +50,7 @@ export const ReviewStep = memo(
       venearGlobalLockupVersion,
       lstPriceYocto,
       customStakingPoolId,
+      formattedUnlockDuration,
     } = useLockProviderContext();
 
     // Determine if the just-locked amount leaves any liquid NEAR available to stake.
@@ -463,8 +464,9 @@ export const ReviewStep = memo(
             >
               Lock tokens
             </UpdatedButton>
-            <p className="text-xs text-secondary text-center text-[#9D9FA1]">
-              You may unlock your tokens at any time.{" "}
+            <p className="text-xs text-secondary text-center">
+              There is a {formattedUnlockDuration} cooldown period for unlocking
+              veNEAR.
               <button
                 className="underline text-primary hover:text-primary/80"
                 onClick={handleShowDisclosures}

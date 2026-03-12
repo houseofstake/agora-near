@@ -19,7 +19,10 @@ import {
   RNEAR_TOKEN_METADATA,
 } from "@/lib/constants";
 import { CONTRACTS } from "@/lib/contractConstants";
-import { getAPYFromGrowthRate } from "@/lib/lockUtils";
+import {
+  getAPYFromGrowthRate,
+  getFormattedUnlockDuration,
+} from "@/lib/lockUtils";
 import { TokenWithBalance } from "@/lib/types";
 import { convertYoctoToNear, isValidNearAmount } from "@/lib/utils";
 import Big from "big.js";
@@ -87,6 +90,7 @@ type LockProviderContextType = {
   lstPriceYocto?: string;
   customStakingPoolId?: string;
   setCustomStakingPoolId: (poolId: string | undefined) => void;
+  formattedUnlockDuration: string;
 };
 
 export const LockProviderContext = createContext<LockProviderContextType>({
@@ -125,6 +129,7 @@ export const LockProviderContext = createContext<LockProviderContextType>({
   lstPriceYocto: undefined,
   customStakingPoolId: undefined,
   setCustomStakingPoolId: () => {},
+  formattedUnlockDuration: "",
 });
 
 export const useLockProviderContext = () => {
@@ -182,9 +187,15 @@ export const LockProvider = ({
     lockupStorageCost,
     totalRegistrationCost,
     lockupVersion: veNearLockupVersion,
+    unlockDuration,
     isLoading: isLoadingVenearConfig,
     error: venearConfigError,
   } = useVenearConfig({ enabled: !!signedAccountId });
+
+  const formattedUnlockDuration = useMemo(
+    () => getFormattedUnlockDuration(unlockDuration.toString()),
+    [unlockDuration]
+  );
 
   const {
     data: venearAccountInfo,
@@ -741,6 +752,7 @@ export const LockProvider = ({
         lstPriceYocto,
         customStakingPoolId,
         setCustomStakingPoolId,
+        formattedUnlockDuration,
       }}
     >
       {children}

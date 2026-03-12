@@ -45,17 +45,37 @@ export const fetchPendingProposals = async (
   return response.data;
 };
 
+export type ProposalVotesParams = {
+  search?: string;
+  voteOption?: "all" | "for" | "against";
+  sortBy?: "weight" | "voted_at";
+  sortOrder?: "asc" | "desc";
+};
+
 export const fetchProposalVotes = async (
   proposalId: string,
   pageSize: number,
-  currentPage: number
+  currentPage: number,
+  params?: ProposalVotesParams
 ) => {
+  const searchParams = new URLSearchParams({
+    page_size: String(pageSize),
+    page: String(currentPage),
+  });
+  if (params?.search?.trim()) {
+    searchParams.set("search", params.search.trim());
+  }
+  if (params?.voteOption && params.voteOption !== "all") {
+    searchParams.set("vote_option", params.voteOption === "for" ? "0" : "1");
+  }
+  if (params?.sortBy) {
+    searchParams.set("sort_by", params.sortBy);
+    searchParams.set("sort_order", params.sortOrder ?? "desc");
+  }
   const response = await axios.get<{
     votes: ProposalVotingHistoryRecord[];
     count: number;
-  }>(
-    `${Endpoint.Proposals}/${proposalId}/votes?page_size=${pageSize}&page=${currentPage}`
-  );
+  }>(`${Endpoint.Proposals}/${proposalId}/votes?${searchParams}`);
 
   return response.data;
 };

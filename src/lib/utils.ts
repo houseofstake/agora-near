@@ -193,11 +193,11 @@ export function formatNumber(
   let bigIntAmount: bigint;
 
   if (typeof amount === "string") {
-    // Handle potential scientific notation
     if (amount.includes("e")) {
       bigIntAmount = scientificNotationToPrecision(amount);
     } else {
-      bigIntAmount = BigInt(amount);
+      const integerPart = amount.split(".")[0] || "0";
+      bigIntAmount = BigInt(integerPart);
     }
   } else {
     bigIntAmount = amount;

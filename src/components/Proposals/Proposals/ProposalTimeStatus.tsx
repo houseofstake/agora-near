@@ -4,6 +4,7 @@
 import { HStack } from "@/components/Layout/Stack";
 import { ProposalStatus } from "@/lib/contracts/types/voting";
 import { getProposalTimes } from "@/lib/proposalUtils";
+import { ProposalCountdown } from "../Proposal/ProposalCountdown";
 
 export default function ProposalTimeStatus({
   votingDurationNs,
@@ -35,10 +36,15 @@ export default function ProposalTimeStatus({
       );
 
     case ProposalStatus.Voting:
+      if (!proposalEndTimeDisplay) return null;
       return (
-        <HStack gap={1} className="whitespace-nowrap">
-          Ends {proposalEndTimeDisplay}
-        </HStack>
+        <ProposalCountdown
+          votingStartTimeNs={votingStartTimeNs}
+          votingDurationNs={votingDurationNs}
+          status={status}
+          endTimeDisplay={proposalEndTimeDisplay}
+          label="Closes"
+        />
       );
 
     case ProposalStatus.Rejected:
