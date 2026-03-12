@@ -18,7 +18,7 @@ const videos = [
 
 const InfoVideos = () => {
   return (
-    <div className="mt-12 mb-12">
+    <section className="mt-12">
       <h3 className="text-2xl font-black text-primary mb-6">Getting Started</h3>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl">
         {videos.map((video, index) => (
@@ -43,7 +43,7 @@ const InfoVideos = () => {
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 

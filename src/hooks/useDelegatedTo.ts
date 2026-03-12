@@ -8,9 +8,11 @@ const DELEGATED_TO_QK = `${Endpoint.Delegates}/delegated-to`;
 export const useDelegatedTo = ({
   pageSize,
   address,
+  enabled = true,
 }: {
   pageSize: number;
   address: string;
+  enabled?: boolean;
 }) => {
   const {
     data,
@@ -31,6 +33,7 @@ export const useDelegatedTo = ({
       return pageParam + 1;
     },
     initialPageParam: 1,
+    enabled: enabled && !!address,
   });
 
   const flatData = useMemo(() => {

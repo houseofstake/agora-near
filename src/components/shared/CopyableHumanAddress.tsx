@@ -44,18 +44,20 @@ function CopyableHumanAddress({
         shouldTruncate && "max-w-[280px]",
         className
       )}
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        navigator.clipboard.writeText(address);
-        setIsInCopiedState(true);
-      }}
       title={address}
     >
       <span className={cn(shouldTruncate && "truncate min-w-0")}>
         {displayAddress()}
       </span>
-      <div className="flex flex-shrink-0">
+      <div
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          navigator.clipboard.writeText(address);
+          setIsInCopiedState(true);
+        }}
+        className="flex flex-shrink-0"
+      >
         {isInCopiedState ? (
           <CheckCircleIcon className="text-green-600 w-3 h-3" />
         ) : (

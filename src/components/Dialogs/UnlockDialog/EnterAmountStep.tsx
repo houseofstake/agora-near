@@ -75,7 +75,7 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
   }, [onUnlockMax]);
 
   const formattedNearAmount = useMemo(() => {
-    // If unlocking max and the equivalent is incredibly small, explicitly write it without truncating tokens
+    // Preserve exact precision for microscopic yoctoNEAR dust amounts when unlocking Max balance.
     if (
       isUnlockingMax &&
       nearAmount &&

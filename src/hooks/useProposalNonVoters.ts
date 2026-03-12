@@ -17,7 +17,7 @@ export const useProposalNonVoters = ({
     error,
     fetchNextPage,
     hasNextPage,
-    isLoading,
+    isPending,
     isFetchingNextPage,
     status,
   } = useInfiniteQuery({
@@ -41,7 +41,7 @@ export const useProposalNonVoters = ({
   return {
     data: flatData,
     error,
-    isLoading,
+    isPending,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,

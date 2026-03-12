@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, useCallback, useState } from "react";
+import Link from "next/link";
 import { useNear } from "@/contexts/NearContext";
 import { useVenearAccountInfo } from "@/hooks/useVenearAccountInfo";
 import { UpdatedButton } from "../Button";
@@ -24,10 +25,6 @@ export const DelegationSummaryCard = memo(() => {
     });
   }, [delegatee, openDialog]);
 
-  const handleChooseDelegate = useCallback(() => {
-    window.location.href = "/delegates";
-  }, []);
-
   const handleDismiss = useCallback(() => {
     setIsDismissed(true);
   }, []);
@@ -43,31 +40,33 @@ export const DelegationSummaryCard = memo(() => {
       >
         <XMarkIcon className="w-5 h-5 text-gray-400 hover:text-gray-600" />
       </button>
-      <div className="flex items-start justify-between gap-4 pr-8">
-        <div className="flex flex-col">
+      <div className="flex items-start justify-between gap-4 pr-8 min-w-0">
+        <div className="flex flex-col min-w-0 flex-1">
           <div className="text-sm text-gray-600 mb-1">Delegation</div>
           <div className="text-xl text-gray-900 font-medium">
             {hasActiveDelegation ? (
-              <span
-                title={delegatee!}
-                className="truncate max-w-[280px] inline-block"
-              >
-                Delegated to {delegatee}
-              </span>
+              <span title={delegatee!}>Delegated to {delegatee}</span>
             ) : (
               <span>Not delegated</span>
             )}
           </div>
         </div>
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-2 flex-shrink-0">
           {hasActiveDelegation ? (
-            <UpdatedButton type="secondary" onClick={handleUndelegate}>
-              Undelegate
-            </UpdatedButton>
+            <>
+              <Link href="/delegates">
+                <UpdatedButton type="secondary">
+                  Change Delegation
+                </UpdatedButton>
+              </Link>
+              <UpdatedButton type="secondary" onClick={handleUndelegate}>
+                Undelegate
+              </UpdatedButton>
+            </>
           ) : (
-            <UpdatedButton type="primary" onClick={handleChooseDelegate}>
-              Choose a delegate
-            </UpdatedButton>
+            <Link href="/delegates">
+              <UpdatedButton type="primary">Choose a delegate</UpdatedButton>
+            </Link>
           )}
         </div>
       </div>
