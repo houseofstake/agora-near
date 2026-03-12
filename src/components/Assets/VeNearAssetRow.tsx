@@ -118,13 +118,13 @@ export const VeNearAssetRow = memo<VeNearAssetRowProps>(
               content={
                 <div className="flex flex-col text-center p-2">
                   <p className="font-semibold text-sm">Dust Amount</p>
-                  <p className="font-mono text-xs">{balanceWithRewards} yoctoNEAR</p>
+                  <p className="font-mono text-xs">
+                    {balanceWithRewards} yoctoNEAR
+                  </p>
                 </div>
               }
             >
-              <span className="cursor-pointer">
-                ~0 NEAR
-              </span>
+              <span className="cursor-pointer">~0 NEAR</span>
             </TooltipWithTap>
           ) : (
             lockedAmount
