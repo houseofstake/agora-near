@@ -133,12 +133,10 @@ export const UnlockProvider = ({ children }: UnlockProviderProps) => {
   }, []);
 
   const onUnlockMax = useCallback(() => {
-    const maxAmountStr = convertYoctoToNear(maxAmountToUnlock ?? "0", NEAR_TOKEN.decimals);
-    setEnteredAmount(maxAmountStr);
+    setEnteredAmount(convertYoctoToNear(maxAmountToUnlock ?? "0"));
     setIsUnlockingMax(true);
-    // Explicitly call validate so the form knows it is now valid, passing the bypass string!
-    validateAmount(maxAmountStr);
-  }, [maxAmountToUnlock, validateAmount]);
+    setAmountError(null);
+  }, [maxAmountToUnlock]);
 
   const onEnteredAmountUpdated = useCallback(
     (amount: string) => {
