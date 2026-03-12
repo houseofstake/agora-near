@@ -133,6 +133,7 @@ export const ReviewStep = memo(
       enteredAmount,
       beginUnlockNear,
       maxAmountToUnlock,
+      isUnlockingMax,
       trackUnlockTransactionInitiated,
       unlockDurationDays,
       trackUnlockTransactionSuccess,
@@ -190,7 +191,10 @@ export const ReviewStep = memo(
                 Unlocking tokens...
               </p>
               <div className="text-4xl font-bold text-gray-900 text-center">
-                {isUnlockingMax && maxAmountToUnlock && Big(maxAmountToUnlock).gt(0) && Big(maxAmountToUnlock).lt(Big(10).pow(20)) ? (
+                {isUnlockingMax &&
+                maxAmountToUnlock &&
+                Big(maxAmountToUnlock).gt(0) &&
+                Big(maxAmountToUnlock).lt(Big(10).pow(20)) ? (
                   <span>~0 veNEAR</span>
                 ) : (
                   <TokenAmount
@@ -270,12 +274,17 @@ export const ReviewStep = memo(
             <div className="flex flex-col">
               <span className="font-bold text-primary">Amount unlocking</span>
             </div>
-            {isUnlockingMax && maxAmountToUnlock && Big(maxAmountToUnlock).gt(0) && Big(maxAmountToUnlock).lt(Big(10).pow(20)) ? (
+            {isUnlockingMax &&
+            maxAmountToUnlock &&
+            Big(maxAmountToUnlock).gt(0) &&
+            Big(maxAmountToUnlock).lt(Big(10).pow(20)) ? (
               <TooltipWithTap
                 content={
                   <div className="flex flex-col text-right p-2">
                     <p className="font-semibold text-sm">Dust Amount</p>
-                    <p className="font-mono text-xs">{maxAmountToUnlock} yoctoNEAR</p>
+                    <p className="font-mono text-xs">
+                      {maxAmountToUnlock} yoctoNEAR
+                    </p>
                   </div>
                 }
               >
@@ -302,12 +311,17 @@ export const ReviewStep = memo(
           <div className="text-sm text-[#737373]">Total</div>
           <div className="flex flex-col items-end">
             <div className="text-2xl font-bold text-gray-900">
-              {isUnlockingMax && nearAmount && Big(nearAmount).gt(0) && Big(nearAmount).lt(Big(10).pow(20)) ? (
+              {isUnlockingMax &&
+              nearAmount &&
+              Big(nearAmount).gt(0) &&
+              Big(nearAmount).lt(Big(10).pow(20)) ? (
                 <TooltipWithTap
                   content={
                     <div className="flex flex-col text-right p-2">
                       <p className="font-semibold text-sm">Dust Amount</p>
-                      <p className="font-mono text-xs">{nearAmount} yoctoNEAR</p>
+                      <p className="font-mono text-xs">
+                        {nearAmount} yoctoNEAR
+                      </p>
                     </div>
                   }
                 >

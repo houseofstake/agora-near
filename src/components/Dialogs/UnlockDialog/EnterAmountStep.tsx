@@ -6,7 +6,7 @@ import {
   NEAR_TOKEN_METADATA,
   VENEAR_TOKEN_METADATA,
 } from "@/lib/constants";
-import { formatNumber, convertYoctoToNear } from "@/lib/utils";
+import { convertYoctoToNear } from "@/lib/utils";
 import { ArrowDownIcon } from "@heroicons/react/20/solid";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import Big from "big.js";
@@ -38,13 +38,17 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    
-    // Prevent React's synthetic event from overriding 'Max' flag with invalid "0" 
+
+    // Prevent React's synthetic event from overriding 'Max' flag with invalid "0"
     // when setting the bypass layout string
-    if (isUnlockingMax && value === convertYoctoToNear(maxAmountToUnlock ?? "0", NEAR_TOKEN.decimals)) {
+    if (
+      isUnlockingMax &&
+      value ===
+        convertYoctoToNear(maxAmountToUnlock ?? "0", NEAR_TOKEN.decimals)
+    ) {
       return;
     }
-    
+
     setEnteredAmount(value);
   };
 
@@ -72,9 +76,19 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
 
   const formattedNearAmount = useMemo(() => {
     // If unlocking max and the equivalent is incredibly small, explicitly write it without truncating tokens
-    if (isUnlockingMax && nearAmount && Big(nearAmount).gt(0) && Big(nearAmount).lt(Big(10).pow(20))) {
-      const explicitNumStr = convertYoctoToNear(nearAmount, NEAR_TOKEN.decimals);
-      return <span className="tabular-nums text-lg font-mono">{explicitNumStr}</span>;
+    if (
+      isUnlockingMax &&
+      nearAmount &&
+      Big(nearAmount).gt(0) &&
+      Big(nearAmount).lt(Big(10).pow(20))
+    ) {
+      const explicitNumStr = convertYoctoToNear(
+        nearAmount,
+        NEAR_TOKEN.decimals
+      );
+      return (
+        <span className="tabular-nums text-lg font-mono">{explicitNumStr}</span>
+      );
     }
 
     return (
@@ -88,9 +102,9 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
   }, [nearAmount, isUnlockingMax]);
 
   const shouldDisableButton =
-    (!enteredAmount && !isUnlockingMax) || 
-    (enteredAmount && !isUnlockingMax && Big(enteredAmount).lte(0)) || 
-    isLoading || 
+    (!enteredAmount && !isUnlockingMax) ||
+    (enteredAmount && !isUnlockingMax && Big(enteredAmount).lte(0)) ||
+    isLoading ||
     !!amountError;
 
   return (
@@ -131,18 +145,20 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
         </div>
         <div>
           <span className="text-3xl font-bold text-primary">
-            {maxAmountToUnlock && Big(maxAmountToUnlock).gt(0) && Big(maxAmountToUnlock).lt(Big(10).pow(20)) ? (
+            {maxAmountToUnlock &&
+            Big(maxAmountToUnlock).gt(0) &&
+            Big(maxAmountToUnlock).lt(Big(10).pow(20)) ? (
               <TooltipWithTap
                 content={
                   <div className="flex flex-col text-left p-2">
                     <p className="font-semibold text-sm">Dust Amount</p>
-                    <p className="font-mono text-xs">{maxAmountToUnlock} yoctoNEAR</p>
+                    <p className="font-mono text-xs">
+                      {maxAmountToUnlock} yoctoNEAR
+                    </p>
                   </div>
                 }
               >
-                <span className="cursor-pointer">
-                  ~0 veNEAR
-                </span>
+                <span className="cursor-pointer">~0 veNEAR</span>
               </TooltipWithTap>
             ) : (
               <TokenAmount
@@ -176,7 +192,10 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
                 value={
                   // Override value for display purposes when unlocking max
                   isUnlockingMax
-                    ? convertYoctoToNear(maxAmountToUnlock ?? "0", NEAR_TOKEN.decimals)
+                    ? convertYoctoToNear(
+                        maxAmountToUnlock ?? "0",
+                        NEAR_TOKEN.decimals
+                      )
                     : enteredAmount
                 }
                 onChange={handleAmountChange}

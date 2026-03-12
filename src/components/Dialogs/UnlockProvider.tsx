@@ -104,10 +104,13 @@ export const UnlockProvider = ({ children }: UnlockProviderProps) => {
           setAmountError("Please enter a valid amount");
           return;
         }
-        
+
         // If they click Max, the exact string might be "0.000...1" which parseNearAmount can mangle.
         // We explicitly check if it matches the converted max amount, and if so, it's valid.
-        const exactMaxString = convertYoctoToNear(maxAmountToUnlock ?? "0", NEAR_TOKEN.decimals);
+        const exactMaxString = convertYoctoToNear(
+          maxAmountToUnlock ?? "0",
+          NEAR_TOKEN.decimals
+        );
         const isExactMax = amount === exactMaxString;
 
         if (isExactMax && Big(maxAmountToUnlock ?? "0").gt(0)) {
@@ -147,11 +150,14 @@ export const UnlockProvider = ({ children }: UnlockProviderProps) => {
   const onEnteredAmountUpdated = useCallback(
     (amount: string) => {
       setEnteredAmount(amount);
-      const exactMaxString = convertYoctoToNear(maxAmountToUnlock ?? "0", NEAR_TOKEN.decimals);
+      const exactMaxString = convertYoctoToNear(
+        maxAmountToUnlock ?? "0",
+        NEAR_TOKEN.decimals
+      );
       setIsUnlockingMax(amount === exactMaxString);
       validateAmount(amount);
     },
-    [validateAmount]
+    [validateAmount, maxAmountToUnlock]
   );
 
   const formattedUnlockDuration = useMemo(() => {
