@@ -105,19 +105,6 @@ export const UnlockProvider = ({ children }: UnlockProviderProps) => {
           return;
         }
 
-        // If they click Max, the exact string might be "0.000...1" which parseNearAmount can mangle.
-        // We explicitly check if it matches the converted max amount, and if so, it's valid.
-        const exactMaxString = convertYoctoToNear(
-          maxAmountToUnlock ?? "0",
-          NEAR_TOKEN.decimals
-        );
-        const isExactMax = amount === exactMaxString;
-
-        if (isExactMax && Big(maxAmountToUnlock ?? "0").gt(0)) {
-          setAmountError(null);
-          return;
-        }
-
         const parsedAmount = parseNearAmount(amount);
 
         if (Big(parsedAmount ?? "0").gt(Big(maxAmountToUnlock ?? "0"))) {
