@@ -32,4 +32,11 @@ describe("convertYoctoToNear", () => {
     expect(result).toBe(nearValue.toString());
     expect(result).not.toContain(",");
   });
+
+  it("should preserve exact 24 decimal precision for mixed dust amounts without scientific notation", () => {
+    // 2 NEAR + 1 Yocto NEAR in the middle
+    const yoctoWithDust = "2000010932708511800000001";
+    const result = convertYoctoToNear(yoctoWithDust);
+    expect(result).toBe("2.000010932708511800000001");
+  });
 });
