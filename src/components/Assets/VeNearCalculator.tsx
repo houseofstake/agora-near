@@ -13,7 +13,11 @@ import { parseNearAmount } from "@near-js/utils";
 import Big from "big.js";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { ChevronRightIcon } from "@heroicons/react/20/solid";
+import {
+  ChevronRightIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/20/solid";
+import { TooltipWithTap } from "../ui/tooltip-with-tap";
 
 const DURATION_OPTIONS = [
   { months: 3, label: "3m" },
@@ -103,7 +107,12 @@ export function VeNearCalculator({
         <div className="bg-[#17171A] p-4 sm:p-6 flex flex-col justify-between min-h-[200px]">
           <div className="flex flex-col gap-4">
             <div>
-              <p className="text-sm text-gray-200 mb-2">Reward Rate</p>
+              <div className="flex items-center gap-1 mb-2">
+                <p className="text-sm text-gray-200">Reward Rate</p>
+                <TooltipWithTap content="Rate of increasing voting power. Not for additional NEAR tokens">
+                  <InformationCircleIcon className="w-4 h-4 text-gray-400" />
+                </TooltipWithTap>
+              </div>
               <p className="text-3xl sm:text-4xl font-bold text-[#00E391] mb-1">
                 {lockApy}%
               </p>
