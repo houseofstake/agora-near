@@ -8,7 +8,17 @@ import {
   GetVoteHistoryResponse,
   GetDelegationEventsResponse,
   GetHosActivityResponse,
+  DelegateSearchResponse,
 } from "./types";
+
+export type SearchDelegatesParams = {
+  q: string;
+  sort?: string[];
+  filter?: string;
+  limit?: number;
+  offset?: number;
+  semanticRatio?: number;
+};
 
 export const createDelegateStatement = async (
   input: CreateDelegateStatementInput,
@@ -28,6 +38,14 @@ export const getDelegate = async (address: string) => {
   );
 
   return data.delegate;
+};
+
+export const searchDelegates = async (params: SearchDelegatesParams) => {
+  const { data } = await axios.post<DelegateSearchResponse>(
+    `${Endpoint.Delegates}/search`,
+    params
+  );
+  return data;
 };
 
 export const fetchDelegates = async (
