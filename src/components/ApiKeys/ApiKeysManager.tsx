@@ -79,20 +79,44 @@ export default function ApiKeysManager() {
   ];
 
   const handleScopeToggle = (scopeId: string) => {
-    setSelectedScopes((prev) =>
-      prev.includes(scopeId)
+    setSelectedScopes((prev) => {
+      const nextScopes = prev.includes(scopeId)
         ? prev.filter((s) => s !== scopeId)
-        : [...prev, scopeId]
-    );
+        : [...prev, scopeId];
+
+      const allGranularScopes = AVAILABLE_SCOPES.filter(
+        (s) => s.id !== "full_access"
+      ).map((s) => s.id);
+      const hasAllGranular = allGranularScopes.every((s) =>
+        nextScopes.includes(s)
+      );
+
+      if (hasAllGranular && !nextScopes.includes("full_access")) {
+        return ["full_access"];
+      }
+
+      return nextScopes;
+    });
   };
 
   const handleEditScopeToggle = (scopeId: string) => {
     setEditScopes((prev) => {
-      if (prev.includes(scopeId)) {
-        return prev.filter((s) => s !== scopeId);
-      } else {
-        return [...prev, scopeId];
+      const nextScopes = prev.includes(scopeId)
+        ? prev.filter((s) => s !== scopeId)
+        : [...prev, scopeId];
+
+      const allGranularScopes = AVAILABLE_SCOPES.filter(
+        (s) => s.id !== "full_access"
+      ).map((s) => s.id);
+      const hasAllGranular = allGranularScopes.every((s) =>
+        nextScopes.includes(s)
+      );
+
+      if (hasAllGranular && !nextScopes.includes("full_access")) {
+        return ["full_access"];
       }
+
+      return nextScopes;
     });
   };
 
@@ -152,7 +176,7 @@ export default function ApiKeysManager() {
       const payloadObj = {
         accountId: signedAccountId,
         email,
-        scopes: selectedScopes.length > 0 ? selectedScopes : ["full_access"],
+        scopes: selectedScopes,
         timestamp: Date.now(),
       };
       const serializedPayload = JSON.stringify(payloadObj, undefined, "\t");
@@ -217,7 +241,7 @@ export default function ApiKeysManager() {
       setIsUpdating(true);
       const payloadObj = {
         accountId: signedAccountId,
-        scopes: editScopes.length > 0 ? editScopes : ["full_access"],
+        scopes: editScopes,
         timestamp: Date.now(),
       };
 
@@ -422,32 +446,52 @@ export default function ApiKeysManager() {
                   API Key Scopes
                 </label>
                 <div className="flex flex-col gap-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                  {AVAILABLE_SCOPES.map((scope) => (
-                    <label
-                      key={scope.id}
-                      className="flex cursor-pointer items-start gap-3 rounded-xl border border-line bg-black/5 dark:bg-white/5 p-3 hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
-                    >
-                      <div className="flex h-5 items-center mt-0.5">
-                        <input
-                          type="checkbox"
-                          className="h-4 w-4 rounded border-line text-brandPrimary focus:ring-brandPrimary"
-                          checked={selectedScopes.includes(scope.id)}
-                          onChange={() => handleScopeToggle(scope.id)}
-                        />
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium text-primary">
-                          {scope.label}{" "}
-                          <code className="ml-2 text-xs text-brandPrimary bg-brandPrimary/10 px-1 py-0.5 rounded">
-                            {scope.id}
-                          </code>
-                        </span>
-                        <span className="text-xs text-secondary mt-0.5">
-                          {scope.description}
-                        </span>
-                      </div>
-                    </label>
-                  ))}
+                  {AVAILABLE_SCOPES.map((scope) => {
+                    const isFullAccessSelected =
+                      selectedScopes.includes("full_access");
+                    const isThisScopeFullAccess = scope.id === "full_access";
+                    const isChecked =
+                      selectedScopes.includes(scope.id) ||
+                      (isFullAccessSelected && !isThisScopeFullAccess);
+                    const isDisabled =
+                      isFullAccessSelected && !isThisScopeFullAccess;
+
+                    return (
+                      <label
+                        key={scope.id}
+                        className={`flex items-start gap-3 rounded-xl border p-3 transition-colors ${
+                          isChecked
+                            ? "border-brandPrimary bg-brandPrimary/5"
+                            : "border-line bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10"
+                        } ${isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                      >
+                        <div className="flex h-5 items-center mt-0.5">
+                          <input
+                            type="checkbox"
+                            className={`h-4 w-4 rounded border-line text-brandPrimary focus:ring-brandPrimary ${
+                              isDisabled
+                                ? "cursor-not-allowed"
+                                : "cursor-pointer"
+                            }`}
+                            checked={isChecked}
+                            disabled={isDisabled}
+                            onChange={() => handleScopeToggle(scope.id)}
+                          />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium text-primary">
+                            {scope.label}{" "}
+                            <code className="ml-2 text-xs text-brandPrimary bg-brandPrimary/10 px-1 py-0.5 rounded">
+                              {scope.id}
+                            </code>
+                          </span>
+                          <span className="text-xs text-secondary mt-0.5">
+                            {scope.description}
+                          </span>
+                        </div>
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -549,14 +593,20 @@ export default function ApiKeysManager() {
                         <td className="px-6 py-4 text-secondary whitespace-normal min-w-[200px]">
                           <div className="flex flex-wrap gap-2">
                             {key.scopes && key.scopes.length > 0 ? (
-                              key.scopes.map((scope) => (
-                                <span
-                                  key={scope}
-                                  className="inline-flex items-center rounded-full bg-brandPrimary/10 px-2 py-0.5 text-xs font-medium text-brandPrimary"
-                                >
-                                  {scope}
+                              key.scopes.includes("full_access") ? (
+                                <span className="inline-flex items-center rounded-full bg-brandPrimary/10 px-2 py-0.5 text-xs font-medium text-brandPrimary">
+                                  full_access
                                 </span>
-                              ))
+                              ) : (
+                                key.scopes.map((scope) => (
+                                  <span
+                                    key={scope}
+                                    className="inline-flex items-center rounded-full bg-brandPrimary/10 px-2 py-0.5 text-xs font-medium text-brandPrimary"
+                                  >
+                                    {scope}
+                                  </span>
+                                ))
+                              )
                             ) : (
                               <span className="inline-flex items-center rounded-full bg-red-500/10 px-2 py-0.5 text-xs font-medium text-red-500">
                                 None
@@ -574,21 +624,23 @@ export default function ApiKeysManager() {
                             }
                           )}
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-right flex justify-end gap-2">
-                          <button
-                            onClick={() => handleOpenEdit(key)}
-                            className="inline-flex items-center justify-center rounded-lg p-2 text-tertiary transition-colors hover:bg-brandPrimary/10 hover:text-brandPrimary"
-                            title="Edit Scopes"
-                          >
-                            <Edit2 className="h-4 w-4" />
-                          </button>
-                          <button
-                            onClick={() => revokeKey(key.id)}
-                            className="inline-flex items-center justify-center rounded-lg p-2 text-tertiary transition-colors hover:bg-red-500/10 hover:text-red-500"
-                            title="Revoke Key"
-                          >
-                            <Trash className="h-4 w-4" />
-                          </button>
+                        <td className="whitespace-nowrap px-6 py-4 text-right">
+                          <div className="flex items-center justify-end gap-2 h-full">
+                            <button
+                              onClick={() => handleOpenEdit(key)}
+                              className="inline-flex items-center justify-center rounded-lg p-2 text-tertiary transition-colors hover:bg-brandPrimary/10 hover:text-brandPrimary"
+                              title="Edit Scopes"
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </button>
+                            <button
+                              onClick={() => revokeKey(key.id)}
+                              className="inline-flex items-center justify-center rounded-lg p-2 text-tertiary transition-colors hover:bg-red-500/10 hover:text-red-500"
+                              title="Revoke Key"
+                            >
+                              <Trash className="h-4 w-4" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -614,36 +666,50 @@ export default function ApiKeysManager() {
 
             <form onSubmit={updateKeyScopes}>
               <div className="mb-6 space-y-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
-                {AVAILABLE_SCOPES.map((scope) => (
-                  <label
-                    key={`edit-${scope.id}`}
-                    className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-colors ${
-                      editScopes.includes(scope.id)
-                        ? "border-brandPrimary bg-brandPrimary/5"
-                        : "border-line bg-transparent hover:bg-black/5 dark:hover:bg-white/5"
-                    }`}
-                  >
-                    <div className="mt-0.5 flex h-5 items-center">
-                      <input
-                        type="checkbox"
-                        className="h-4 w-4 rounded border-line text-brandPrimary focus:ring-brandPrimary"
-                        checked={editScopes.includes(scope.id)}
-                        onChange={() => handleEditScopeToggle(scope.id)}
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium text-primary">
-                        {scope.label}{" "}
-                        <code className="ml-2 text-xs text-brandPrimary bg-brandPrimary/10 px-1 py-0.5 rounded">
-                          {scope.id}
-                        </code>
-                      </span>
-                      <span className="text-xs text-secondary mt-0.5">
-                        {scope.description}
-                      </span>
-                    </div>
-                  </label>
-                ))}
+                {AVAILABLE_SCOPES.map((scope) => {
+                  const isFullAccessSelected =
+                    editScopes.includes("full_access");
+                  const isThisScopeFullAccess = scope.id === "full_access";
+                  const isChecked =
+                    editScopes.includes(scope.id) ||
+                    (isFullAccessSelected && !isThisScopeFullAccess);
+                  const isDisabled =
+                    isFullAccessSelected && !isThisScopeFullAccess;
+
+                  return (
+                    <label
+                      key={`edit-${scope.id}`}
+                      className={`flex items-start gap-3 rounded-xl border p-4 transition-colors ${
+                        isChecked
+                          ? "border-brandPrimary bg-brandPrimary/5"
+                          : "border-line bg-transparent hover:bg-black/5 dark:hover:bg-white/5"
+                      } ${isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                    >
+                      <div className="mt-0.5 flex h-5 items-center">
+                        <input
+                          type="checkbox"
+                          className={`h-4 w-4 rounded border-line text-brandPrimary focus:ring-brandPrimary ${
+                            isDisabled ? "cursor-not-allowed" : "cursor-pointer"
+                          }`}
+                          checked={isChecked}
+                          disabled={isDisabled}
+                          onChange={() => handleEditScopeToggle(scope.id)}
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium text-primary">
+                          {scope.label}{" "}
+                          <code className="ml-2 text-xs text-brandPrimary bg-brandPrimary/10 px-1 py-0.5 rounded">
+                            {scope.id}
+                          </code>
+                        </span>
+                        <span className="text-xs text-secondary mt-0.5">
+                          {scope.description}
+                        </span>
+                      </div>
+                    </label>
+                  );
+                })}
               </div>
 
               <div className="flex gap-3">
