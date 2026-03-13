@@ -71,11 +71,6 @@ export default function ApiKeysManager() {
       label: "Read veNEAR",
       description: "Read historical minter count and total supply.",
     },
-    {
-      id: "write:vote",
-      label: "Write Vote",
-      description: "Allow casting proxy votes on your behalf.",
-    },
   ];
 
   const handleScopeToggle = (scopeId: string) => {
