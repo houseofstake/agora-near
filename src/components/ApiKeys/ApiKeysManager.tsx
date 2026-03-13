@@ -11,7 +11,7 @@ import {
   Trash,
   Info,
   Edit2,
-  Plus
+  Plus,
 } from "lucide-react";
 import AgoraLoader from "@/components/shared/AgoraLoader/AgoraLoader";
 import toast from "react-hot-toast";
@@ -32,7 +32,9 @@ export default function ApiKeysManager() {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [email, setEmail] = useState("");
-  const [selectedScopes, setSelectedScopes] = useState<string[]>(["full_access"]);
+  const [selectedScopes, setSelectedScopes] = useState<string[]>([
+    "full_access",
+  ]);
   const [newKey, setNewKey] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
@@ -44,9 +46,36 @@ export default function ApiKeysManager() {
   const [isUpdating, setIsUpdating] = useState(false);
 
   const AVAILABLE_SCOPES = [
-    { id: "full_access", label: "Full Access", description: "Unrestricted access to all current endpoints." },
-    { id: "read:data", label: "Read Data", description: "Allow grabbing public proposals and delegates." },
-    { id: "write:vote", label: "Write Vote", description: "Allow casting proxy votes on your behalf." },
+    {
+      id: "full_access",
+      label: "Full Access",
+      description: "Unrestricted access to all current endpoints.",
+    },
+    {
+      id: "read:proposals",
+      label: "Read Proposals",
+      description: "Read public proposals and content.",
+    },
+    {
+      id: "read:delegates",
+      label: "Read Delegates",
+      description: "Read public delegate profiles and status.",
+    },
+    {
+      id: "read:staking",
+      label: "Read Staking",
+      description: "Read on-chain calculated validator APY.",
+    },
+    {
+      id: "read:venear",
+      label: "Read veNEAR",
+      description: "Read historical minter count and total supply.",
+    },
+    {
+      id: "write:vote",
+      label: "Write Vote",
+      description: "Allow casting proxy votes on your behalf.",
+    },
   ];
 
   const handleScopeToggle = (scopeId: string) => {
@@ -191,7 +220,7 @@ export default function ApiKeysManager() {
         scopes: editScopes.length > 0 ? editScopes : ["full_access"],
         timestamp: Date.now(),
       };
-      
+
       const serializedPayload = JSON.stringify(payloadObj, undefined, "\t");
       const signatureData = await signMessage({ message: serializedPayload });
 
@@ -226,7 +255,7 @@ export default function ApiKeysManager() {
           k.id === editingKey.id ? { ...k, scopes: scopes } : k
         )
       );
-      
+
       setEditingKey(null);
       setEditScopes([]);
       toast.success("API Key scopes updated successfully");
@@ -408,7 +437,10 @@ export default function ApiKeysManager() {
                       </div>
                       <div className="flex flex-col">
                         <span className="text-sm font-medium text-primary">
-                          {scope.label} <code className="ml-2 text-xs text-brandPrimary bg-brandPrimary/10 px-1 py-0.5 rounded">{scope.id}</code>
+                          {scope.label}{" "}
+                          <code className="ml-2 text-xs text-brandPrimary bg-brandPrimary/10 px-1 py-0.5 rounded">
+                            {scope.id}
+                          </code>
                         </span>
                         <span className="text-xs text-secondary mt-0.5">
                           {scope.description}
@@ -572,9 +604,12 @@ export default function ApiKeysManager() {
       {editingKey && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 pt-16 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-2xl border border-line bg-neutral p-6 shadow-newDefault">
-            <h3 className="mb-2 text-xl font-bold text-primary">Edit API Key Scopes</h3>
+            <h3 className="mb-2 text-xl font-bold text-primary">
+              Edit API Key Scopes
+            </h3>
             <p className="mb-6 text-sm text-secondary">
-              Update the permissions for API key hint <strong>{editingKey.keyHint}</strong>
+              Update the permissions for API key hint{" "}
+              <strong>{editingKey.keyHint}</strong>
             </p>
 
             <form onSubmit={updateKeyScopes}>
@@ -598,7 +633,10 @@ export default function ApiKeysManager() {
                     </div>
                     <div className="flex flex-col">
                       <span className="text-sm font-medium text-primary">
-                        {scope.label} <code className="ml-2 text-xs text-brandPrimary bg-brandPrimary/10 px-1 py-0.5 rounded">{scope.id}</code>
+                        {scope.label}{" "}
+                        <code className="ml-2 text-xs text-brandPrimary bg-brandPrimary/10 px-1 py-0.5 rounded">
+                          {scope.id}
+                        </code>
                       </span>
                       <span className="text-xs text-secondary mt-0.5">
                         {scope.description}
