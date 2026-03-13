@@ -392,7 +392,7 @@ export default function ApiKeysManager() {
                 <label className="mb-3 block text-sm font-semibold text-primary">
                   API Key Scopes
                 </label>
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                   {AVAILABLE_SCOPES.map((scope) => (
                     <label
                       key={scope.id}
@@ -578,7 +578,7 @@ export default function ApiKeysManager() {
             </p>
 
             <form onSubmit={updateKeyScopes}>
-              <div className="mb-6 space-y-3">
+              <div className="mb-6 space-y-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
                 {AVAILABLE_SCOPES.map((scope) => (
                   <label
                     key={`edit-${scope.id}`}
