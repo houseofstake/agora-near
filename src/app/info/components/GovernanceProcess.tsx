@@ -28,7 +28,11 @@ const stages = [
       "The Screening Committee reviews the final proposal. Approval is required to proceed to an onchain vote.",
     outcomes: [
       { text: "Approved → proceeds to vote", success: true, icon: "check" },
-      { text: "Rejected → Proposal requires higher quorum to pass", success: false, icon: "x" },
+      {
+        text: "Rejected → Proposal requires higher quorum to pass",
+        success: false,
+        icon: "x",
+      },
     ],
   },
   {
