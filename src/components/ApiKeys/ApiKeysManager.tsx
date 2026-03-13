@@ -30,10 +30,25 @@ export default function ApiKeysManager() {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [email, setEmail] = useState("");
+  const [selectedScopes, setSelectedScopes] = useState<string[]>(["full_access"]);
   const [newKey, setNewKey] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const openDialog = useOpenDialog();
+
+  const AVAILABLE_SCOPES = [
+    { id: "full_access", label: "Full Access", description: "Unrestricted access to all current endpoints." },
+    { id: "read:forum", label: "Read Forum", description: "Allow grabbing public data or metrics." },
+    { id: "write:vote", label: "Write Vote", description: "Allow casting proxy votes on your behalf." },
+  ];
+
+  const handleScopeToggle = (scopeId: string) => {
+    setSelectedScopes((prev) =>
+      prev.includes(scopeId)
+        ? prev.filter((s) => s !== scopeId)
+        : [...prev, scopeId]
+    );
+  };
 
   useEffect(() => {}, [isInitialized, signedAccountId]);
 
@@ -91,7 +106,7 @@ export default function ApiKeysManager() {
       const payloadObj = {
         accountId: signedAccountId,
         email,
-        scopes: ["full"],
+        scopes: selectedScopes.length > 0 ? selectedScopes : ["full_access"],
         timestamp: Date.now(),
       };
       const serializedPayload = JSON.stringify(payloadObj, undefined, "\t");
@@ -134,6 +149,7 @@ export default function ApiKeysManager() {
 
       setKeys([newApiKey, ...keys]);
       setEmail("");
+      setSelectedScopes(["full_access"]);
       toast.success("API Key generated successfully");
     } catch (err: any) {
       toast.error(err.message || "Failed to generate API key");
@@ -293,6 +309,37 @@ export default function ApiKeysManager() {
                 </p>
               </div>
 
+              <div>
+                <label className="mb-3 block text-sm font-semibold text-primary">
+                  API Key Scopes
+                </label>
+                <div className="flex flex-col gap-3">
+                  {AVAILABLE_SCOPES.map((scope) => (
+                    <label
+                      key={scope.id}
+                      className="flex cursor-pointer items-start gap-3 rounded-xl border border-line bg-black/5 dark:bg-white/5 p-3 hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+                    >
+                      <div className="flex h-5 items-center mt-0.5">
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 rounded border-line text-brandPrimary focus:ring-brandPrimary"
+                          checked={selectedScopes.includes(scope.id)}
+                          onChange={() => handleScopeToggle(scope.id)}
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium text-primary">
+                          {scope.label} <code className="ml-2 text-xs text-brandPrimary bg-brandPrimary/10 px-1 py-0.5 rounded">{scope.id}</code>
+                        </span>
+                        <span className="text-xs text-secondary mt-0.5">
+                          {scope.description}
+                        </span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
               <UpdatedButton
                 isSubmit
                 type="primary"
@@ -369,6 +416,7 @@ export default function ApiKeysManager() {
                     <tr>
                       <th className="px-6 py-4 font-semibold">Key Hint</th>
                       <th className="px-6 py-4 font-semibold">Email</th>
+                      <th className="px-6 py-4 font-semibold">Scopes</th>
                       <th className="px-6 py-4 font-semibold">Created</th>
                       <th className="px-6 py-4 text-right font-semibold">
                         Actions
@@ -386,6 +434,24 @@ export default function ApiKeysManager() {
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-secondary">
                           {key.email}
+                        </td>
+                        <td className="px-6 py-4 text-secondary whitespace-normal min-w-[200px]">
+                          <div className="flex flex-wrap gap-2">
+                            {key.scopes && key.scopes.length > 0 ? (
+                              key.scopes.map((scope) => (
+                                <span
+                                  key={scope}
+                                  className="inline-flex items-center rounded-full bg-brandPrimary/10 px-2 py-0.5 text-xs font-medium text-brandPrimary"
+                                >
+                                  {scope}
+                                </span>
+                              ))
+                            ) : (
+                              <span className="inline-flex items-center rounded-full bg-red-500/10 px-2 py-0.5 text-xs font-medium text-red-500">
+                                None
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-secondary">
                           {new Date(key.createdAt).toLocaleDateString(
