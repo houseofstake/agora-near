@@ -21,8 +21,10 @@ import { TooltipWithTap } from "../ui/tooltip-with-tap";
 
 const DURATION_OPTIONS = [
   { months: 3, label: "3m" },
+  { months: 6, label: "6m" },
   { months: 12, label: "1y" },
   { months: 24, label: "2y" },
+  { months: 36, label: "3y" },
   { months: 48, label: "4y" },
 ];
 
