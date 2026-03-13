@@ -4,12 +4,14 @@ import React, { useState, useEffect } from "react";
 import { useNear } from "@/contexts/NearContext";
 import { UpdatedButton } from "@/components/Button";
 import {
-  Copy,
-  Trash,
-  CheckCircle2,
   KeyRound,
-  Plus,
   ShieldCheck,
+  Copy,
+  CheckCircle2,
+  Trash,
+  Info,
+  Edit2,
+  Plus
 } from "lucide-react";
 import AgoraLoader from "@/components/shared/AgoraLoader/AgoraLoader";
 import toast from "react-hot-toast";
@@ -36,9 +38,14 @@ export default function ApiKeysManager() {
   const [isVerified, setIsVerified] = useState(false);
   const openDialog = useOpenDialog();
 
+  // Edit Scope State
+  const [editingKey, setEditingKey] = useState<ApiKey | null>(null);
+  const [editScopes, setEditScopes] = useState<string[]>([]);
+  const [isUpdating, setIsUpdating] = useState(false);
+
   const AVAILABLE_SCOPES = [
     { id: "full_access", label: "Full Access", description: "Unrestricted access to all current endpoints." },
-    { id: "read:forum", label: "Read Forum", description: "Allow grabbing public data or metrics." },
+    { id: "read:data", label: "Read Data", description: "Allow grabbing public proposals and delegates." },
     { id: "write:vote", label: "Write Vote", description: "Allow casting proxy votes on your behalf." },
   ];
 
@@ -48,6 +55,16 @@ export default function ApiKeysManager() {
         ? prev.filter((s) => s !== scopeId)
         : [...prev, scopeId]
     );
+  };
+
+  const handleEditScopeToggle = (scopeId: string) => {
+    setEditScopes((prev) => {
+      if (prev.includes(scopeId)) {
+        return prev.filter((s) => s !== scopeId);
+      } else {
+        return [...prev, scopeId];
+      }
+    });
   };
 
   useEffect(() => {}, [isInitialized, signedAccountId]);
@@ -155,6 +172,68 @@ export default function ApiKeysManager() {
       toast.error(err.message || "Failed to generate API key");
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const handleOpenEdit = (key: ApiKey) => {
+    setEditingKey(key);
+    setEditScopes(key.scopes);
+  };
+
+  const updateKeyScopes = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingKey) return;
+
+    try {
+      setIsUpdating(true);
+      const payloadObj = {
+        accountId: signedAccountId,
+        scopes: editScopes.length > 0 ? editScopes : ["full_access"],
+        timestamp: Date.now(),
+      };
+      
+      const serializedPayload = JSON.stringify(payloadObj, undefined, "\t");
+      const signatureData = await signMessage({ message: serializedPayload });
+
+      if (!signatureData) {
+        throw new Error("Signature failed.");
+      }
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_NEAR_API_ENDPOINT}/api-keys/${editingKey.id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            data: payloadObj,
+            signature: signatureData.signature,
+            publicKey: signatureData.publicKey,
+            message: serializedPayload,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to update API key scopes");
+      }
+
+      const { scopes } = await res.json();
+
+      // Update local state
+      setKeys((currentKeys) =>
+        currentKeys.map((k) =>
+          k.id === editingKey.id ? { ...k, scopes: scopes } : k
+        )
+      );
+      
+      setEditingKey(null);
+      setEditScopes([]);
+      toast.success("API Key scopes updated successfully");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update API key scopes");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -463,7 +542,14 @@ export default function ApiKeysManager() {
                             }
                           )}
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-right">
+                        <td className="whitespace-nowrap px-6 py-4 text-right flex justify-end gap-2">
+                          <button
+                            onClick={() => handleOpenEdit(key)}
+                            className="inline-flex items-center justify-center rounded-lg p-2 text-tertiary transition-colors hover:bg-brandPrimary/10 hover:text-brandPrimary"
+                            title="Edit Scopes"
+                          >
+                            <Edit2 className="h-4 w-4" />
+                          </button>
                           <button
                             onClick={() => revokeKey(key.id)}
                             className="inline-flex items-center justify-center rounded-lg p-2 text-tertiary transition-colors hover:bg-red-500/10 hover:text-red-500"
@@ -481,6 +567,72 @@ export default function ApiKeysManager() {
           </div>
         </div>
       </div>
+
+      {/* Edit Scopes Modal */}
+      {editingKey && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 pt-16 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl border border-line bg-neutral p-6 shadow-newDefault">
+            <h3 className="mb-2 text-xl font-bold text-primary">Edit API Key Scopes</h3>
+            <p className="mb-6 text-sm text-secondary">
+              Update the permissions for API key hint <strong>{editingKey.keyHint}</strong>
+            </p>
+
+            <form onSubmit={updateKeyScopes}>
+              <div className="mb-6 space-y-3">
+                {AVAILABLE_SCOPES.map((scope) => (
+                  <label
+                    key={`edit-${scope.id}`}
+                    className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-colors ${
+                      editScopes.includes(scope.id)
+                        ? "border-brandPrimary bg-brandPrimary/5"
+                        : "border-line bg-transparent hover:bg-black/5 dark:hover:bg-white/5"
+                    }`}
+                  >
+                    <div className="mt-0.5 flex h-5 items-center">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 rounded border-line text-brandPrimary focus:ring-brandPrimary"
+                        checked={editScopes.includes(scope.id)}
+                        onChange={() => handleEditScopeToggle(scope.id)}
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-primary">
+                        {scope.label} <code className="ml-2 text-xs text-brandPrimary bg-brandPrimary/10 px-1 py-0.5 rounded">{scope.id}</code>
+                      </span>
+                      <span className="text-xs text-secondary mt-0.5">
+                        {scope.description}
+                      </span>
+                    </div>
+                  </label>
+                ))}
+              </div>
+
+              <div className="flex gap-3">
+                <UpdatedButton
+                  type="secondary"
+                  variant="rounded"
+                  onClick={() => setEditingKey(null)}
+                  disabled={isUpdating}
+                  className="flex-1"
+                >
+                  Cancel
+                </UpdatedButton>
+                <UpdatedButton
+                  isSubmit
+                  type="primary"
+                  variant="rounded"
+                  isLoading={isUpdating}
+                  disabled={isUpdating}
+                  className="flex-1"
+                >
+                  Save Changes
+                </UpdatedButton>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
