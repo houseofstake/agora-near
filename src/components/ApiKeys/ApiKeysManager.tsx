@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import AgoraLoader from "@/components/shared/AgoraLoader/AgoraLoader";
 import toast from "react-hot-toast";
+import { useOpenDialog } from "@/components/Dialogs/DialogProvider/DialogProvider";
 
 interface ApiKey {
   id: string;
@@ -26,56 +27,58 @@ interface ApiKey {
 export default function ApiKeysManager() {
   const { isInitialized, signedAccountId, signMessage } = useNear();
   const [keys, setKeys] = useState<ApiKey[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [email, setEmail] = useState("");
   const [newKey, setNewKey] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+  const openDialog = useOpenDialog();
 
-  useEffect(() => {
-    if (isInitialized && signedAccountId) {
-      fetchKeys();
-    } else if (isInitialized && !signedAccountId) {
-      setIsLoading(false);
-    }
-  }, [isInitialized, signedAccountId]);
+  useEffect(() => {}, [isInitialized, signedAccountId]);
 
   const fetchKeys = async () => {
     try {
-      setIsLoading(true);
-      const serializedPayload = JSON.stringify({
+      setIsVerifying(true);
+      const payloadObj = {
         accountId: signedAccountId,
         timestamp: Date.now(),
-      });
+      };
+      const serializedPayload = JSON.stringify(payloadObj, undefined, "\t");
 
       const signatureData = await signMessage({ message: serializedPayload });
 
       if (!signatureData) {
-        throw new Error("Signature failed.");
+        throw new Error("Signature was rejected.");
       }
 
-      const res = await fetch("/api/api-keys/list", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          data: JSON.parse(serializedPayload),
-          signature: Buffer.from(signatureData.signature).toString("base64"),
-          publicKey: signatureData.publicKey,
-          message: serializedPayload,
-        }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_NEAR_API_ENDPOINT}/api-keys/list`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            data: payloadObj,
+            signature: signatureData.signature,
+            publicKey: signatureData.publicKey,
+            message: serializedPayload,
+          }),
+        }
+      );
 
       if (!res.ok) {
-        throw new Error("Failed to fetch API keys");
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to fetch API keys");
       }
 
       const data = await res.json();
       setKeys(data);
+      setIsVerified(true);
     } catch (err: any) {
       console.error(err);
       toast.error(err.message || "Failed to fetch API keys");
     } finally {
-      setIsLoading(false);
+      setIsVerifying(false);
     }
   };
 
@@ -85,36 +88,51 @@ export default function ApiKeysManager() {
 
     try {
       setIsGenerating(true);
-      const serializedPayload = JSON.stringify({
+      const payloadObj = {
         accountId: signedAccountId,
         email,
         scopes: ["full"],
         timestamp: Date.now(),
-      });
+      };
+      const serializedPayload = JSON.stringify(payloadObj, undefined, "\t");
       const signatureData = await signMessage({ message: serializedPayload });
 
       if (!signatureData) {
         throw new Error("Signature failed.");
       }
 
-      const res = await fetch("/api/api-keys", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          data: JSON.parse(serializedPayload),
-          signature: Buffer.from(signatureData.signature).toString("base64"),
-          publicKey: signatureData.publicKey,
-          message: serializedPayload,
-        }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_NEAR_API_ENDPOINT}/api-keys`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            data: payloadObj,
+            signature: signatureData.signature,
+            publicKey: signatureData.publicKey,
+            message: serializedPayload,
+          }),
+        }
+      );
 
       if (!res.ok) {
-        throw new Error("Failed to generate API key");
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to generate API key");
       }
 
       const data = await res.json();
       setNewKey(data.plainTextKey);
-      setKeys([data, ...keys]);
+
+      const newApiKey: ApiKey = {
+        id: data.id,
+        keyHint: data.keyHint,
+        email: email,
+        scopes: data.scopes,
+        createdAt: data.createdAt,
+        lastUsedAt: null,
+      };
+
+      setKeys([newApiKey, ...keys]);
       setEmail("");
       toast.success("API Key generated successfully");
     } catch (err: any) {
@@ -125,45 +143,61 @@ export default function ApiKeysManager() {
   };
 
   const revokeKey = async (id: string) => {
-    if (
-      !confirm(
-        "Are you sure you want to revoke this API key? This action cannot be undone."
-      )
-    )
-      return;
+    openDialog({
+      type: "CONFIRM",
+      params: {
+        title: "Revoke API Key",
+        message:
+          "Are you sure you want to revoke this API key? This action cannot be undone.",
+        confirmText: "Revoke Key",
+        variant: "danger",
+        onConfirm: async () => {
+          try {
+            const payloadObj = {
+              accountId: signedAccountId,
+              timestamp: Date.now(),
+            };
+            const serializedPayload = JSON.stringify(
+              payloadObj,
+              undefined,
+              "\t"
+            );
 
-    try {
-      const serializedPayload = JSON.stringify({
-        accountId: signedAccountId,
-        timestamp: Date.now(),
-      });
+            const signatureData = await signMessage({
+              message: serializedPayload,
+            });
 
-      const signatureData = await signMessage({ message: serializedPayload });
+            if (!signatureData) {
+              throw new Error("Signature failed.");
+            }
 
-      if (!signatureData) {
-        throw new Error("Signature failed.");
-      }
+            const res = await fetch(
+              `${process.env.NEXT_PUBLIC_NEAR_API_ENDPOINT}/api-keys/${id}/revoke`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  data: payloadObj,
+                  signature: signatureData.signature,
+                  publicKey: signatureData.publicKey,
+                  message: serializedPayload,
+                }),
+              }
+            );
 
-      const res = await fetch(`/api/api-keys/${id}/revoke`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          data: JSON.parse(serializedPayload),
-          signature: Buffer.from(signatureData.signature).toString("base64"),
-          publicKey: signatureData.publicKey,
-          message: serializedPayload,
-        }),
-      });
+            if (!res.ok) {
+              const errorData = await res.json().catch(() => ({}));
+              throw new Error(errorData.error || "Failed to revoke API key");
+            }
 
-      if (!res.ok) {
-        throw new Error("Failed to revoke API key");
-      }
-
-      setKeys(keys.filter((k) => k.id !== id));
-      toast.success("API Key revoked successfully");
-    } catch (err: any) {
-      toast.error(err.message || "Failed to revoke API key");
-    }
+            setKeys((currentKeys) => currentKeys.filter((k) => k.id !== id));
+            toast.success("API Key revoked successfully");
+          } catch (err: any) {
+            toast.error(err.message || "Failed to revoke API key");
+          }
+        },
+      },
+    });
   };
 
   const copyToClipboard = () => {
@@ -175,7 +209,7 @@ export default function ApiKeysManager() {
     }
   };
 
-  if (!isInitialized || isLoading) {
+  if (!isInitialized) {
     return (
       <div className="flex h-64 items-center justify-center">
         <AgoraLoader />
@@ -185,17 +219,46 @@ export default function ApiKeysManager() {
 
   if (!signedAccountId) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-line bg-neutral p-12 text-center shadow-newDefault">
-        <KeyRound className="mb-4 h-12 w-12 text-secondary" />
-        <h2 className="mb-2 text-xl font-bold text-primary">
-          Authentication Required
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-line bg-neutral p-16 text-center shadow-newDefault max-w-2xl mx-auto">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-line/50 mb-6">
+          <KeyRound className="h-8 w-8 text-secondary" />
+        </div>
+        <h2 className="mb-3 text-2xl font-bold text-primary">
+          Connect Wallet Required
         </h2>
-        <p className="text-secondary mb-6">
-          Connect your wallet to manage Developer API Keys.
+        <p className="text-secondary mb-6 text-lg">
+          Please connect your NEAR wallet to manage your API Keys.
         </p>
-        <p className="text-sm font-semibold text-brandPrimary">
-          Use the connect button in the header.
+        <p className="inline-block text-sm font-medium text-brandPrimary bg-brandPrimary/10 px-4 py-2 rounded-lg">
+          Use the connect button in the header above
         </p>
+      </div>
+    );
+  }
+
+  if (!isVerified) {
+    return (
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-line bg-neutral p-16 text-center shadow-newDefault max-w-2xl mx-auto">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brandPrimary/10 mb-6 border border-brandPrimary/20">
+          <ShieldCheck className="h-8 w-8 text-brandPrimary" />
+        </div>
+        <h2 className="mb-3 text-2xl font-bold text-primary">
+          Verify Ownership
+        </h2>
+        <p className="text-secondary mb-8 text-md max-w-md">
+          To view and manage your API keys, you must sign a message with your
+          connected wallet (<b>{signedAccountId}</b>) to prove ownership. No gas
+          fees will be charged.
+        </p>
+        <UpdatedButton
+          type="primary"
+          variant="rounded"
+          onClick={fetchKeys}
+          isLoading={isVerifying}
+          className="text-white w-full sm:w-auto px-8"
+        >
+          Sign to Verify
+        </UpdatedButton>
       </div>
     );
   }
@@ -215,12 +278,12 @@ export default function ApiKeysManager() {
             <form onSubmit={generateKey} className="flex flex-col gap-4">
               <div>
                 <label className="mb-2 block text-sm font-semibold text-primary">
-                  Developer Email
+                  User Email
                 </label>
                 <input
                   type="email"
                   required
-                  placeholder="dev@houseofstake.com"
+                  placeholder="Enter your email address..."
                   className="w-full rounded-xl border border-line bg-transparent px-4 py-3 text-sm text-primary placeholder-secondary outline-none transition-all focus:border-brandPrimary focus:ring-1 focus:ring-brandPrimary"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -288,7 +351,7 @@ export default function ApiKeysManager() {
             <div className="border-b border-line px-6 py-5">
               <h2 className="text-lg font-bold text-primary">Active Keys</h2>
               <p className="text-sm text-secondary mt-1">
-                Manage your active Developer API keys and their permissions.
+                Manage your active API keys and their permissions.
               </p>
             </div>
 

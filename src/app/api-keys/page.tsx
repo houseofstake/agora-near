@@ -5,7 +5,7 @@ import ApiKeysManager from "@/components/ApiKeys/ApiKeysManager";
 export async function generateMetadata() {
   return {
     title: "API Keys | HoS NEAR",
-    description: "Manage your Developer API Keys for the Agora platform.",
+    description: "Manage your API Keys for the HoS NEAR platform.",
   };
 }
 
@@ -17,7 +17,7 @@ export default async function Page() {
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-primary">API Keys</h1>
             <p className="mt-2 text-secondary">
-              Manage your Developer API Keys for the Agora platform.
+              Manage your API Keys for the HoS NEAR platform.
             </p>
           </div>
           <ApiKeysManager />
