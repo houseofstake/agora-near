@@ -1,4 +1,3 @@
-
 export function sanitizeContent(content: string): string {
   // Remove dangerous content
   let cleaned = content
@@ -9,7 +8,6 @@ export function sanitizeContent(content: string): string {
     .replace(/&#/g, "")
     .replace(/\\x/g, "")
     .replace(/\[([^\]]+)\]\([^)]*javascript:[^)]+\)/gi, "$1");
-
 
   return cleaned;
 }
