@@ -107,6 +107,8 @@
   },
   "devDependencies": {
     "@aws-sdk/client-dynamodb": "^3.454.0",
+    "@cypress/webpack-preprocessor": "^7.0.2",
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.10",
     "@testing-library/dom": "^10.4.0",
@@ -133,12 +135,14 @@
     "jsdom": "^26.0.0",
     "prettier": "^3.2.5",
     "sass": "^1.62.1",
+    "ts-loader": "^9.5.4",
     "ts-node": "^10.9.2",
     "tsx": "^4.7.3",
     "typechain": "^8.3.2",
     "typescript": "^5.4.5",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.0.5"
+    "vitest": "^3.0.5",
+    "webpack": "^5.105.4"
   },
   "resolutions": {
     "@noble/hashes": "1.8.0",
