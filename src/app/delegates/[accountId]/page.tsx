@@ -13,7 +13,15 @@ export async function generateMetadata({
   params: { accountId: string };
 }): Promise<Metadata> {
   const address = params.accountId;
-  const delegateProfile = await getDelegate(address);
+  let delegateProfile;
+  try {
+    delegateProfile = await getDelegate(address);
+  } catch (e) {
+    return {
+      title: `${address} on Agora`,
+      description: `See what ${address} believes and how they vote on NEAR governance.`,
+    };
+  }
 
   const statement = delegateProfile?.statement;
   const votingPower = delegateProfile?.votingPower;

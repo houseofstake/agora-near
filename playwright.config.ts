@@ -12,7 +12,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://127.0.0.1:3004',
     trace: 'on-first-retry',
   },
   projects: [
@@ -21,4 +21,10 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
+  webServer: {
+    command: 'PORT=3004 yarn run next:start',
+    url: 'http://127.0.0.1:3004',
+    reuseExistingServer: false,
+    timeout: 120 * 1000,
+  },
 });
