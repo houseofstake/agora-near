@@ -269,7 +269,7 @@ describe("useReadHOSContract", () => {
       renderHook(() => useReadHOSContract(queries), { wrapper });
 
       // Get the query function that was passed to useQueries
-      const queryFunction = mockUseQueries.mock.calls[0]?.[0]?.queries?.[0]
+      const queryFunction = (mockUseQueries.mock.calls as any)[0]?.[0]?.queries?.[0]
         ?.queryFn as () => Promise<string> | undefined;
 
       if (queryFunction) {
@@ -304,7 +304,7 @@ describe("useReadHOSContract", () => {
       renderHook(() => useReadHOSContract(queries), { wrapper });
 
       // Get the query function that was passed to useQueries
-      const queryFunction = mockUseQueries.mock.calls[0]?.[0]?.queries?.[0]
+      const queryFunction = (mockUseQueries.mock.calls as any)[0]?.[0]?.queries?.[0]
         ?.queryFn as () => Promise<unknown> | undefined;
 
       if (queryFunction) {
