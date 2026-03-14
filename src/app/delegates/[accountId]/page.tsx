@@ -18,7 +18,7 @@ export async function generateMetadata({
     delegateProfile = await getDelegate(address);
   } catch (e) {
     return {
-      title: `${address} on Agora`,
+      title: `${address} on HoS NEAR`,
       description: `See what ${address} believes and how they vote on NEAR governance.`,
     };
   }
@@ -38,7 +38,7 @@ export async function generateMetadata({
     "&"
   )}&address=${address}`;
 
-  const title = `${address} on Agora`;
+  const title = `${address} on HoS NEAR`;
   const description = `See what ${address} believes and how they vote on NEAR governance.`;
 
   return {
