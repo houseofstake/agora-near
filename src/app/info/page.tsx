@@ -1,11 +1,10 @@
 import React from "react";
-import InfoAbout from "@/app/info/components/InfoAbout";
-import { InfoHero } from "@/app/info/components/InfoHero";
+import { GovernanceProcess } from "@/app/info/components/GovernanceProcess";
 import InfoVideos from "@/app/info/components/InfoVideos";
-import GovernorSettings from "@/app/info/components/GovernorSettings";
-import InfoFAQ from "@/app/info/components/InfoFAQ";
-import InfoRoadmap from "@/app/info/components/InfoRoadmap";
+import { InfoScopeAndParams } from "@/app/info/components/InfoScopeAndParams";
 import Tenant from "@/lib/tenant/tenant";
+import { InfoHero } from "./components/InfoHero";
+import InfoRoadmap from "./components/InfoRoadmap";
 
 export async function generateMetadata() {
   const tenant = Tenant.current();
@@ -49,10 +48,9 @@ export default async function Page() {
   return (
     <div className="flex flex-col">
       <InfoHero />
+      <GovernanceProcess />
+      <InfoScopeAndParams />
       <InfoVideos />
-      <InfoAbout />
-      <GovernorSettings />
-      <InfoFAQ />
       <InfoRoadmap />
     </div>
   );

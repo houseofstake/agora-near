@@ -20,6 +20,7 @@ const getApiUrl = () => {
 export const baseApiUrl = getApiUrl();
 
 export const Endpoint = Object.freeze({
+  Venear: `${baseApiUrl}/venear`,
   Proposals: `${baseApiUrl}/proposal`,
   DraftProposals: `${baseApiUrl}/proposal/draft`,
   DelegateStatement: `${baseApiUrl}/delegates/statement`,

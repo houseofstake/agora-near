@@ -134,7 +134,7 @@ const InfoRoadmap = () => {
         ))}
       </div> */}
 
-      <div className="mt-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
+      <div className="mt-8 p-6 bg-wash border border-line rounded-lg">
         <h4 className="text-lg font-semibold text-primary mb-3">
           Future Considerations
         </h4>
@@ -145,7 +145,6 @@ const InfoRoadmap = () => {
         <ul className="list-disc list-inside text-secondary text-sm space-y-2 ml-4">
           <li>Delegation incentive structures</li>
           <li>Security council nomination processes</li>
-
         </ul>
         <p className="text-tertiary text-sm mt-3">
           Priorities for v2.0 will be crystallized through the development of

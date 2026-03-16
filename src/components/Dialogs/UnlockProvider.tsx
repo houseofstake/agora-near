@@ -6,6 +6,7 @@ import {
   formatNanoSecondsToTimeUnit,
   isValidNearAmount,
 } from "@/lib/utils";
+import { NEAR_TOKEN } from "@/lib/constants";
 import { parseNearAmount } from "@near-js/utils";
 import Big from "big.js";
 import {
@@ -101,9 +102,12 @@ export const UnlockProvider = ({ children }: UnlockProviderProps) => {
       try {
         if (!isValidNearAmount(amount)) {
           setAmountError("Please enter a valid amount");
-        } else if (
-          Big(parseNearAmount(amount) ?? "0").gt(Big(maxAmountToUnlock))
-        ) {
+          return;
+        }
+
+        const parsedAmount = parseNearAmount(amount);
+
+        if (Big(parsedAmount ?? "0").gt(Big(maxAmountToUnlock ?? "0"))) {
           setAmountError("Not enough veNEAR available to unlock");
         } else if (Big(amount).lte(0)) {
           setAmountError("Amount must be greater than 0");
@@ -124,7 +128,8 @@ export const UnlockProvider = ({ children }: UnlockProviderProps) => {
   }, []);
 
   const onUnlockMax = useCallback(() => {
-    setEnteredAmount(convertYoctoToNear(maxAmountToUnlock ?? "0"));
+    const maxAmountStr = convertYoctoToNear(maxAmountToUnlock ?? "0");
+    setEnteredAmount(maxAmountStr);
     setIsUnlockingMax(true);
     setAmountError(null);
   }, [maxAmountToUnlock]);
@@ -132,10 +137,14 @@ export const UnlockProvider = ({ children }: UnlockProviderProps) => {
   const onEnteredAmountUpdated = useCallback(
     (amount: string) => {
       setEnteredAmount(amount);
-      setIsUnlockingMax(false);
+      const exactMaxString = convertYoctoToNear(
+        maxAmountToUnlock ?? "0",
+        NEAR_TOKEN.decimals
+      );
+      setIsUnlockingMax(amount === exactMaxString);
       validateAmount(amount);
     },
-    [validateAmount]
+    [validateAmount, maxAmountToUnlock]
   );
 
   const formattedUnlockDuration = useMemo(() => {

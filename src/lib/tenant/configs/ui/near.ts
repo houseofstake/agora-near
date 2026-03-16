@@ -1,8 +1,8 @@
 import nearLogo from "@/assets/near_logo.svg";
-import infoPageCard00 from "@/assets/info_0.png";
+import { TenantUI } from "@/lib/tenant/tenantUI";
+import infoPageCard00 from "@/assets/info_0.svg";
 import infoPageCard01 from "@/assets/info_1.png";
 import infoPageCard02 from "@/assets/info_2.png";
-import { TenantUI } from "@/lib/tenant/tenantUI";
 
 export const nearTenantUIConfig = new TenantUI({
   title: "",
@@ -167,13 +167,13 @@ export const nearTenantUIConfig = new TenantUI({
         {
           name: "House of Stake Docs",
           title: "House of Stake Docs",
-          url: "https://houseofstake.org/",
+          url: "https://houseofstake.org/docs/overview",
           image: infoPageCard02,
         },
         {
-          name: "Community Discord",
-          title: "Community Discord",
-          url: "https://discord.gg/nearprotocol",
+          name: "Community Telegram",
+          title: "Community Telegram",
+          url: "https://t.me/NEAR_HouseOfStake",
           image: infoPageCard00,
         },
       ],

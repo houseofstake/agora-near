@@ -9,7 +9,6 @@ import { useCheckVoterStatus } from "@/hooks/useCheckVoterStatus";
 import { CHART_DATA_QK } from "@/hooks/useProposalChartData";
 import { VOTES_QK } from "@/hooks/useProposalVotes";
 
-import { TooltipWithTap } from "@/components/ui/tooltip-with-tap";
 import { useProposalVotingPower } from "@/hooks/useProposalVotingPower";
 import { useUserVote } from "@/hooks/useUserVote";
 import { useAnalytics } from "@/hooks/useAnalytics";
@@ -18,6 +17,7 @@ import { capitalizeFirstLetter } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import Big from "big.js";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { TooltipWithTap } from "@/components/ui/tooltip-with-tap";
 
 const ProposalVotingActionsFallback = memo(() => {
   return (
@@ -41,7 +41,6 @@ type ProposalVotingActionsContentProps = {
   onSubmitPress: () => void;
   votingPower: string;
   hasVoted: boolean;
-  isUpdatingVote: boolean;
 };
 
 const ProposalVotingActionsContent = memo(
@@ -52,19 +51,13 @@ const ProposalVotingActionsContent = memo(
     onSubmitPress,
     votingPower,
     hasVoted,
-    isUpdatingVote,
   }: ProposalVotingActionsContentProps) => {
     const submitVotePrefix = useMemo(() => {
-      if (hasVoted && !isUpdatingVote) {
+      if (hasVoted) {
         return "You voted";
       }
-
-      if (hasVoted && isUpdatingVote) {
-        return "Update vote to";
-      }
-
       return "Vote";
-    }, [hasVoted, isUpdatingVote]);
+    }, [hasVoted]);
 
     const votingOptions = useMemo(() => {
       return proposal.voting_options.map((option, index) => {
@@ -84,19 +77,20 @@ const ProposalVotingActionsContent = memo(
           <button
             key={index}
             className={`${selectedStyle} rounded-md h-8 border border-line text-sm font-medium cursor-pointer py-2 transition-all hover:bg-wash active:shadow-none disabled:bg-line disabled:text-secondary capitalize flex items-center justify-center flex-1`}
-            onClick={() => setSelectedVote(index)}
+            onClick={() => !hasVoted && setSelectedVote(index)}
+            disabled={hasVoted}
           >
             {option.toLowerCase()}
           </button>
         );
       });
-    }, [proposal.voting_options, selectedVote, setSelectedVote]);
+    }, [proposal.voting_options, selectedVote, setSelectedVote, hasVoted]);
 
     const hasVotingPower = Big(votingPower).gt(0);
     const hasSelectedVote = selectedVote !== undefined;
 
     const isVoteSubmissionDisabled =
-      !hasVotingPower || !hasSelectedVote || (hasVoted && !isUpdatingVote);
+      !hasVotingPower || !hasSelectedVote || hasVoted;
 
     const submitButton = useMemo(() => {
       if (!hasVotingPower) {
@@ -262,8 +256,6 @@ export default function ProposalVotingActions({
   }
 
   const hasVoted = userVoteIndex !== null && userVoteIndex !== undefined;
-  const isUpdatingVote =
-    hasVoted && selectedVote !== undefined && selectedVote !== userVoteIndex;
 
   return (
     <ProposalVotingActionsContent
@@ -273,7 +265,6 @@ export default function ProposalVotingActions({
       onSubmitPress={openVoteDialog}
       votingPower={votingPower ?? "0"}
       hasVoted={hasVoted}
-      isUpdatingVote={isUpdatingVote}
     />
   );
 }
