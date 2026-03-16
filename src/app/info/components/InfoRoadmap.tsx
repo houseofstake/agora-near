@@ -145,10 +145,6 @@ const InfoRoadmap = () => {
         <ul className="list-disc list-inside text-secondary text-sm space-y-2 ml-4">
           <li>Delegation incentive structures</li>
           <li>Security council nomination processes</li>
-          <li>Formal complaint system for underperforming delegates</li>
-          <li>
-            Explicit ecosystem reward structures (transparent and trackable)
-          </li>
         </ul>
         <p className="text-tertiary text-sm mt-3">
           Priorities for v2.0 will be crystallized through the development of
