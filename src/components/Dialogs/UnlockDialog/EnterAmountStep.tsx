@@ -145,28 +145,12 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
         </div>
         <div>
           <span className="text-3xl font-bold text-primary">
-            {maxAmountToUnlock &&
-            Big(maxAmountToUnlock).gt(0) &&
-            Big(maxAmountToUnlock).lt(Big(10).pow(20)) ? (
-              <TooltipWithTap
-                content={
-                  <div className="flex flex-col text-left p-2">
-                    <p className="font-semibold text-sm">Dust Amount</p>
-                    <p className="font-mono text-xs">
-                      {maxAmountToUnlock} yoctoNEAR
-                    </p>
-                  </div>
-                }
-              >
-                <span className="cursor-pointer">~0 veNEAR</span>
-              </TooltipWithTap>
-            ) : (
-              <TokenAmount
-                amount={maxAmountToUnlock ?? "0"}
-                minimumFractionDigits={4}
-                currency="veNEAR"
-              />
-            )}
+            <TokenAmount
+              amount={maxAmountToUnlock ?? "0"}
+              minimumFractionDigits={4}
+              currency="veNEAR"
+              showDustTooltip={true}
+            />
           </span>
           <div className="h-[16px]">
             <p className="text-sm text-red-500">{amountError}</p>

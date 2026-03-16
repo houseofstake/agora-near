@@ -8,7 +8,6 @@ import { useOpenDialog } from "../Dialogs/DialogProvider/DialogProvider";
 import TokenAmount from "../shared/TokenAmount";
 import { TooltipWithTap } from "../ui/tooltip-with-tap";
 import { ResponsiveAssetRow } from "./ResponsiveAssetRow";
-import Big from "big.js";
 
 interface VeNearAssetRowProps {
   balanceWithRewards: string;
@@ -87,6 +86,7 @@ export const VeNearAssetRow = memo<VeNearAssetRowProps>(
             amount={pendingBalance ?? "0"}
             maximumSignificantDigits={4}
             minimumFractionDigits={4}
+            showDustTooltip={true}
           />
         ),
       };
@@ -98,37 +98,19 @@ export const VeNearAssetRow = memo<VeNearAssetRowProps>(
     ]);
 
     const columns = useMemo(() => {
-      const isDustAndGreaterThanZero =
-        Big(balanceWithRewards).gt(0) &&
-        Big(balanceWithRewards).lt(Big(10).pow(20)); // less than 0.0001 NEAR
-
       const lockedAmount = (
         <TokenAmount
           amount={balanceWithRewards}
           maximumSignificantDigits={4}
           minimumFractionDigits={4}
+          showDustTooltip={true}
         />
       );
 
       return [
         {
           title: "Locked",
-          subtitle: isDustAndGreaterThanZero ? (
-            <TooltipWithTap
-              content={
-                <div className="flex flex-col text-center p-2">
-                  <p className="font-semibold text-sm">Dust Amount</p>
-                  <p className="font-mono text-xs">
-                    {balanceWithRewards} yoctoNEAR
-                  </p>
-                </div>
-              }
-            >
-              <span className="cursor-pointer">~0 NEAR</span>
-            </TooltipWithTap>
-          ) : (
-            lockedAmount
-          ),
+          subtitle: lockedAmount,
         },
         ...(pendingBalanceCol ? [pendingBalanceCol] : []),
       ];
