@@ -137,9 +137,9 @@ const generalFaqs: FAQ[] = [
     answer: (
       <Text>
         NEAR House of Stake governance is a decentralized governance system that
-        empowers token holders to lock NEAR for voting rights, and delegate votes to
-        trusted representatives. It enables the community to collectively make decisions about the
-        protocol&apos;s future.
+        empowers token holders to lock NEAR for voting rights, and delegate
+        votes to trusted representatives. It enables the community to
+        collectively make decisions about the protocol&apos;s future.
       </Text>
     ),
   },
@@ -388,9 +388,8 @@ const generalFaqs: FAQ[] = [
       <Text>
         When you lock NEAR tokens for governance, they are locked for a specific
         period. During this time, you cannot transfer or use these tokens for
-        other purposes, but you maintain voting rights. The
-        locking period helps ensure long-term alignment with the protocol&apos;s
-        success.
+        other purposes, but you maintain voting rights. The locking period helps
+        ensure long-term alignment with the protocol&apos;s success.
       </Text>
     ),
   },
@@ -566,8 +565,9 @@ const generalFaqs: FAQ[] = [
         locked at a time. Concurrent locking of multiple LSTs is not supported
         in House of Stake V1. When you lock NEAR tokens for governance, they are
         locked for a specific period. During this time, you cannot transfer or
-        use these tokens for other purposes, but you maintain voting rights. The locking period helps ensure long-term alignment with
-        the protocol&apos;s success.
+        use these tokens for other purposes, but you maintain voting rights. The
+        locking period helps ensure long-term alignment with the protocol&apos;s
+        success.
       </Text>
     ),
   },
@@ -604,7 +604,8 @@ const generalFaqs: FAQ[] = [
     answer: (
       <Text>
         Your veNEAR is burned, and new veNEAR is minted for the delegate. Your
-        locked NEAR balance remains unchanged within the lockup contract. You can undelegate your veNEAR at any time.
+        locked NEAR balance remains unchanged within the lockup contract. You
+        can undelegate your veNEAR at any time.
       </Text>
     ),
   },
@@ -613,10 +614,11 @@ const generalFaqs: FAQ[] = [
     question: "What happened to the veNEAR rewards?",
     answer: (
       <Text>
-        The veNEAR rewards program has concluded. For more details on the program's culmination, please refer to the{" "}
-        <ExternalLink href="[FORUM_POST_URL_TBD]">
-          forum post
-        </ExternalLink>.
+        The veNEAR rewards program has concluded. For more details on the
+        program's culmination, please refer to the{" "}
+        <ExternalLink href="[FORUM_POST_URL_TBD]">forum post</ExternalLink>.
+        Users who haven't claimed rewards earned to date can still do so before
+        June 17, 23:59 UTC.
       </Text>
     ),
   },
@@ -678,7 +680,6 @@ const walletFaqs: FAQ[] = [
             </ExternalLink>
             )
           </li>
-
         </ul>
       </div>
     ),

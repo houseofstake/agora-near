@@ -49,7 +49,7 @@ export const DisclosuresContent = memo(
               </h2>
               <p className="text-sm text-gray-600 leading-relaxed">
                 Unlocking NEAR immediately reduces your veNEAR balance, along
-                with your voting power and any associated reward boosts.
+                with your voting power.
               </p>
             </div>
 

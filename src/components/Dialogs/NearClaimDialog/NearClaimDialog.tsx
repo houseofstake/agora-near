@@ -1,9 +1,7 @@
 import { useNearClaimProofs } from "@/hooks/useNearClaimProofs";
 import { useNear } from "@/contexts/NearContext";
 import { UpdatedButton } from "@/components/Button";
-import { CheckIcon, StarIcon } from "@heroicons/react/24/solid";
 import { useState, useMemo, useEffect, useRef } from "react";
-import { useOpenDialog } from "@/components/Dialogs/DialogProvider/DialogProvider";
 import { useClaimNearRewards } from "@/hooks/useClaimNearRewards";
 import toast from "react-hot-toast";
 import { convertYoctoToNear } from "@/lib/utils";
@@ -27,7 +25,7 @@ export function NearClaimDialog({ closeDialog }: NearClaimDialogProps) {
 
   const { batchClaimRewards, isClaiming } = useClaimNearRewards({
     onSuccess: () => {
-      setCurrentStep("success");
+      closeDialog();
       refetch();
     },
   });
@@ -146,19 +144,6 @@ export function NearClaimDialog({ closeDialog }: NearClaimDialogProps) {
     }
   };
 
-  const openDialog = useOpenDialog();
-
-  const handleLockRewards = () => {
-    closeDialog();
-    // Open the Lock dialog with staking source
-    openDialog({
-      type: "NEAR_LOCK",
-      params: {
-        source: "claim_rewards",
-      },
-    });
-  };
-
   if (currentStep === "processing") {
     return (
       <div className="flex flex-col items-center w-full bg-neutral max-w-[28rem]">
@@ -173,55 +158,6 @@ export function NearClaimDialog({ closeDialog }: NearClaimDialogProps) {
             <p className="text-secondary text-sm">
               Please wait while we process your reward claims...
             </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (currentStep === "success") {
-    return (
-      <div className="flex flex-col items-center w-full bg-neutral max-w-[28rem] my-8">
-        <div className="flex flex-col gap-6 justify-center min-h-[400px] w-full items-center">
-          <div className="relative">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-              <CheckIcon className="w-8 h-8 text-green-600" />
-            </div>
-            <div className="absolute -top-2 -left-2">
-              <StarIcon className="w-6 h-6 text-green-400" />
-            </div>
-            <div className="absolute -top-2 -right-2">
-              <StarIcon className="w-6 h-6 text-green-400" />
-            </div>
-            <div className="absolute -bottom-2 -left-2">
-              <StarIcon className="w-4 h-4 text-green-300" />
-            </div>
-            <div className="absolute -bottom-2 -right-2">
-              <StarIcon className="w-4 h-4 text-green-300" />
-            </div>
-          </div>
-
-          <div className="text-center">
-            <p className="text-secondary mb-2">You just claimed a reward of</p>
-            <div className="text-3xl font-bold text-primary mb-1">
-              {convertYoctoToNear(claimedAmount, 2)}
-            </div>
-            <div className="flex items-center justify-center gap-1 text-sm text-secondary">
-              <AssetIcon
-                icon={NEAR_TOKEN_METADATA.icon}
-                name={NEAR_TOKEN_METADATA.name}
-              />
-              NEAR
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-3 w-full">
-            <UpdatedButton type="primary" onClick={handleLockRewards} fullWidth>
-              Lock my rewards
-            </UpdatedButton>
-            <UpdatedButton type="secondary" onClick={closeDialog} fullWidth>
-              Done
-            </UpdatedButton>
           </div>
         </div>
       </div>
