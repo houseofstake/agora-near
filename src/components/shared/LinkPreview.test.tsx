@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import LinkPreview from "@/components/shared/LinkPreview";
-import * as matchers from '@testing-library/jest-dom/matchers';
+import * as matchers from "@testing-library/jest-dom/matchers";
 import { vi, expect } from "vitest";
 import * as useLinkPreviewHook from "@/hooks/useLinkPreview";
 

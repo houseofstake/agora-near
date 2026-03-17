@@ -35,7 +35,9 @@ export default function ApiKeyList({ keys, onRevoke }: ApiKeyListProps) {
                   <th className="px-6 py-4 font-semibold">API Key</th>
                   <th className="px-6 py-4 font-semibold">Email</th>
                   <th className="px-6 py-4 font-semibold">Created</th>
-                  <th className="px-6 py-4 text-right font-semibold">Actions</th>
+                  <th className="px-6 py-4 text-right font-semibold">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
@@ -46,13 +48,18 @@ export default function ApiKeyList({ keys, onRevoke }: ApiKeyListProps) {
                   >
                     <td className="whitespace-nowrap px-6 py-4 font-mono font-medium text-primary">
                       <div className="flex items-center gap-2">
-                        <span className="max-w-[300px] truncate xl:max-w-[400px]" title={keyObj.key}>
+                        <span
+                          className="max-w-[300px] truncate xl:max-w-[400px]"
+                          title={keyObj.key}
+                        >
                           {keyObj.key}
                         </span>
                         <button
                           onClick={() => {
                             navigator.clipboard.writeText(keyObj.key);
-                            import("react-hot-toast").then((m) => m.default.success("Copied to clipboard!"));
+                            import("react-hot-toast").then((m) =>
+                              m.default.success("Copied to clipboard!")
+                            );
                           }}
                           className="ml-2 inline-flex items-center justify-center rounded-lg p-1.5 text-tertiary transition-colors hover:bg-black/5 hover:text-primary dark:hover:bg-white/10"
                           title="Copy Key"
