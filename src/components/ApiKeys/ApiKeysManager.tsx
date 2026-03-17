@@ -17,8 +17,6 @@ export default function ApiKeysManager() {
   const [isVerified, setIsVerified] = useState(false);
   const openDialog = useOpenDialog();
 
-  useEffect(() => {}, [isInitialized, signedAccountId]);
-
   const fetchKeys = async () => {
     try {
       setIsVerifying(true);
