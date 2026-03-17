@@ -14,7 +14,6 @@ export default function ApiKeysManager() {
   const [keys, setKeys] = useState<ApiKey[]>([]);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [newKey, setNewKey] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);
   const openDialog = useOpenDialog();
 
@@ -100,7 +99,6 @@ export default function ApiKeysManager() {
       }
 
       const data = await res.json();
-      setNewKey(data.plainTextKey);
 
       const newApiKey: ApiKey = {
         id: data.id,
@@ -195,7 +193,6 @@ export default function ApiKeysManager() {
         <CreateApiKeyForm
           isGenerating={isGenerating}
           onGenerate={generateKey}
-          newKey={newKey}
         />
         <ApiKeyList keys={keys} onRevoke={revokeKey} />
       </div>

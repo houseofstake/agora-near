@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { KeyRound, Trash } from "lucide-react";
+import { KeyRound, Trash, Copy } from "lucide-react";
 import { ApiKey } from "./types";
 
 interface ApiKeyListProps {
@@ -45,7 +45,21 @@ export default function ApiKeyList({ keys, onRevoke }: ApiKeyListProps) {
                     className="transition-colors hover:bg-black/5 dark:hover:bg-white/5"
                   >
                     <td className="whitespace-nowrap px-6 py-4 font-mono font-medium text-primary">
-                      {keyObj.key}
+                      <div className="flex items-center gap-2">
+                        <span className="max-w-[300px] truncate xl:max-w-[400px]" title={keyObj.key}>
+                          {keyObj.key}
+                        </span>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(keyObj.key);
+                            import("react-hot-toast").then((m) => m.default.success("Copied to clipboard!"));
+                          }}
+                          className="ml-2 inline-flex items-center justify-center rounded-lg p-1.5 text-tertiary transition-colors hover:bg-black/5 hover:text-primary dark:hover:bg-white/10"
+                          title="Copy Key"
+                        >
+                          <Copy className="h-4 w-4" />
+                        </button>
+                      </div>
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-secondary">
                       {keyObj.email}
