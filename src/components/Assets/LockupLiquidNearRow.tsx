@@ -93,6 +93,7 @@ export const LockupLiquidNearRow = ({
           amount={liquidLockupBalance.withdrawableNearBalance ?? "0"}
           maximumSignificantDigits={4}
           minimumFractionDigits={4}
+          showDustTooltip={true}
         />
       ),
     };
@@ -106,6 +107,7 @@ export const LockupLiquidNearRow = ({
           amount={liquidLockupBalance.stakableNearBalance ?? "0"}
           maximumSignificantDigits={4}
           minimumFractionDigits={4}
+          showDustTooltip={true}
         />
       ),
     };
@@ -121,6 +123,7 @@ export const LockupLiquidNearRow = ({
             currency={NEAR_TOKEN_METADATA.symbol}
             maximumSignificantDigits={4}
             minimumFractionDigits={4}
+            showDustTooltip={true}
           />
         ),
       },

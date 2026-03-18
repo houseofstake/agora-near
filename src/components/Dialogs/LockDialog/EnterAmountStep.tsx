@@ -134,6 +134,7 @@ export const EnterAmountStep = ({
               amount={maxAmountToLock ?? "0"}
               minimumFractionDigits={4}
               currency={selectedToken?.metadata?.symbol}
+              showDustTooltip={true}
             />
           </span>
           <div className="h-[16px]">

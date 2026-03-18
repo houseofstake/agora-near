@@ -80,8 +80,11 @@ export function UpdatedButton({
             type === "link" && "",
             type === "destructive" &&
               "bg-white text-red-500 hover:text-red-700",
-            (type === "disabled" || props.disabled) &&
+            type === "disabled" &&
               "bg-agora-stone-50 text-agora-stone-100 cursor-not-allowed",
+            props.disabled &&
+              type !== "disabled" &&
+              "opacity-50 cursor-not-allowed",
             variant === "rounded" ? "rounded-full" : "rounded-lg",
             fullWidth && "w-full"
           )}
