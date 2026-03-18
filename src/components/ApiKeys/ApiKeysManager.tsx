@@ -100,7 +100,7 @@ export default function ApiKeysManager() {
 
       const newApiKey: ApiKey = {
         id: data.id,
-        key: data.key,
+        key: data.plainTextKey || data.key,
         email: email,
         createdAt: data.createdAt,
         lastUsedAt: null,
