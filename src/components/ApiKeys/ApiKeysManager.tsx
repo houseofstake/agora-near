@@ -8,6 +8,7 @@ import { ApiKey } from "./types";
 import ApiKeysEmptyState from "./ApiKeysEmptyState";
 import CreateApiKeyForm from "./CreateApiKeyForm";
 import ApiKeyList from "./ApiKeyList";
+import { baseApiUrl } from "@/lib/api/constants";
 
 export default function ApiKeysManager() {
   const { isInitialized, signedAccountId, signMessage } = useNear();
@@ -32,19 +33,16 @@ export default function ApiKeysManager() {
         throw new Error("Signature was rejected.");
       }
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_NEAR_API_ENDPOINT}/api-keys/list`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            data: payloadObj,
-            signature: signatureData.signature,
-            publicKey: signatureData.publicKey,
-            message: serializedPayload,
-          }),
-        }
-      );
+      const res = await fetch(`${baseApiUrl}/api-keys/list`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          data: payloadObj,
+          signature: signatureData.signature,
+          publicKey: signatureData.publicKey,
+          message: serializedPayload,
+        }),
+      });
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
@@ -77,19 +75,16 @@ export default function ApiKeysManager() {
         throw new Error("Signature failed.");
       }
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_NEAR_API_ENDPOINT}/api-keys`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            data: payloadObj,
-            signature: signatureData.signature,
-            publicKey: signatureData.publicKey,
-            message: serializedPayload,
-          }),
-        }
-      );
+      const res = await fetch(`${baseApiUrl}/api-keys`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          data: payloadObj,
+          signature: signatureData.signature,
+          publicKey: signatureData.publicKey,
+          message: serializedPayload,
+        }),
+      });
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
@@ -144,19 +139,16 @@ export default function ApiKeysManager() {
               throw new Error("Signature failed.");
             }
 
-            const res = await fetch(
-              `${process.env.NEXT_PUBLIC_NEAR_API_ENDPOINT}/api-keys/${id}/revoke`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  data: payloadObj,
-                  signature: signatureData.signature,
-                  publicKey: signatureData.publicKey,
-                  message: serializedPayload,
-                }),
-              }
-            );
+            const res = await fetch(`${baseApiUrl}/api-keys/${id}/revoke`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                data: payloadObj,
+                signature: signatureData.signature,
+                publicKey: signatureData.publicKey,
+                message: serializedPayload,
+              }),
+            });
 
             if (!res.ok) {
               const errorData = await res.json().catch(() => ({}));
