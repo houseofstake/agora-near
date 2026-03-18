@@ -25,35 +25,33 @@ export async function GET(req: NextRequest) {
   ).then((res) => res.arrayBuffer());
 
   return new ImageResponse(
-    (
-      <div
-        style={{
-          backgroundColor: "white",
-          height: "100%",
-          width: "100%",
-          display: "flex",
-          fontFamily: '"Inter"',
-          alignItems: "flex-start",
-          justifyContent: "flex-start",
-          flexDirection: "column",
-          flexWrap: "nowrap",
-        }}
-      >
-        {/* @ts-expect-error OG ImageResponse allows ArrayBuffer src for <img> */}
-        <img src={bg} style={{ position: "absolute" }} alt="background" />
-        <div tw="flex h-full w-full px-[76px] pt-[70px] pb-[110px]">
-          <div tw="flex flex-col justify-between h-full w-full">
-            <LogoPill />
-            <div tw="flex flex-col">
-              <div tw="font-bold text-5xl w-full">{title}</div>
-              <div tw="font-normal mt-[30px] text-4xl text-secondary">
-                {description}
-              </div>
+    <div
+      style={{
+        backgroundColor: "white",
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        fontFamily: '"Inter"',
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
+        flexDirection: "column",
+        flexWrap: "nowrap",
+      }}
+    >
+      {/* @ts-expect-error OG ImageResponse allows ArrayBuffer src for <img> */}
+      <img src={bg} style={{ position: "absolute" }} alt="background" />
+      <div tw="flex h-full w-full px-[76px] pt-[70px] pb-[110px]">
+        <div tw="flex flex-col justify-between h-full w-full">
+          <LogoPill />
+          <div tw="flex flex-col">
+            <div tw="font-bold text-5xl w-full">{title}</div>
+            <div tw="font-normal mt-[30px] text-4xl text-secondary">
+              {description}
             </div>
           </div>
         </div>
       </div>
-    ),
+    </div>,
     {
       width: 1200,
       height: 630,
