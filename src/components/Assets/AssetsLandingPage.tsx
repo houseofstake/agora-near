@@ -114,7 +114,7 @@ export const AssetsLandingPage = memo(
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-8 items-center px-4 lg:px-0">
               <div className="text-center lg:text-left order-1 lg:order-1 z-10 bg-white py-6 lg:py-8 lg:ml-10">
                 <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-5xl font-bold text-black mb-4 lg:mb-6 leading-tight">
-                  Lock & stake tokens for boosted voting power
+                  Lock & stake tokens for boosted voting power & veNEAR rewards
                 </h1>
                 <UpdatedButton
                   type="primary"

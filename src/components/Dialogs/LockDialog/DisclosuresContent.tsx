@@ -29,7 +29,7 @@ export const DisclosuresContent = memo(
               </h2>
               <p className="text-sm text-gray-600 leading-relaxed">
                 Locking your NEAR tokens converts them into veNEAR, which gives
-                you voting power.
+                you voting power and may boost your rewards.
               </p>
             </div>
 
@@ -49,7 +49,18 @@ export const DisclosuresContent = memo(
               </h2>
               <p className="text-sm text-gray-600 leading-relaxed">
                 Unlocking NEAR immediately reduces your veNEAR balance, along
-                with your voting power.
+                with your voting power and any associated reward boosts.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">
+                Rewards Are Variable
+              </h2>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Earning rates may fluctuate based on protocol activity and
+                participation. Your rewards are calculated dynamically and
+                updated on a rolling basis
               </p>
             </div>
 
