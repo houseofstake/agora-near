@@ -417,7 +417,11 @@ export const EnterStakingAmount = ({
           <div className="text-base text-[#9D9FA1] mb-2">
             Total Available{" "}
             <span className="text-xs font-normal">(Wallet + Lockup)</span>{" "}
-            <TokenAmount amount={totalAvailableToStake ?? "0"} hideCurrency />
+            <TokenAmount
+              amount={totalAvailableToStake ?? "0"}
+              hideCurrency
+              showDustTooltip={true}
+            />
           </div>
 
           {(!totalAvailableToStake || Big(totalAvailableToStake).lte(0)) && (

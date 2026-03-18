@@ -56,6 +56,7 @@ export const VeNearStakedAssetRow = ({
             amount={stakedBalance}
             maximumSignificantDigits={4}
             minimumFractionDigits={4}
+            showDustTooltip={true}
           />
         ),
       },
