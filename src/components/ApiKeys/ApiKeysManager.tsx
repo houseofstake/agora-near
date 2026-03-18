@@ -8,6 +8,7 @@ import { ApiKey } from "./types";
 import ApiKeysEmptyState from "./ApiKeysEmptyState";
 import CreateApiKeyForm from "./CreateApiKeyForm";
 import ApiKeyList from "./ApiKeyList";
+import { baseApiUrl } from "@/lib/api/constants";
 
 export default function ApiKeysManager() {
   const { isInitialized, signedAccountId, signMessage } = useNear();
@@ -33,7 +34,7 @@ export default function ApiKeysManager() {
       }
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_NEAR_API_ENDPOINT}/api-keys/list`,
+        `${baseApiUrl}/api-keys/list`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -78,7 +79,7 @@ export default function ApiKeysManager() {
       }
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_NEAR_API_ENDPOINT}/api-keys`,
+        `${baseApiUrl}/api-keys`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -145,7 +146,7 @@ export default function ApiKeysManager() {
             }
 
             const res = await fetch(
-              `${process.env.NEXT_PUBLIC_NEAR_API_ENDPOINT}/api-keys/${id}/revoke`,
+              `${baseApiUrl}/api-keys/${id}/revoke`,
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
