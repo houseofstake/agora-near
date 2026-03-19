@@ -255,61 +255,7 @@ const generalFaqs: FAQ[] = [
       </div>
     ),
   },
-  {
-    id: "manage-staking-directly",
-    question:
-      "Why can't I manage my staking directly within the House of Stake dapp?",
-    answer: (
-      <div className="space-y-6">
-        <Text>
-          House of Stake&apos;s primary focus is to give NEAR token holders a
-          way to gain voting power, earn rewards, and boost rewards with
-          staking. When you stake your locked NEAR tokens, you are doing so
-          through your lockup contract, which is custodying your funds.
-        </Text>
-        <Text>
-          If you&apos;d like to further manage staked funds, you can use the
-          lockup API methods to do so. The table below highlights the key API
-          methods for managing your staked funds:
-        </Text>
-        <APITable
-          rows={[
-            {
-              contract: "Lockup contract",
-              method: "deposit_and_stake",
-              methodUrl:
-                "https://github.com/fastnear/house-of-stake-contracts/blob/main/lockup-contract/src/owner.rs#L127C12-L127C29",
-              description:
-                "Deposits funds that are in your lockup contract into the staking pool and stakes them.",
-            },
-            {
-              contract: "Lockup contract",
-              method: "unstake",
-              methodUrl:
-                "https://github.com/fastnear/house-of-stake-contracts/blob/main/lockup-contract/src/owner.rs#L333",
-              description: "Unstakes your funds from the staking pool.",
-            },
-            {
-              contract: "Lockup contract",
-              method: "withdraw_from_staking_pool",
-              methodUrl:
-                "https://github.com/fastnear/house-of-stake-contracts/blob/main/lockup-contract/src/owner.rs#L213",
-              description:
-                "Withdraws all available funds from the staking pool.",
-            },
-            {
-              contract: "Lockup contract",
-              method: "refresh_staking_pool_balance",
-              methodUrl:
-                "https://github.com/fastnear/house-of-stake-contracts/blob/main/lockup-contract/src/owner.rs#L175C12-L175C40",
-              description:
-                "Retrieves total liquid balance from the staking pool and updates the internal state of the lockup contract. This is useful if you have staking rewards that you want to withdraw (you can withdraw the staking rewards without unlocking your principal balance of NEAR!).",
-            },
-          ]}
-        />
-      </div>
-    ),
-  },
+
   {
     id: "fungible-token-withdrawal",
     question: "Why do I need to unstake my liNEAR and stNEAR to withdraw?",
@@ -593,14 +539,15 @@ const generalFaqs: FAQ[] = [
     question: "Why have veNEAR rewards been discontinued?",
     answer: (
       <Text>
-        The veNEAR rewards campaign has officially wrapped up. This program
-        concluded on March 19. Rewards are claimable up to 90 days after
-        locking. For more details on the discontinuation, please view the{" "}
-        <ExternalLink href="https://gov.near.org/t/venear-rewards-wrapping-up/42940">
-          forum post
+        The veNEAR rewards campaign was a limited-time program to recognize
+        early governance participants. The program has concluded. If you earned
+        rewards, you have 90 days from your lock date to claim them. For more
+        details, see the{" "}
+        <ExternalLink href="https://gov.near.org/t/hsp-003-venear-holder-rewards-program/41688">
+          forum announcement
         </ExternalLink>
-        . Note that users who haven&apos;t claimed rewards earned to date can
-        still do so before the end of May.
+        . Staking rewards (yields from your staking pool) are unaffected and
+        continue as normal.
       </Text>
     ),
   },

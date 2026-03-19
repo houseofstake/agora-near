@@ -195,7 +195,7 @@ export function NearClaimDialog({ closeDialog }: NearClaimDialogProps) {
         <div className="bg-black text-white rounded-lg p-5 mb-8 text-left w-full">
           <h3 className="font-bold mb-2">Claim Your veNEAR Rewards</h3>
           <p className="text-sm text-gray-300 mb-3 leading-snug">
-            veNEAR rewards expire on April 8, 2026. After this date, unclaimed
+            veNEAR rewards expire on April 2, 2026. After this date, unclaimed
             rewards may no longer be available.
           </p>
           <a
