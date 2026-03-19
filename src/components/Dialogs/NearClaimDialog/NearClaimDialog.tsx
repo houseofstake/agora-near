@@ -192,12 +192,20 @@ export function NearClaimDialog({ closeDialog }: NearClaimDialogProps) {
           </div>
         </div>
 
-        <div className="text-center border border-line rounded-lg p-4 my-8">
-          <p className="text-secondary text-sm">
-            {hasNoClaimableTokens
-              ? "You have no tokens left to claim, the next claim round ends within 2 weeks, please check back then."
-              : "Rewards are calculated based on your veNEAR holdings and the duration of your lockup. The longer you lock and the more you stake, the higher your rewards."}
+        <div className="bg-black text-white rounded-lg p-5 mb-8 text-left w-full">
+          <h3 className="font-bold mb-2">Claim Your veNEAR Rewards</h3>
+          <p className="text-sm text-gray-300 mb-3 leading-snug">
+            veNEAR rewards expire on April 8, 2026. After this date, unclaimed
+            rewards may no longer be available.
           </p>
+          <a
+            href="/info?item=venear-rewards-discontinued"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm underline hover:text-white transition-colors"
+          >
+            Learn more
+          </a>
         </div>
 
         <UpdatedButton

@@ -593,8 +593,9 @@ const generalFaqs: FAQ[] = [
     question: "Why have veNEAR rewards been discontinued?",
     answer: (
       <Text>
-        The veNEAR rewards campaign has officially wrapped up. For more details
-        on the discontinuation, please view the{" "}
+        The veNEAR rewards campaign has officially wrapped up. This program
+        concluded on March 19. Rewards are claimable up to 90 days after
+        locking. For more details on the discontinuation, please view the{" "}
         <ExternalLink href="https://gov.near.org/t/venear-rewards-wrapping-up/42940">
           forum post
         </ExternalLink>
