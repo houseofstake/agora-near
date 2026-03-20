@@ -2,7 +2,7 @@ import { ArrowRightIcon } from "lucide-react";
 import { memo, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { AnimatedStars } from "./AnimatedStars";
+
 import { useNear } from "@/contexts/NearContext";
 import { useNearClaimProofs } from "@/hooks/useNearClaimProofs";
 import { UpdatedButton } from "@/components/Button";

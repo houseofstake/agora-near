@@ -71,13 +71,6 @@ export function VeNearCalculator({
     );
   }, [principalYocto, durationMonths, growthRateNs]);
 
-  const estimatedRewardsYocto = useMemo(() => {
-    if (Big(principalYocto).lte(0)) return "0";
-    const years = Big(durationMonths).div(12);
-    const rewards = Big(principalYocto).mul(apyDecimal).mul(years);
-    return rewards.toFixed(0);
-  }, [principalYocto, durationMonths, apyDecimal]);
-
   const handleAmountChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const v = e.target.value;
