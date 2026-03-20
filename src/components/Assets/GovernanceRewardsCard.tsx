@@ -2,7 +2,7 @@ import { ArrowRightIcon } from "lucide-react";
 import { memo, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { AnimatedStars } from "./AnimatedStars";
+
 import { useNear } from "@/contexts/NearContext";
 import { useNearClaimProofs } from "@/hooks/useNearClaimProofs";
 import { UpdatedButton } from "@/components/Button";
@@ -70,7 +70,8 @@ export const GovernanceRewardsCard = memo(() => {
               </div>
             </div>
             <div className="text-sm text-gray-300 mb-6">
-              Your governance reward is ready to claim.
+              The veNEAR rewards program has concluded. Earned rewards can be
+              claimed through April 2, 2026.
             </div>
             <div className="flex justify-between">
               <UpdatedButton
@@ -83,7 +84,7 @@ export const GovernanceRewardsCard = memo(() => {
                 Claim
               </UpdatedButton>
               <Link
-                href="/info#ve-near-rewards"
+                href="/info#venear-rewards-discontinued"
                 className="text-sm text-white hover:text-gray-200 flex items-center gap-1"
               >
                 Learn more <ArrowRightIcon className="w-4 h-4" />
