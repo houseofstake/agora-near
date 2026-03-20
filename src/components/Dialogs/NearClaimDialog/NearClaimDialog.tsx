@@ -1,9 +1,7 @@
 import { useNearClaimProofs } from "@/hooks/useNearClaimProofs";
 import { useNear } from "@/contexts/NearContext";
 import { UpdatedButton } from "@/components/Button";
-import { CheckIcon, StarIcon } from "@heroicons/react/24/solid";
 import { useState, useMemo, useEffect, useRef } from "react";
-import { useOpenDialog } from "@/components/Dialogs/DialogProvider/DialogProvider";
 import { useClaimNearRewards } from "@/hooks/useClaimNearRewards";
 import toast from "react-hot-toast";
 import { convertYoctoToNear } from "@/lib/utils";
@@ -27,7 +25,7 @@ export function NearClaimDialog({ closeDialog }: NearClaimDialogProps) {
 
   const { batchClaimRewards, isClaiming } = useClaimNearRewards({
     onSuccess: () => {
-      setCurrentStep("success");
+      closeDialog();
       refetch();
     },
   });
@@ -146,19 +144,6 @@ export function NearClaimDialog({ closeDialog }: NearClaimDialogProps) {
     }
   };
 
-  const openDialog = useOpenDialog();
-
-  const handleLockRewards = () => {
-    closeDialog();
-    // Open the Lock dialog with staking source
-    openDialog({
-      type: "NEAR_LOCK",
-      params: {
-        source: "claim_rewards",
-      },
-    });
-  };
-
   if (currentStep === "processing") {
     return (
       <div className="flex flex-col items-center w-full bg-neutral max-w-[28rem]">
@@ -173,55 +158,6 @@ export function NearClaimDialog({ closeDialog }: NearClaimDialogProps) {
             <p className="text-secondary text-sm">
               Please wait while we process your reward claims...
             </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (currentStep === "success") {
-    return (
-      <div className="flex flex-col items-center w-full bg-neutral max-w-[28rem] my-8">
-        <div className="flex flex-col gap-6 justify-center min-h-[400px] w-full items-center">
-          <div className="relative">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-              <CheckIcon className="w-8 h-8 text-green-600" />
-            </div>
-            <div className="absolute -top-2 -left-2">
-              <StarIcon className="w-6 h-6 text-green-400" />
-            </div>
-            <div className="absolute -top-2 -right-2">
-              <StarIcon className="w-6 h-6 text-green-400" />
-            </div>
-            <div className="absolute -bottom-2 -left-2">
-              <StarIcon className="w-4 h-4 text-green-300" />
-            </div>
-            <div className="absolute -bottom-2 -right-2">
-              <StarIcon className="w-4 h-4 text-green-300" />
-            </div>
-          </div>
-
-          <div className="text-center">
-            <p className="text-secondary mb-2">You just claimed a reward of</p>
-            <div className="text-3xl font-bold text-primary mb-1">
-              {convertYoctoToNear(claimedAmount, 2)}
-            </div>
-            <div className="flex items-center justify-center gap-1 text-sm text-secondary">
-              <AssetIcon
-                icon={NEAR_TOKEN_METADATA.icon}
-                name={NEAR_TOKEN_METADATA.name}
-              />
-              NEAR
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-3 w-full">
-            <UpdatedButton type="primary" onClick={handleLockRewards} fullWidth>
-              Lock my rewards
-            </UpdatedButton>
-            <UpdatedButton type="secondary" onClick={closeDialog} fullWidth>
-              Done
-            </UpdatedButton>
           </div>
         </div>
       </div>
@@ -256,12 +192,20 @@ export function NearClaimDialog({ closeDialog }: NearClaimDialogProps) {
           </div>
         </div>
 
-        <div className="text-center border border-line rounded-lg p-4 my-8">
-          <p className="text-secondary text-sm">
-            {hasNoClaimableTokens
-              ? "You have no tokens left to claim, the next claim round ends within 2 weeks, please check back then."
-              : "Rewards are calculated based on your veNEAR holdings and the duration of your lockup. The longer you lock and the more you stake, the higher your rewards."}
+        <div className="bg-black text-white rounded-lg p-5 mb-8 text-left w-full">
+          <h3 className="font-bold mb-2">Claim Your veNEAR Rewards</h3>
+          <p className="text-sm text-gray-300 mb-3 leading-snug">
+            veNEAR rewards expire on April 2, 2026. After this date, unclaimed
+            rewards may no longer be available.
           </p>
+          <a
+            href="/info?item=venear-rewards-discontinued"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm underline hover:text-white transition-colors"
+          >
+            Learn more
+          </a>
         </div>
 
         <UpdatedButton
