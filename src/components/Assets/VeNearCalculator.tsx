@@ -97,7 +97,7 @@ export function VeNearCalculator({
           veNEAR Calculator
         </h3>
         <p className="text-base text-gray-600 mt-1">
-          Estimate your voting power and rewards
+          Estimate your voting power
         </p>
       </div>
 
@@ -110,8 +110,8 @@ export function VeNearCalculator({
           <div className="flex flex-col gap-4">
             <div>
               <div className="flex items-center gap-1 mb-2">
-                <p className="text-sm text-gray-200">Reward Rate</p>
-                <TooltipWithTap content="Rate of increasing voting power. Not for additional NEAR tokens">
+                <p className="text-sm text-gray-200">Growth Rate</p>
+                <TooltipWithTap content="Rate of increasing voting power.">
                   <InformationCircleIcon className="w-4 h-4 text-gray-400" />
                 </TooltipWithTap>
               </div>
@@ -201,9 +201,9 @@ export function VeNearCalculator({
           ) : (
             hasValidInput && (
               <div className="bg-gray-50 border border-gray-300 rounded-xl p-5 flex flex-col sm:flex-row gap-4 sm:gap-6">
-                <div className="flex-1 sm:border-r sm:border-gray-200">
+                <div className="flex-1">
                   <p className="text-sm text-gray-600 mb-1">
-                    veNEAR & rewards after {durationLabel}
+                    veNEAR after {durationLabel}
                   </p>
                   <p className="text-xl sm:text-2xl font-bold text-gray-900">
                     <TokenAmount
@@ -217,28 +217,14 @@ export function VeNearCalculator({
                     </span>
                   </p>
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm text-gray-600 mb-1">Est. rewards</p>
-                  <p className="text-xl sm:text-2xl font-bold text-gray-900">
-                    <TokenAmount
-                      amount={estimatedRewardsYocto}
-                      hideCurrency
-                      minimumFractionDigits={2}
-                      maximumSignificantDigits={4}
-                    />{" "}
-                    <span className="text-gray-600 font-semibold text-base">
-                      NEAR
-                    </span>
-                  </p>
-                </div>
               </div>
             )
           )}
         </div>
       </div>
       <p className="text-xs text-gray-600">
-        Estimates are illustrative only. Actual veNEAR and rewards may vary
-        based on network conditions and protocol changes. Not financial advice.
+        Estimates are illustrative only. Actual veNEAR may vary based on network
+        conditions and protocol changes. Not financial advice.
       </p>
     </div>
   );

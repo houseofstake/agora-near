@@ -70,7 +70,8 @@ export const GovernanceRewardsCard = memo(() => {
               </div>
             </div>
             <div className="text-sm text-gray-300 mb-6">
-              Your governance reward is ready to claim.
+              veNEAR holder rewards have concluded. You can claim earned rewards
+              up to April 2, 2026.
             </div>
             <div className="flex justify-between">
               <UpdatedButton
