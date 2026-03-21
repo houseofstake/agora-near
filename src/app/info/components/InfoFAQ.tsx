@@ -573,9 +573,7 @@ const generalFaqs: FAQ[] = [
         <Text>
           Yes, you can start the unlock and keep your tokens staked during the 45 days. The unlock timer and staking are independent from each other.
         </Text>
-        <Text>
-          The best move is:
-        </Text>
+
         <ul className="list-decimal list-inside space-y-2 pl-4">
           <li>Start the unlock now - 45-day timer begins</li>
           <li>Your tokens stay staked and earn rewards during this time</li>
