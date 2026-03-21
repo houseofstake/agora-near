@@ -200,14 +200,17 @@ const generalFaqs: FAQ[] = [
       <div className="space-y-6">
         <Text>
           The goal of House of Stake is to make onboarding as seamless as
-          possible. Liquid staking tokens, such as liNEAR, rNEAR and stNEAR, allow
-          users to instantly transfer and lock tokens for voting power, without
-          any disruption to your staking rewards.
+          possible. Liquid staking tokens, such as liNEAR, rNEAR and stNEAR,
+          allow users to instantly transfer and lock tokens for voting power,
+          without any disruption to your staking rewards.
         </Text>
         <Text>
           With that being said, House of Stake contracts support any staking
-          pool that&apos;s whitelisted. You can stake with any whitelisted validator pool directly through the interface without issues. Note that liNEAR and Meta Pool are recommended options for simplicity. Refer to the table below for the key
-          contract APIs you&apos;ll need to interact with.
+          pool that&apos;s whitelisted. You can stake with any whitelisted
+          validator pool directly through the interface without issues. Note
+          that liNEAR and Meta Pool are recommended options for simplicity.
+          Refer to the table below for the key contract APIs you&apos;ll need to
+          interact with.
         </Text>
         <APITable
           rows={[
@@ -258,13 +261,14 @@ const generalFaqs: FAQ[] = [
 
   {
     id: "fungible-token-withdrawal",
-    question: "Why do I need to unstake my liNEAR, rNEAR and stNEAR to withdraw?",
+    question:
+      "Why do I need to unstake my liNEAR, rNEAR and stNEAR to withdraw?",
     answer: (
       <Text>
-        In the current House of Stake contracts, users can deposit liNEAR, rNEAR or
-        stNEAR into the lockup contract, but the design does not support direct
-        transfers of these tokens out of the contract. Instead, users must
-        unstake the tokens back to native NEAR before withdrawal as a
+        In the current House of Stake contracts, users can deposit liNEAR, rNEAR
+        or stNEAR into the lockup contract, but the design does not support
+        direct transfers of these tokens out of the contract. Instead, users
+        must unstake the tokens back to native NEAR before withdrawal as a
         workaround. This stems from an initial focus on staking functionality
         rather than full transferability, with fungible token transfers
         complicated by pricing dependencies not denominated in NEAR. The lockup
@@ -312,8 +316,10 @@ const generalFaqs: FAQ[] = [
       <Text>
         Voting power is determined by the amount of NEAR tokens you have locked
         in the governance contract. The more NEAR you lock, the more voting
-        power you have. Furthermore, voting power increases over time as long as you do not unstake your NEAR from House of Stake. You can either use this voting power directly or
-        delegate it to others while still maintaining ownership of your tokens.
+        power you have. Furthermore, voting power increases over time as long as
+        you do not unstake your NEAR from House of Stake. You can either use
+        this voting power directly or delegate it to others while still
+        maintaining ownership of your tokens.
       </Text>
     ),
   },
@@ -334,8 +340,9 @@ const generalFaqs: FAQ[] = [
       <Text>
         When you lock NEAR tokens for governance, they are locked for a specific
         period. During this time, you cannot transfer or use these tokens for
-        other purposes, but you maintain voting rights. Unlocking tokens will decrease your voting power. Unlocking takes 45 days. The locking period helps
-        ensure long-term alignment with the protocol&apos;s success.
+        other purposes, but you maintain voting rights. Unlocking tokens will
+        decrease your voting power. Unlocking takes 45 days. The locking period
+        helps ensure long-term alignment with the protocol&apos;s success.
       </Text>
     ),
   },
@@ -358,7 +365,9 @@ const generalFaqs: FAQ[] = [
       "How to interact with the underlying staking pool through the lockup contracts?",
     answer: (
       <Text>
-        You can stake through a custom pool directly on the website interface. Once you deposit NEAR into your lockup, you can select any whitelisted staking pool from the Staking dialog.
+        You can stake through a custom pool directly on the website interface.
+        Once you deposit NEAR into your lockup, you can select any whitelisted
+        staking pool from the Staking dialog.
       </Text>
     ),
   },
@@ -571,17 +580,22 @@ const generalFaqs: FAQ[] = [
     answer: (
       <div className="space-y-4">
         <Text>
-          Yes, you can start the unlock and keep your tokens staked during the 45 days. The unlock timer and staking are independent from each other.
+          Yes, you can start the unlock and keep your tokens staked during the
+          45 days. The unlock timer and staking are independent from each other.
         </Text>
 
         <ul className="list-decimal list-inside space-y-2 pl-4">
           <li>Start the unlock now - 45-day timer begins</li>
           <li>Your tokens stay staked and earn rewards during this time</li>
-          <li>Towards the end of the 45 days - unstake from the pool (2-3 days cooldown)</li>
+          <li>
+            Towards the end of the 45 days - unstake from the pool (2-3 days
+            cooldown)
+          </li>
           <li>Withdraw to your lockup, then to your wallet</li>
         </ul>
         <Text>
-          Unstaking at the end won&apos;t trigger another 45-day lock. The locking period and the unstaking period are separate things.
+          Unstaking at the end won&apos;t trigger another 45-day lock. The
+          locking period and the unstaking period are separate things.
         </Text>
       </div>
     ),
@@ -648,7 +662,6 @@ const walletFaqs: FAQ[] = [
       </div>
     ),
   },
-
 ];
 
 const InfoFAQ = () => {
