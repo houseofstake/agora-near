@@ -173,7 +173,7 @@ function DraftDetailsForm() {
         <div className="flex items-center justify-between">
           <h4 className="text-xs font-semibold mb-1 text-secondary">Link</h4>
           <Link
-            href="/info?item=proposal-process"
+            href="https://hos-docs.vercel.app/docs/governance-system/proposal-and-voting-process"
             target="_blank"
             className="text-xs text-primary hover:text-secondary underline flex items-center gap-1"
           >
@@ -200,7 +200,7 @@ function DraftDetailsForm() {
             {errors.link.message?.includes("https://gov.near.org/") && (
               <div className="mt-1">
                 <Link
-                  href="/info?item=proposal-process"
+                  href="https://hos-docs.vercel.app/docs/governance-system/proposal-and-voting-process"
                   target="_blank"
                   className="text-primary hover:text-secondary underline flex items-center gap-1"
                 >

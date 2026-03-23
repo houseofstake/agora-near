@@ -9,7 +9,10 @@ export const LiquidStakingTokenLockWarning = ({
   symbol,
 }: LiquidStakingTokenLockWarningProps) => {
   const onLearnMorePressed = useCallback(() => {
-    window.open("/info?item=fungible-token-withdrawal", "_blank");
+    window.open(
+      "https://hos-docs.vercel.app/docs/overview/faqs#fungible-token-withdrawal",
+      "_blank"
+    );
   }, []);
 
   return (

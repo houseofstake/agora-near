@@ -5,7 +5,6 @@ import { InfoScopeAndParams } from "@/app/info/components/InfoScopeAndParams";
 import Tenant from "@/lib/tenant/tenant";
 import { InfoHero } from "./components/InfoHero";
 import InfoRoadmap from "./components/InfoRoadmap";
-import InfoFAQ from "./components/InfoFAQ";
 
 export async function generateMetadata() {
   const tenant = Tenant.current();
@@ -52,7 +51,6 @@ export default async function Page() {
       <GovernanceProcess />
       <InfoScopeAndParams />
       <InfoVideos />
-      <InfoFAQ />
       <InfoRoadmap />
     </div>
   );

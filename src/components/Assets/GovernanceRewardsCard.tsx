@@ -84,7 +84,7 @@ export const GovernanceRewardsCard = memo(() => {
                 Claim
               </UpdatedButton>
               <Link
-                href="/info#venear-rewards-discontinued"
+                href="https://hos-docs.vercel.app/docs/overview/faqs#venear-rewards-discontinued"
                 className="text-sm text-white hover:text-gray-200 flex items-center gap-1"
               >
                 Learn more <ArrowRightIcon className="w-4 h-4" />

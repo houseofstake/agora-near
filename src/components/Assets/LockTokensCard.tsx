@@ -68,7 +68,7 @@ export const LockTokensCard = memo(({ className }: LockTokensCardProps) => {
             Lock & Stake
           </UpdatedButton>
           <Link
-            href="/info#ve-near-rewards"
+            href="https://hos-docs.vercel.app/docs"
             className="flex items-center justify-center font-medium hover:opacity-80 transition-opacity gap-2"
           >
             Learn More
