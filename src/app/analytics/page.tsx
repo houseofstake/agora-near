@@ -50,7 +50,7 @@ export default function AnalyticsDashboard() {
   return (
     <div className="min-h-screen bg-[#FDFDFD]">
       <PageHeader headerText="Analytics Dashboard" />
-      
+
       <main className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-20 space-y-16">
         {/* GLOBAL ECOSYSTEM Section */}
         <section className="space-y-6">
