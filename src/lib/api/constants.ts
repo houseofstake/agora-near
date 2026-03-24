@@ -1,5 +1,7 @@
 const getApiUrl = () => {
-  switch (process.env.NEXT_PUBLIC_AGORA_ENV) {
+  const agoraEnv = process.env.NEXT_PUBLIC_AGORA_ENV;
+
+  switch (agoraEnv) {
     case "prod":
       return "https://near-api-fdj2gc3hbq-uw.a.run.app/api"; // hos-gov-prd
     case "august-prod":
@@ -11,9 +13,10 @@ const getApiUrl = () => {
     case "local":
       return "http://localhost:8080/api";
     default:
-      throw new Error(
-        `Unknown NEXT_PUBLIC_AGORA_ENV: ${process.env.NEXT_PUBLIC_AGORA_ENV}, so API is unknown.`
+      console.warn(
+        `Unknown NEXT_PUBLIC_AGORA_ENV: ${agoraEnv}, falling back to dev API URL.`
       );
+      return "https://near-api-g4qvzlnzwq-uw.a.run.app/api"; // hos-gov-dev
   }
 };
 
@@ -32,4 +35,6 @@ export const Endpoint = Object.freeze({
   DelegateStatementChanges: `${baseApiUrl}/delegate_statement_changes`,
   VotingPowerChart: `${baseApiUrl}/get_voting_power_chart`,
   VoteChanges: `${baseApiUrl}/vote_changes`,
+  ScreeningCommittee: `${baseApiUrl}/screening-committee`,
+  SecurityCouncil: `${baseApiUrl}/security-council`,
 });
