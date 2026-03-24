@@ -1,7 +1,7 @@
 import { baseApiUrl } from "../constants";
 
 export async function getGlobalAnalytics() {
-  const res = await fetch(`${BASE_URL}/v1/analytics/global`, {
+  const res = await fetch(`${baseApiUrl}/v1/analytics/global`, {
     headers: {
       "Content-Type": "application/json",
       "x-api-key": process.env.NEXT_PUBLIC_AGORA_API_KEY || "agora-dev-key", // standard fallback
@@ -17,7 +17,7 @@ export async function getGlobalAnalytics() {
 }
 
 export async function getProposalAnalytics(proposalId: string) {
-  const res = await fetch(`${BASE_URL}/v1/analytics/proposal/${proposalId}`, {
+  const res = await fetch(`${baseApiUrl}/v1/analytics/proposal/${proposalId}`, {
     headers: {
       "Content-Type": "application/json",
       "x-api-key": process.env.NEXT_PUBLIC_AGORA_API_KEY || "agora-dev-key",
