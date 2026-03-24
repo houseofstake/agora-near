@@ -78,7 +78,9 @@ function DelegationsContainer({ address }: { address: string }) {
           <div className="flex flex-col gap-3 border border-line shadow-sm rounded-xl overflow-auto max-h-[500px] bg-wash">
             {selfLockedVotingPower != null && (
               <div className="px-4 pt-3 flex items-center gap-2">
-                <span className="text-secondary text-sm">Self-locked voting power:</span>
+                <span className="text-secondary text-sm">
+                  Self-locked voting power:
+                </span>
                 <TokenAmount amount={selfLockedVotingPower} currency="veNEAR" />
               </div>
             )}
