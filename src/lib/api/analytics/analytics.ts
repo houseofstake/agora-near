@@ -8,11 +8,11 @@ export async function getGlobalAnalytics() {
     },
     next: { revalidate: 3600 }, // Cache statically for 1 hour to prevent DB spam
   });
-  
+
   if (!res.ok) {
     throw new Error(`Failed to fetch global analytics: ${res.status}`);
   }
-  
+
   return res.json();
 }
 
@@ -24,10 +24,10 @@ export async function getProposalAnalytics(proposalId: string) {
     },
     next: { revalidate: 3600 },
   });
-  
+
   if (!res.ok) {
     throw new Error(`Failed to fetch proposal analytics: ${res.status}`);
   }
-  
+
   return res.json();
 }

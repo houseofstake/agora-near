@@ -7,7 +7,9 @@ interface ProposalAnalyticDropdownProps {
   onSelect: (proposalId: string | null) => void;
 }
 
-export const ProposalAnalyticDropdown: React.FC<ProposalAnalyticDropdownProps> = ({ onSelect }) => {
+export const ProposalAnalyticDropdown: React.FC<
+  ProposalAnalyticDropdownProps
+> = ({ onSelect }) => {
   const [proposals, setProposals] = useState<any[]>([]);
 
   useEffect(() => {
@@ -20,14 +22,18 @@ export const ProposalAnalyticDropdown: React.FC<ProposalAnalyticDropdownProps> =
           setProposals(data.proposals);
         }
       })
-      .catch((err) => console.error("Error fetching proposals dictionary:", err));
+      .catch((err) =>
+        console.error("Error fetching proposals dictionary:", err)
+      );
   }, []);
 
   return (
     <Box>
       <Autocomplete
         options={proposals || []}
-        getOptionLabel={(option) => `#${option.proposalId} - ${option.title || "Untitled Proposal"}`}
+        getOptionLabel={(option) =>
+          `#${option.proposalId} - ${option.title || "Untitled Proposal"}`
+        }
         onChange={(_, newValue) => {
           onSelect(newValue ? newValue.proposalId.toString() : null);
         }}
@@ -40,7 +46,7 @@ export const ProposalAnalyticDropdown: React.FC<ProposalAnalyticDropdownProps> =
             sx={{
               "& .MuiOutlinedInput-root": {
                 borderRadius: 2,
-              }
+              },
             }}
           />
         )}
