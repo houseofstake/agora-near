@@ -116,6 +116,7 @@ export type GetVoteHistoryResponse = {
 export type GetDelegationEventsResponse = {
   count: number;
   events: DelegationEvent[];
+  selfLockedVotingPower?: string;
 };
 
 export type DelegationEvent = {
