@@ -38,8 +38,11 @@ export const useDelegatedFrom = ({
     return records?.flat();
   }, [data]);
 
+  const selfLockedVotingPower = data?.pages?.[0]?.selfLockedVotingPower;
+
   return {
     data: flatData,
+    selfLockedVotingPower,
     error,
     isLoading,
     fetchNextPage,
