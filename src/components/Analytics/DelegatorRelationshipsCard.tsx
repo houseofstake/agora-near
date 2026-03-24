@@ -36,7 +36,7 @@ export const DelegatorRelationshipsCard: React.FC<
   if (!data)
     return (
       <div className="text-sm text-gray-500 bg-gray-50 p-6 rounded-xl border border-gray-100">
-        Synchronizing relational matrix...
+        Loading ecosystem relationships...
       </div>
     );
 
@@ -54,16 +54,16 @@ export const DelegatorRelationshipsCard: React.FC<
     <div className="flex flex-col justify-center h-full">
       <MetricRow
         value={switches}
-        label="Fluid Ecosystem Wallets"
-        sublabel="Unique addresses that have historically reassigned their delegation."
+        label="Delegators Reassigning Power"
+        sublabel="Unique addresses that have historically switched their delegation to a different account."
       />
 
       <div className="w-full h-px bg-gray-200 my-4" />
 
       <MetricRow
         value={`${multiEndorsed} / ${multiStandard}`}
-        label="Delegate Centralization Density"
-        sublabel="Endorsed vs Regular delegates receiving power from 2+ overlapping wallets."
+        label="Delegates with Multiple Supporters"
+        sublabel="Endorsed vs Regular delegates receiving voting power from 2 or more wallets."
       />
     </div>
   );
