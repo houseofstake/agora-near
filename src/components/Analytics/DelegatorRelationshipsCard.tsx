@@ -24,7 +24,7 @@ export const DelegatorRelationshipsCard: React.FC<
   return (
     <Stack spacing={3} mt={2}>
       <Box display="flex" alignItems="center" gap={2}>
-        <Avatar sx={{ bgcolor: "rgba(11, 97, 205, 0.1)", color: "#0b61cd" }}>
+        <Avatar sx={{ bgcolor: "rgba(0, 227, 145, 0.1)", color: "#00E391" }}>
           <AccountTreeIcon />
         </Avatar>
         <Box>
@@ -38,7 +38,7 @@ export const DelegatorRelationshipsCard: React.FC<
       </Box>
 
       <Box display="flex" alignItems="center" gap={2}>
-        <Avatar sx={{ bgcolor: "rgba(117, 117, 117, 0.1)", color: "#757575" }}>
+        <Avatar sx={{ bgcolor: "rgba(75, 85, 99, 0.1)", color: "#4B5563" }}>
           <PeopleAltIcon />
         </Avatar>
         <Box>

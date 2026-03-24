@@ -38,7 +38,7 @@ export const DistributionPieChart: React.FC<DistributionPieChartProps> = ({
     );
   }
 
-  const COLORS = ["#0b61cd", "#757575"]; // Bracarli Blue & Neutral Gray
+  const COLORS = ["#00E391", "#4B5563"]; // Agora Green & Neutral Gray
 
   return (
     <Box sx={{ width: "100%", height: 350 }}>
