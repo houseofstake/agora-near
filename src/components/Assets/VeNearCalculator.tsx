@@ -123,7 +123,7 @@ export function VeNearCalculator({
             </div>
           </div>
           <Link
-            href="/info#venear-rewards-discontinued"
+            href="https://hos-docs.vercel.app/docs/overview/faqs#venear-rewards-discontinued"
             className="flex items-center gap-1 text-sm text-gray-300 hover:text-gray-300 mt-4"
           >
             Learn more about the methodology

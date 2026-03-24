@@ -129,7 +129,7 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
                   on the third-party platforms due to your lock-up contract
                   being the owner. See the{" "}
                   <a
-                    href="/info"
+                    href="https://hos-docs.vercel.app/docs/overview/faqs#fungible-token-withdrawal"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-700"

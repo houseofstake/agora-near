@@ -199,7 +199,7 @@ export function NearClaimDialog({ closeDialog }: NearClaimDialogProps) {
             rewards may no longer be available.
           </p>
           <a
-            href="/info?item=venear-rewards-discontinued"
+            href="https://hos-docs.vercel.app/docs/overview/faqs#venear-rewards-discontinued"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm underline hover:text-white transition-colors"

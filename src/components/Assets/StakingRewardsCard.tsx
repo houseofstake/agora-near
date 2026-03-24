@@ -45,7 +45,7 @@ export const StakingRewardsCard = memo(
                   APY*
                 </span>
                 <Link
-                  href="/info?item=contract-level-onboarding"
+                  href="https://hos-docs.vercel.app/docs/overview/faqs#contract-level-onboarding"
                   className="flex items-center font-medium hover:opacity-80 transition-opacity gap-2 mt-2"
                 >
                   Learn More
