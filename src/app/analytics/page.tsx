@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import PageHeader from "@/components/Layout/PageHeader/PageHeader";
 import { DistributionPieChart } from "@/components/Analytics/DistributionPieChart";
 import { DelegatorRelationshipsCard } from "@/components/Analytics/DelegatorRelationshipsCard";
 import { ProposalAnalyticDropdown } from "@/components/Analytics/ProposalAnalyticDropdown";

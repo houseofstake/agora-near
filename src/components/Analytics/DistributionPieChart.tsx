@@ -74,15 +74,15 @@ export const DistributionPieChart: React.FC<DistributionPieChartProps> = ({
   const COLORS = ["#00E391", "#1F2937"]; // Agora Green & Tailwind Gray-800
 
   return (
-    <div className="w-full h-[320px] flex items-center justify-center bg-white">
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
+    <div className="w-full min-h-[360px] flex flex-col items-center justify-center bg-white">
+      <ResponsiveContainer width="100%" height={360}>
+        <PieChart margin={{ top: 0, right: 0, bottom: 20, left: 0 }}>
           <Pie
             data={chartData}
             cx="50%"
-            cy="50%"
-            innerRadius={75}
-            outerRadius={110}
+            cy="45%"
+            innerRadius={65}
+            outerRadius={100}
             stroke="none"
             paddingAngle={2}
             dataKey="value"
