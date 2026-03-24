@@ -1,15 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {
-  Container,
-  Stack,
-  Typography,
-  Box,
-  CircularProgress,
-  Card,
-  Divider,
-} from "@mui/material";
 import { PageHeader } from "@/components/PageHeader/PageHeader";
 import HeaderBg from "@/assets/bg/header.webp";
 import { DistributionPieChart } from "@/components/Analytics/DistributionPieChart";
@@ -18,7 +9,7 @@ import { ProposalAnalyticDropdown } from "@/components/Analytics/ProposalAnalyti
 import {
   getGlobalAnalytics,
   getProposalAnalytics,
-} from "@/lib/api/analytics/analytics"; // We will create this API binding
+} from "@/lib/api/analytics/analytics";
 
 export default function AnalyticsDashboard() {
   const [globalData, setGlobalData] = useState<any>(null);
@@ -30,7 +21,6 @@ export default function AnalyticsDashboard() {
   const [proposalLoading, setProposalLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    // Fetch Global Ecosystem Data exactly once on mount
     getGlobalAnalytics()
       .then((data) => setGlobalData(data))
       .catch((err) => console.error("Failed to load global analytics:", err))
@@ -52,111 +42,101 @@ export default function AnalyticsDashboard() {
 
   if (loading) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="50vh"
-      >
-        <CircularProgress />
-      </Box>
+      <div className="flex items-center justify-center h-[50vh] w-full">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#00E391]"></div>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="min-h-screen bg-[#FDFDFD]">
       <PageHeader
         title="Analytics Dashboard"
         subtitle="Global insights into Endorsed Delegate relationships, Protocol Voting Power distribution, and historical routing."
         backgroundImg={HeaderBg.src}
       />
 
-      <Container maxWidth="xl" sx={{ mt: 4, mb: 10 }}>
-        <Stack spacing={6}>
-          {/* GLOBAL ECOSYSTEM KPI CARDS */}
-          <Box>
-            <Typography variant="h5" fontWeight="bold" mb={2}>
+      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-20 space-y-16">
+        {/* GLOBAL ECOSYSTEM Section */}
+        <section className="space-y-6">
+          <div className="border-b border-gray-200 pb-4">
+            <h3 className="text-3xl font-extrabold text-black">
               Ecosystem Voting Power
-            </Typography>
-            <Stack direction={{ xs: "column", md: "row" }} spacing={4}>
-              <Card
-                sx={{
-                  flex: 1,
-                  p: 3,
-                  borderRadius: 3,
-                  boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-                }}
-              >
-                <Typography variant="subtitle1" color="text.secondary">
-                  Global Distribution
-                </Typography>
-                <DistributionPieChart
-                  data={globalData?.delegationDistribution}
-                  dataKey="totalDelegatedYocto"
-                />
-              </Card>
+            </h3>
+            <p className="text-base font-medium text-gray-500 mt-2">
+              The high-level macro distribution of voting power across the NEAR
+              ecosystem.
+            </p>
+          </div>
 
-              <Card
-                sx={{
-                  flex: 1,
-                  p: 3,
-                  borderRadius: 3,
-                  boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-                }}
-              >
-                <Typography variant="subtitle1" color="text.secondary">
-                  Delegator Activity & Fluidity
-                </Typography>
-                <DelegatorRelationshipsCard data={globalData?.relationships} />
-              </Card>
-            </Stack>
-          </Box>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 lg:p-8 shadow-sm">
+              <h4 className="text-sm font-bold text-gray-600 uppercase tracking-wider mb-6">
+                Global Distribution
+              </h4>
+              <DistributionPieChart
+                data={globalData?.delegationDistribution}
+                dataKey="totalDelegatedYocto"
+              />
+            </div>
 
-          <Divider />
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 lg:p-8 shadow-sm">
+              <h4 className="text-sm font-bold text-gray-600 uppercase tracking-wider mb-6">
+                Activity & Fluidity Metrics
+              </h4>
+              <DelegatorRelationshipsCard data={globalData?.relationships} />
+            </div>
+          </div>
+        </section>
 
-          {/* PROPOSAL SPECIFIC DISTRIBUTION */}
-          <Box>
-            <Typography variant="h5" fontWeight="bold" mb={2}>
+        {/* PROPOSAL SPECIFIC DISTRIBUTION */}
+        <section className="space-y-6">
+          <div className="border-b border-gray-200 pb-4">
+            <h3 className="text-3xl font-extrabold text-black">
               Proposal Endorsement Analysis
-            </Typography>
-            <Typography variant="body1" color="text.secondary" mb={3}>
-              Select a historical governance proposal to analyze the specific
-              voting weight carried by Endorsed Delegates versus Standard
-              Accounts.
-            </Typography>
+            </h3>
+            <p className="text-base font-medium text-gray-500 mt-2">
+              Select a historical governance proposal to isolate exactly what
+              voting weights were fielded by Endorsed Delegates compared to the
+              public cohort.
+            </p>
+          </div>
 
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 lg:p-8 shadow-sm">
             <ProposalAnalyticDropdown
               onSelect={(id) => setSelectedProposalId(id)}
             />
 
             {proposalLoading && (
-              <Box display="flex" justifyContent="center" mt={4}>
-                <CircularProgress size={30} />
-              </Box>
+              <div className="flex items-center justify-center mt-12 py-10">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00E391]"></div>
+              </div>
             )}
 
-            {proposalData && !proposalLoading && (
-              <Box mt={4}>
-                <Card
-                  sx={{
-                    p: 4,
-                    borderRadius: 3,
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-                  }}
-                >
-                  <Typography variant="subtitle1" color="text.secondary" mb={2}>
-                    On-chain Vote Weight Composition
-                  </Typography>
+            {!proposalLoading && proposalData && (
+              <div className="mt-10 pt-8 border-t border-gray-100 flex flex-col items-center">
+                <h4 className="text-sm font-bold text-gray-600 uppercase tracking-wider mb-8 w-full text-left">
+                  On-chain Vote Weight Composition
+                </h4>
+                <div className="w-full max-w-lg">
                   <DistributionPieChart
                     data={proposalData.votesDistribution}
                     dataKey="participatingVP"
                   />
-                </Card>
-              </Box>
+                </div>
+              </div>
             )}
-          </Box>
-        </Stack>
-      </Container>
-    </>
+
+            {!proposalLoading && !proposalData && (
+              <div className="mt-10 py-16 flex items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                <span className="text-sm font-medium text-gray-500">
+                  Awaiting proposal selection...
+                </span>
+              </div>
+            )}
+          </div>
+        </section>
+      </main>
+    </div>
   );
 }

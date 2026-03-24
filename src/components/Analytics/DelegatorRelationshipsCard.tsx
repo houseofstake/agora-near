@@ -1,18 +1,44 @@
 "use client";
 
 import React from "react";
-import { Box, Typography, Stack, Avatar } from "@mui/material";
-import AccountTreeIcon from "@mui/icons-material/AccountTree";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 
 interface DelegatorRelationshipsCardProps {
   data: any;
 }
 
+function MetricRow({
+  value,
+  label,
+  sublabel,
+}: {
+  value: string | number;
+  label: string;
+  sublabel?: string;
+}) {
+  return (
+    <div className="flex flex-col mb-6 last:mb-0">
+      <div className="flex items-end gap-2 mb-1">
+        <span className="text-3xl font-extrabold text-black">{value}</span>
+      </div>
+      <span className="text-sm font-semibold text-gray-800">{label}</span>
+      {sublabel && (
+        <span className="text-xs font-medium text-gray-500 mt-0.5">
+          {sublabel}
+        </span>
+      )}
+    </div>
+  );
+}
+
 export const DelegatorRelationshipsCard: React.FC<
   DelegatorRelationshipsCardProps
 > = ({ data }) => {
-  if (!data) return <Typography>No data</Typography>;
+  if (!data)
+    return (
+      <div className="text-sm text-gray-500 bg-gray-50 p-6 rounded-xl border border-gray-100">
+        Synchronizing relational matrix...
+      </div>
+    );
 
   const endorsedReceiversObj = data.receivers?.find(
     (r: any) => r.isEndorsed
@@ -20,37 +46,25 @@ export const DelegatorRelationshipsCard: React.FC<
   const standardReceiversObj = data.receivers?.find(
     (r: any) => !r.isEndorsed
   ) || { delegatesWithMultiple: 0 };
+  const switches = Number(data.historicallySwitched || 0).toLocaleString();
+  const multiEndorsed = Number(endorsedReceiversObj.delegatesWithMultiple);
+  const multiStandard = Number(standardReceiversObj.delegatesWithMultiple);
 
   return (
-    <Stack spacing={3} mt={2}>
-      <Box display="flex" alignItems="center" gap={2}>
-        <Avatar sx={{ bgcolor: "rgba(0, 227, 145, 0.1)", color: "#00E391" }}>
-          <AccountTreeIcon />
-        </Avatar>
-        <Box>
-          <Typography variant="h6">
-            {Number(data.historicallySwitched).toLocaleString()}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Addresses historically switching delegates
-          </Typography>
-        </Box>
-      </Box>
+    <div className="flex flex-col justify-center h-full">
+      <MetricRow
+        value={switches}
+        label="Fluid Ecosystem Wallets"
+        sublabel="Unique addresses that have historically reassigned their delegation."
+      />
 
-      <Box display="flex" alignItems="center" gap={2}>
-        <Avatar sx={{ bgcolor: "rgba(75, 85, 99, 0.1)", color: "#4B5563" }}>
-          <PeopleAltIcon />
-        </Avatar>
-        <Box>
-          <Typography variant="h6">
-            {Number(endorsedReceiversObj.delegatesWithMultiple)} Endorsed /{" "}
-            {Number(standardReceiversObj.delegatesWithMultiple)} Regular
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Delegates receiving veNEAR from 2+ overlapping wallets
-          </Typography>
-        </Box>
-      </Box>
-    </Stack>
+      <div className="w-full h-px bg-gray-200 my-4" />
+
+      <MetricRow
+        value={`${multiEndorsed} / ${multiStandard}`}
+        label="Delegate Centralization Density"
+        sublabel="Endorsed vs Regular delegates receiving power from 2+ overlapping wallets."
+      />
+    </div>
   );
 };
