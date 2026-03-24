@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { PageHeader } from "@/components/PageHeader/PageHeader";
-import HeaderBg from "@/assets/bg/header.webp";
+import PageHeader from "@/components/Layout/PageHeader/PageHeader";
 import { DistributionPieChart } from "@/components/Analytics/DistributionPieChart";
 import { DelegatorRelationshipsCard } from "@/components/Analytics/DelegatorRelationshipsCard";
 import { ProposalAnalyticDropdown } from "@/components/Analytics/ProposalAnalyticDropdown";
@@ -50,12 +49,8 @@ export default function AnalyticsDashboard() {
 
   return (
     <div className="min-h-screen bg-[#FDFDFD]">
-      <PageHeader
-        title="Analytics Dashboard"
-        subtitle="Global insights into Endorsed Delegate relationships, Protocol Voting Power distribution, and historical routing."
-        backgroundImg={HeaderBg.src}
-      />
-
+      <PageHeader headerText="Analytics Dashboard" />
+      
       <main className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-20 space-y-16">
         {/* GLOBAL ECOSYSTEM Section */}
         <section className="space-y-6">
