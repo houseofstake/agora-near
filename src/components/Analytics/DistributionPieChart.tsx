@@ -59,8 +59,6 @@ export const DistributionPieChart: React.FC<DistributionPieChartProps> = ({
     if (!data || data.length === 0) return [];
 
     return data.map((item) => {
-      // Safely parse scientific notation numbers returned by PostgreSQL SUM() overrides
-      // Native BigInt() explodes on properties like "1.00e+23"
       const rawFloat = Number(item[dataKey] || 0);
       const nearValue = rawFloat / 1e24;
 
