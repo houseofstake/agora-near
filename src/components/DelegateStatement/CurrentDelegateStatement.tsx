@@ -97,7 +97,7 @@ export default function CurrentDelegateStatement() {
         warpcast: delegateProfile?.warpcast || "",
         topIssues:
           (delegateProfile?.topIssues ?? []).length > 0
-            ? delegateProfile?.topIssues ?? defaultIssues
+            ? (delegateProfile?.topIssues ?? defaultIssues)
             : defaultIssues,
         notificationPreferences: {
           wants_proposal_created_email:
