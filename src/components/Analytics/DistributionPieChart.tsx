@@ -32,6 +32,8 @@ function CustomTooltip({ active, payload }: any) {
 
 const renderCustomLegend = (props: any) => {
   const { payload } = props;
+  if (!payload || !Array.isArray(payload)) return null;
+
   return (
     <div className="flex flex-wrap justify-center gap-6 mt-4">
       {payload.map((entry: any, index: number) => (
@@ -56,11 +58,18 @@ export const DistributionPieChart: React.FC<DistributionPieChartProps> = ({
   const chartData = useMemo(() => {
     if (!data || data.length === 0) return [];
 
-    return data.map((item) => ({
-      name: item.isEndorsed ? "Endorsed Delegates" : "Standard Accounts",
-      value: Number(BigInt(item[dataKey] || "0") / BigInt(1e24)),
-      rawItems: item,
-    }));
+    return data.map((item) => {
+      // Safely parse scientific notation numbers returned by PostgreSQL SUM() overrides
+      // Native BigInt() explodes on properties like "1.00e+23"
+      const rawFloat = Number(item[dataKey] || 0);
+      const nearValue = rawFloat / 1e24;
+
+      return {
+        name: item.isEndorsed ? "Endorsed Delegates" : "Standard Accounts",
+        value: Number(nearValue.toFixed(2)),
+        rawItems: item,
+      };
+    });
   }, [data, dataKey]);
 
   if (chartData.length === 0) {
