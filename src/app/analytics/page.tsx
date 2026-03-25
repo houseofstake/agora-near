@@ -48,7 +48,16 @@ export default function AnalyticsDashboard() {
 
   return (
     <div className="min-h-screen bg-[#FDFDFD]">
-      <PageHeader headerText="Analytics Dashboard" />
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-black tracking-tight">
+            Analytics Dashboard
+          </h1>
+          <p className="mt-4 text-lg text-gray-500 max-w-2xl font-medium leading-relaxed">
+            Macro insights into Endorsed Delegate relationships, Protocol Voting Power distribution, and historical routing across the NEAR ecosystem.
+          </p>
+        </div>
+      </div>
 
       <main className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-20 space-y-16">
         {/* GLOBAL ECOSYSTEM Section */}
