@@ -54,7 +54,9 @@ export default function AnalyticsDashboard() {
             Analytics Dashboard
           </h1>
           <p className="mt-4 text-lg text-gray-500 max-w-2xl font-medium leading-relaxed">
-            Macro insights into Endorsed Delegate relationships, Protocol Voting Power distribution, and historical routing across the NEAR ecosystem.
+            Macro insights into Endorsed Delegate relationships, Protocol Voting
+            Power distribution, and historical routing across the NEAR
+            ecosystem.
           </p>
         </div>
       </div>
