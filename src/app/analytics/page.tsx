@@ -65,10 +65,10 @@ export default function AnalyticsDashboard() {
         {/* GLOBAL ECOSYSTEM Section */}
         <section className="space-y-6">
           <div className="border-b border-gray-200 pb-4">
-            <h3 className="text-3xl font-extrabold text-black">
+            <h3 className="text-2xl font-bold text-black">
               Ecosystem Voting Power
             </h3>
-            <p className="text-base font-medium text-gray-500 mt-2">
+            <p className="text-sm font-medium text-gray-500 mt-2">
               The high-level macro distribution of voting power across the NEAR
               ecosystem.
             </p>
@@ -97,10 +97,10 @@ export default function AnalyticsDashboard() {
         {/* PROPOSAL SPECIFIC DISTRIBUTION */}
         <section className="space-y-6">
           <div className="border-b border-gray-200 pb-4">
-            <h3 className="text-3xl font-extrabold text-black">
+            <h3 className="text-2xl font-bold text-black">
               Proposal Endorsement Analysis
             </h3>
-            <p className="text-base font-medium text-gray-500 mt-2">
+            <p className="text-sm font-medium text-gray-500 mt-2">
               Select a historical governance proposal to isolate exactly what
               voting weights were fielded by Endorsed Delegates compared to the
               public cohort.
