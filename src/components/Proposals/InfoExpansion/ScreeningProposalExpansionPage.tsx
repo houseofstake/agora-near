@@ -4,10 +4,16 @@ import Image from "next/image";
 import { Info, Pencil, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { icons } from "@/assets/icons";
-import { ProposalTimelineView, type ProposalTimelineRow } from "@/components/Proposals/InfoExpansion/ProposalTimelineView";
+import {
+  ProposalTimelineView,
+  type ProposalTimelineRow,
+} from "@/components/Proposals/InfoExpansion/ProposalTimelineView";
 import { ProposalVisualizationCard } from "@/components/Proposals/InfoExpansion/ProposalVisualizationCard";
 import { ProposalReviewStatusCard } from "@/components/Proposals/InfoExpansion/ProposalReviewStatusCard";
-import { ProposalReviewMembersList, type ProposalReviewMemberItem } from "@/components/Proposals/InfoExpansion/ProposalReviewMembersList";
+import {
+  ProposalReviewMembersList,
+  type ProposalReviewMemberItem,
+} from "@/components/Proposals/InfoExpansion/ProposalReviewMembersList";
 import { ProposalTypeBadge } from "@/components/Proposals/ProposalTypeBadge";
 import { ProposalType, decodeMetadata } from "@/lib/proposalMetadata";
 import Markdown from "@/components/shared/Markdown/Markdown";
@@ -49,22 +55,33 @@ export const ScreeningProposalExpansionPage = ({
     members: detailMembers,
     isLoading,
   } = useScreeningProposalDetail(proposalId);
-  const { submitReview, isSubmitting, error: submitError } = useSubmitScreeningReview(proposalId);
+  const {
+    submitReview,
+    isSubmitting,
+    error: submitError,
+  } = useSubmitScreeningReview(proposalId);
 
-  const isMember = detailMembers?.some((m) => m.wallet === signedAccountId) ?? false;
+  const isMember =
+    detailMembers?.some((m) => m.wallet === signedAccountId) ?? false;
   const isMemberView = isMember;
   const commentsRef = useRef<HTMLDivElement | null>(null);
-  const [activeView, setActiveView] = useState<"proposal" | "timeline" | "discussion">(
-    openComments ? "discussion" : "proposal"
-  );
+  const [activeView, setActiveView] = useState<
+    "proposal" | "timeline" | "discussion"
+  >(openComments ? "discussion" : "proposal");
 
   const title = proposalData
     ? `${proposalData.proposalId}: ${proposalData.title ?? "Untitled"}`
     : `${proposalId}: Screening proposal`;
   const proposalAuthor = proposalData?.submittedBy ?? "unknown.near";
-  const { description: rawDescription, metadata } = decodeMetadata(proposalData?.description ?? "");
-  const { description: cleanDescription, v0Meta } = stripLeadingJsonMetadata(rawDescription);
-  const proposalTypeMd = buildProposalTypeMarkdown(v0Meta, metadata.proposalType);
+  const { description: rawDescription, metadata } = decodeMetadata(
+    proposalData?.description ?? ""
+  );
+  const { description: cleanDescription, v0Meta } =
+    stripLeadingJsonMetadata(rawDescription);
+  const proposalTypeMd = buildProposalTypeMarkdown(
+    v0Meta,
+    metadata.proposalType
+  );
   const fullDescription = proposalTypeMd
     ? `${cleanDescription}\n\n${proposalTypeMd}`
     : cleanDescription;
@@ -105,17 +122,28 @@ export const ScreeningProposalExpansionPage = ({
     return { ...member, status };
   });
 
-  const approvedCount = reviewMembers.filter((m) => m.status === "Approve").length;
-  const pendingCount = reviewMembers.filter((m) => m.status === "Pending").length;
-  const reviewMemberItems: ProposalReviewMemberItem[] = reviewMembers.map((member) => ({
-    id: member.id,
-    initials: getInitials(member.name),
-    name: member.name,
-    subtitle: member.subtitle ?? "",
-    statusLabel: member.status,
-    statusTone: member.status === "Approve" ? "positive" : member.status === "Reject" ? "danger" : "neutral",
-    showCheckIcon: member.status === "Approve",
-  }));
+  const approvedCount = reviewMembers.filter(
+    (m) => m.status === "Approve"
+  ).length;
+  const pendingCount = reviewMembers.filter(
+    (m) => m.status === "Pending"
+  ).length;
+  const reviewMemberItems: ProposalReviewMemberItem[] = reviewMembers.map(
+    (member) => ({
+      id: member.id,
+      initials: getInitials(member.name),
+      name: member.name,
+      subtitle: member.subtitle ?? "",
+      statusLabel: member.status,
+      statusTone:
+        member.status === "Approve"
+          ? "positive"
+          : member.status === "Reject"
+            ? "danger"
+            : "neutral",
+      showCheckIcon: member.status === "Approve",
+    })
+  );
 
   const progressPercent = governanceStatus
     ? Math.round(clamp01(governanceStatus.progressFraction) * 100)
@@ -154,7 +182,9 @@ export const ScreeningProposalExpansionPage = ({
     try {
       await submitReview({ action: "COMMENT", rationale: trimmed });
     } catch {
-      setDiscussionItems((prev) => prev.filter((item) => item.id !== optimisticItem.id));
+      setDiscussionItems((prev) =>
+        prev.filter((item) => item.id !== optimisticItem.id)
+      );
     }
   };
 
@@ -194,7 +224,11 @@ export const ScreeningProposalExpansionPage = ({
               />
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#404040]">
                 Proposal by {proposalAuthor}
-                <Image src={icons.northEast} alt="Open source" className="h-3 w-3" />
+                <Image
+                  src={icons.northEast}
+                  alt="Open source"
+                  className="h-3 w-3"
+                />
               </span>
             </div>
 
@@ -267,7 +301,9 @@ export const ScreeningProposalExpansionPage = ({
 
             {activeView === "proposal" && (
               <div className="space-y-5 pt-3">
-                <ProposalVisualizationCard proposalIdForVisualization={proposalId} />
+                <ProposalVisualizationCard
+                  proposalIdForVisualization={proposalId}
+                />
 
                 {fullDescription && (
                   <div className="text-base leading-6 text-[#404040]">
@@ -288,17 +324,19 @@ export const ScreeningProposalExpansionPage = ({
               >
                 <div className="mb-3 flex items-center gap-3">
                   <span className="text-[11px] font-bold uppercase tracking-[0.66px] text-tertiary">
-                      {screeningExpansionUiText.sectionScreeningCommittee}
+                    {screeningExpansionUiText.sectionScreeningCommittee}
                   </span>
                   <span className="h-px flex-1 bg-line" />
-                    <span className="text-xs text-tertiary">
-                      {screeningExpansionUiText.reviewWindowLabel}
-                    </span>
+                  <span className="text-xs text-tertiary">
+                    {screeningExpansionUiText.reviewWindowLabel}
+                  </span>
                 </div>
 
                 {discussionItems.length === 0 ? (
                   <div className="rounded-xl border border-line bg-[#f9f8f7] px-4 py-6 text-center">
-                    <p className="text-sm font-medium text-secondary">No reviews yet.</p>
+                    <p className="text-sm font-medium text-secondary">
+                      No reviews yet.
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -314,10 +352,14 @@ export const ScreeningProposalExpansionPage = ({
                                 <p className="text-sm font-semibold leading-5 text-[#171717]">
                                   {comment.name}
                                 </p>
-                                <p className="text-xs text-tertiary">{comment.subtitle}</p>
+                                <p className="text-xs text-tertiary">
+                                  {comment.subtitle}
+                                </p>
                               </div>
                               <p className="text-xs leading-4 text-tertiary">
-                                {isMemberView ? comment.date : toRelativeDate(comment.date)}
+                                {isMemberView
+                                  ? comment.date
+                                  : toRelativeDate(comment.date)}
                               </p>
                             </div>
                             <div className="rounded-xl border border-line bg-[#fafafa] px-[15px] py-[13px] text-sm leading-[22.75px] text-[#404040]">
@@ -351,7 +393,6 @@ export const ScreeningProposalExpansionPage = ({
                 </div>
               </div>
             )}
-
           </div>
 
           <aside className="w-full max-w-sm space-y-4 lg:w-96">
@@ -368,14 +409,17 @@ export const ScreeningProposalExpansionPage = ({
                   preContent={
                     <>
                       <p className="text-[14px] font-semibold leading-[20px] text-emerald-700">
-                        {screeningExpansionUiText.approveLabel} - {approvedCount}
+                        {screeningExpansionUiText.approveLabel} -{" "}
+                        {approvedCount}
                       </p>
                       <div className="mt-2 flex gap-1">
                         {reviewMembers.map((m) => (
                           <div
                             key={m.id}
                             className={`h-2 flex-1 rounded-full ${
-                              m.status === "Approve" ? "bg-emerald-400" : "bg-line"
+                              m.status === "Approve"
+                                ? "bg-emerald-400"
+                                : "bg-line"
                             }`}
                           />
                         ))}
@@ -404,7 +448,9 @@ export const ScreeningProposalExpansionPage = ({
               {isMemberView ? (
                 <div className="border-t border-line px-4 py-4">
                   {submitError && (
-                    <p className="mb-2 text-xs text-red-600">{submitError.message}</p>
+                    <p className="mb-2 text-xs text-red-600">
+                      {submitError.message}
+                    </p>
                   )}
                   <button
                     type="button"
@@ -428,7 +474,6 @@ export const ScreeningProposalExpansionPage = ({
                 </div>
               )}
             </div>
-
           </aside>
         </div>
       </div>
@@ -474,7 +519,9 @@ export const ScreeningProposalExpansionPage = ({
                 </button>
                 <button
                   type="button"
-                  disabled={!newComment.trim() || isSubmitting || !signedAccountId}
+                  disabled={
+                    !newComment.trim() || isSubmitting || !signedAccountId
+                  }
                   onClick={submitComment}
                   className={`h-[46px] w-full rounded-xl px-6 text-[14px] font-bold leading-[21px] sm:h-[50px] sm:min-w-[127px] sm:w-auto ${
                     newComment.trim()
@@ -489,27 +536,30 @@ export const ScreeningProposalExpansionPage = ({
           </div>
         </div>
       )}
-
     </section>
   );
 };
 
 function buildScreeningTimeline(
   proposalAuthor: string,
-  governanceStatus: {
-    proposalId: string;
-    screeningStatus: "PENDING" | "APPROVED" | "REJECTED";
-    screeningDeadline: string | null;
-    councilStatus: string | null;
-    vetoDeadline: string | null;
-    ratifiedAt: string | null;
-    timeRemaining: string | null;
-    progressFraction: number;
-  } | null | undefined,
+  governanceStatus:
+    | {
+        proposalId: string;
+        screeningStatus: "PENDING" | "APPROVED" | "REJECTED";
+        screeningDeadline: string | null;
+        councilStatus: string | null;
+        vetoDeadline: string | null;
+        ratifiedAt: string | null;
+        timeRemaining: string | null;
+        progressFraction: number;
+      }
+    | null
+    | undefined,
   createdAt: string | undefined
 ): ProposalTimelineRow[] {
   const screeningStatus = governanceStatus?.screeningStatus ?? "PENDING";
-  const screeningDone = screeningStatus === "APPROVED" || screeningStatus === "REJECTED";
+  const screeningDone =
+    screeningStatus === "APPROVED" || screeningStatus === "REJECTED";
 
   return [
     {
@@ -531,10 +581,14 @@ function buildScreeningTimeline(
       id: "screening",
       title: "Screening Committee Review",
       badgeLabel: screeningDone
-        ? (screeningStatus === "APPROVED" ? "Approved" : "Rejected")
+        ? screeningStatus === "APPROVED"
+          ? "Approved"
+          : "Rejected"
         : "ACTIVE",
       badgeTone: screeningDone
-        ? (screeningStatus === "APPROVED" ? "success" : "danger")
+        ? screeningStatus === "APPROVED"
+          ? "success"
+          : "danger"
         : "info",
       detail: screeningDone
         ? undefined

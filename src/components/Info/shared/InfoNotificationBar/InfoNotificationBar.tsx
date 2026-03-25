@@ -18,4 +18,3 @@ export const InfoNotificationBar = ({ message }: InfoNotificationBarProps) => {
     </div>
   );
 };
-

@@ -354,27 +354,29 @@ export async function GET(req: NextRequest) {
 
   try {
     return new ImageResponse(
-      <div
-        tw="flex flex-col w-full h-full"
-        style={{
-          fontFamily: '"Inter"',
-          backgroundColor: "#F3F3EF",
-          backgroundImage: `url(${bgBase64})`,
-          textRendering: "geometricPrecision",
-          shapeRendering: "crispEdges",
-        }}
-      >
-        <SuccessMessageCard
-          namespace={namespace}
-          forPercentage={forPercentage}
-          againstPercentage={againstPercentage}
-          blockNumber={blockNumber}
-          endsIn={endsIn}
-          voteDate={voteDate}
-          supportType={supportType}
-          proposalType={proposalType}
-        />
-      </div>,
+      (
+        <div
+          tw="flex flex-col w-full h-full"
+          style={{
+            fontFamily: '"Inter"',
+            backgroundColor: "#F3F3EF",
+            backgroundImage: `url(${bgBase64})`,
+            textRendering: "geometricPrecision",
+            shapeRendering: "crispEdges",
+          }}
+        >
+          <SuccessMessageCard
+            namespace={namespace}
+            forPercentage={forPercentage}
+            againstPercentage={againstPercentage}
+            blockNumber={blockNumber}
+            endsIn={endsIn}
+            voteDate={voteDate}
+            supportType={supportType}
+            proposalType={proposalType}
+          />
+        </div>
+      ),
       {
         width: 1200,
         height: 630,

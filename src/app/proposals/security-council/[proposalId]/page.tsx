@@ -13,7 +13,9 @@ export default function SecurityCouncilProposalExpansionRoute({
   const { ui } = Tenant.current();
 
   if (!ui.toggle("info")?.enabled) {
-    return <div className="text-primary">Route not supported for namespace</div>;
+    return (
+      <div className="text-primary">Route not supported for namespace</div>
+    );
   }
 
   return (

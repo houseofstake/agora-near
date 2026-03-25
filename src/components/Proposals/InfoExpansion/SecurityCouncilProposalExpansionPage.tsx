@@ -4,11 +4,20 @@ import Image from "next/image";
 import { AlertCircle, Info, X } from "lucide-react";
 import { useState } from "react";
 import { icons } from "@/assets/icons";
-import { ProposalTimelineView, type ProposalTimelineRow } from "@/components/Proposals/InfoExpansion/ProposalTimelineView";
+import {
+  ProposalTimelineView,
+  type ProposalTimelineRow,
+} from "@/components/Proposals/InfoExpansion/ProposalTimelineView";
 import { ProposalVisualizationCard } from "@/components/Proposals/InfoExpansion/ProposalVisualizationCard";
-import { ProposalDiscussionThread, type ProposalDiscussionItem } from "@/components/Proposals/InfoExpansion/ProposalDiscussionThread";
+import {
+  ProposalDiscussionThread,
+  type ProposalDiscussionItem,
+} from "@/components/Proposals/InfoExpansion/ProposalDiscussionThread";
 import { ProposalReviewStatusCard } from "@/components/Proposals/InfoExpansion/ProposalReviewStatusCard";
-import { ProposalReviewMembersList, type ProposalReviewMemberItem } from "@/components/Proposals/InfoExpansion/ProposalReviewMembersList";
+import {
+  ProposalReviewMembersList,
+  type ProposalReviewMemberItem,
+} from "@/components/Proposals/InfoExpansion/ProposalReviewMembersList";
 import { ProposalTypeBadge } from "@/components/Proposals/ProposalTypeBadge";
 import { ProposalType, decodeMetadata } from "@/lib/proposalMetadata";
 import Markdown from "@/components/shared/Markdown/Markdown";
@@ -43,16 +52,23 @@ export const SecurityCouncilProposalExpansionPage = ({
     isLoading,
   } = useCouncilProposalDetail(proposalId);
   const { members: councilMembers } = useCouncilMembers();
-  const { submitVeto, isSubmitting, error: submitError } = useSubmitCouncilVeto(proposalId);
+  const {
+    submitVeto,
+    isSubmitting,
+    error: submitError,
+  } = useSubmitCouncilVeto(proposalId);
 
-  const isMember = councilMembers?.some((m) => m.wallet === signedAccountId) ?? false;
+  const isMember =
+    councilMembers?.some((m) => m.wallet === signedAccountId) ?? false;
   const isMemberView = isMember;
-  const [activeView, setActiveView] = useState<"proposal" | "timeline" | "discussion">(
-    openComments ? "discussion" : "proposal"
-  );
+  const [activeView, setActiveView] = useState<
+    "proposal" | "timeline" | "discussion"
+  >(openComments ? "discussion" : "proposal");
   const [isIssueVetoOpen, setIsIssueVetoOpen] = useState(false);
   const [vetoRationaleDraft, setVetoRationaleDraft] = useState("");
-  const [postedVetoRationale, setPostedVetoRationale] = useState<string | null>(null);
+  const [postedVetoRationale, setPostedVetoRationale] = useState<string | null>(
+    null
+  );
   const [localVetoIssued, setLocalVetoIssued] = useState(false);
 
   const isVetoed =
@@ -64,9 +80,15 @@ export const SecurityCouncilProposalExpansionPage = ({
     ? `${proposalData.proposalId}: ${proposalData.title ?? "Untitled"}`
     : `${proposalId}: Security Council proposal`;
   const proposalAuthor = proposalData?.submittedBy ?? "unknown.near";
-  const { description: rawDescription, metadata } = decodeMetadata(proposalData?.description ?? "");
-  const { description: cleanDescription, v0Meta } = stripLeadingJsonMetadata(rawDescription);
-  const proposalTypeMd = buildProposalTypeMarkdown(v0Meta, metadata.proposalType);
+  const { description: rawDescription, metadata } = decodeMetadata(
+    proposalData?.description ?? ""
+  );
+  const { description: cleanDescription, v0Meta } =
+    stripLeadingJsonMetadata(rawDescription);
+  const proposalTypeMd = buildProposalTypeMarkdown(
+    v0Meta,
+    metadata.proposalType
+  );
   const fullDescription = proposalTypeMd
     ? `${cleanDescription}\n\n${proposalTypeMd}`
     : cleanDescription;
@@ -111,37 +133,46 @@ export const SecurityCouncilProposalExpansionPage = ({
   }));
 
   const discussionCount =
-    securityCouncilDiscussionItems.length + screeningCommitteeDiscussionItems.length;
+    securityCouncilDiscussionItems.length +
+    screeningCommitteeDiscussionItems.length;
 
   const allMembers = councilMembers ?? [];
   const vetoMemberId = vetoRationale?.member?.id;
   const reviewMembers = allMembers.map((member) => ({
     ...member,
-    status: (isVetoed && member.id === vetoMemberId) || (localVetoIssued && member.wallet === signedAccountId)
-      ? "Veto"
-      : "Pending",
+    status:
+      (isVetoed && member.id === vetoMemberId) ||
+      (localVetoIssued && member.wallet === signedAccountId)
+        ? "Veto"
+        : "Pending",
   }));
 
-  const reviewMemberItems: ProposalReviewMemberItem[] = reviewMembers.map((member) => ({
-    id: member.id,
-    initials: getInitials(member.name),
-    name: member.wallet === signedAccountId ? `${member.name} (you)` : member.name,
-    subtitle: member.subtitle ?? "",
-    statusLabel: member.status,
-    statusTone:
-      !isMemberView && isVetoed && member.status !== "Veto"
-        ? "none"
-        : member.status === "Veto"
-          ? "danger"
-          : "neutral",
-  }));
+  const reviewMemberItems: ProposalReviewMemberItem[] = reviewMembers.map(
+    (member) => ({
+      id: member.id,
+      initials: getInitials(member.name),
+      name:
+        member.wallet === signedAccountId
+          ? `${member.name} (you)`
+          : member.name,
+      subtitle: member.subtitle ?? "",
+      statusLabel: member.status,
+      statusTone:
+        !isMemberView && isVetoed && member.status !== "Veto"
+          ? "none"
+          : member.status === "Veto"
+            ? "danger"
+            : "neutral",
+    })
+  );
 
   const progressPercent = governanceStatus
     ? Math.round(clamp01(governanceStatus.progressFraction) * 100)
     : isVetoed
       ? 100
       : 40;
-  const statusTime = governanceStatus?.timeRemaining ?? (isVetoed ? "0d 0h 0m" : "—");
+  const statusTime =
+    governanceStatus?.timeRemaining ?? (isVetoed ? "0d 0h 0m" : "—");
 
   const timelineRows: ProposalTimelineRow[] = buildSecurityTimeline(
     isVetoed,
@@ -192,7 +223,11 @@ export const SecurityCouncilProposalExpansionPage = ({
               />
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#404040]">
                 Proposal by {proposalAuthor}
-                <Image src={icons.northEast} alt="Open source" className="h-3 w-3" />
+                <Image
+                  src={icons.northEast}
+                  alt="Open source"
+                  className="h-3 w-3"
+                />
               </span>
             </div>
 
@@ -249,7 +284,9 @@ export const SecurityCouncilProposalExpansionPage = ({
 
             {activeView === "proposal" && (
               <div className="space-y-5 pt-3">
-                <ProposalVisualizationCard proposalIdForVisualization={proposalId} />
+                <ProposalVisualizationCard
+                  proposalIdForVisualization={proposalId}
+                />
 
                 {fullDescription && (
                   <div className="text-base leading-6 text-[#404040]">
@@ -310,7 +347,9 @@ export const SecurityCouncilProposalExpansionPage = ({
                       : securityExpansionUiText.statusActive
                   }
                   badgeClassName={`rounded-[4px] px-1 py-0.5 text-xs font-semibold ${
-                    isVetoed ? "bg-[#fee2e2] text-[#c52f00]" : "bg-blue-100 text-blue-700"
+                    isVetoed
+                      ? "bg-[#fee2e2] text-[#c52f00]"
+                      : "bg-blue-100 text-blue-700"
                   }`}
                   timeText={statusTime}
                   progressTrackClassName={`h-1.5 w-full rounded-full ${
@@ -336,7 +375,9 @@ export const SecurityCouncilProposalExpansionPage = ({
               {isMemberView ? (
                 <div className="border-t border-line px-4 py-[13px]">
                   {submitError && (
-                    <p className="mb-2 text-xs text-red-600">{submitError.message}</p>
+                    <p className="mb-2 text-xs text-red-600">
+                      {submitError.message}
+                    </p>
                   )}
                   <button
                     type="button"
@@ -404,7 +445,9 @@ export const SecurityCouncilProposalExpansionPage = ({
               <div className="overflow-hidden rounded-xl border border-[#d62600]">
                 <textarea
                   value={vetoRationaleDraft}
-                  onChange={(event) => setVetoRationaleDraft(event.target.value)}
+                  onChange={(event) =>
+                    setVetoRationaleDraft(event.target.value)
+                  }
                   rows={5}
                   placeholder={securityExpansionUiText.issueVetoPlaceholder}
                   className="w-full resize-none border-0 px-4 py-2 text-sm leading-[21px] text-[#57606a] outline-none focus:outline-none focus:ring-0"
@@ -446,16 +489,19 @@ export const SecurityCouncilProposalExpansionPage = ({
 
 function buildSecurityTimeline(
   isVetoed: boolean,
-  governanceStatus: {
-    proposalId: string;
-    screeningStatus: string;
-    screeningDeadline: string | null;
-    councilStatus: "ACTIVE" | "RATIFIED" | "VETOED";
-    vetoDeadline: string | null;
-    ratifiedAt: string | null;
-    timeRemaining: string | null;
-    progressFraction: number;
-  } | null | undefined,
+  governanceStatus:
+    | {
+        proposalId: string;
+        screeningStatus: string;
+        screeningDeadline: string | null;
+        councilStatus: "ACTIVE" | "RATIFIED" | "VETOED";
+        vetoDeadline: string | null;
+        ratifiedAt: string | null;
+        timeRemaining: string | null;
+        progressFraction: number;
+      }
+    | null
+    | undefined,
   createdAt: string | undefined
 ): ProposalTimelineRow[] {
   const vetoStage = isVetoed ? "completed" : "active";

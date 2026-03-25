@@ -43,7 +43,9 @@ export const fetchScreeningProposals = async (
 
   const { data } = await axios.get<
     PaginatedResponse<
-      ScreeningCurrentProposal | ScreeningIncomingProposal | ScreeningPastProposal
+      | ScreeningCurrentProposal
+      | ScreeningIncomingProposal
+      | ScreeningPastProposal
     >
   >(`${Endpoint.ScreeningCommittee}/proposals?${params}`);
   return data;
@@ -62,7 +64,9 @@ export const submitScreeningReview = async (
   body: SubmitReviewRequest
 ) => {
   if (!body.accountId || !body.signature || !body.publicKey) {
-    throw new Error("Missing required authentication fields for review submission");
+    throw new Error(
+      "Missing required authentication fields for review submission"
+    );
   }
   const safeId = encodeURIComponent(proposalId);
   const { data } = await axios.post(
@@ -117,7 +121,9 @@ export const submitCouncilVeto = async (
   body: SubmitReviewRequest
 ) => {
   if (!body.accountId || !body.signature || !body.publicKey) {
-    throw new Error("Missing required authentication fields for veto submission");
+    throw new Error(
+      "Missing required authentication fields for veto submission"
+    );
   }
   const safeId = encodeURIComponent(proposalId);
   const { data } = await axios.post(

@@ -22,12 +22,13 @@ const ZOOM_CONFIG = {
   step: 3,
 } as const;
 
-interface TreeNode extends d3.HierarchyRectangularNode<{
-  address?: string;
-  support?: string;
-  value?: number;
-  children?: Array<{ address: string; support: string; value: number }>;
-}> {}
+interface TreeNode
+  extends d3.HierarchyRectangularNode<{
+    address?: string;
+    support?: string;
+    value?: number;
+    children?: Array<{ address: string; support: string; value: number }>;
+  }> {}
 
 const transformVotesToTreeData = (votes: ProposalVotingHistoryRecord[]) => {
   const sortedVotes = votes

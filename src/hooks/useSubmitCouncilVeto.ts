@@ -9,7 +9,11 @@ export const useSubmitCouncilVeto = (proposalId: string) => {
   const { signMessage, signedAccountId } = useNear();
   const [signingError, setSigningError] = useState<Error | null>(null);
 
-  const { mutateAsync, isPending, error: mutationError } = useMutation({
+  const {
+    mutateAsync,
+    isPending,
+    error: mutationError,
+  } = useMutation({
     mutationFn: (body: SubmitReviewRequest) =>
       submitCouncilVeto(proposalId, body),
     onSuccess: () => {
@@ -20,7 +24,10 @@ export const useSubmitCouncilVeto = (proposalId: string) => {
   });
 
   const submitVeto = useCallback(
-    async (data: { action?: "APPROVE" | "REJECT" | "COMMENT"; rationale?: string }) => {
+    async (data: {
+      action?: "APPROVE" | "REJECT" | "COMMENT";
+      rationale?: string;
+    }) => {
       if (!signedAccountId) {
         setSigningError(new Error("Wallet not connected"));
         return;
@@ -36,7 +43,9 @@ export const useSubmitCouncilVeto = (proposalId: string) => {
       try {
         signature = await signMessage({ message });
       } catch (err) {
-        setSigningError(err instanceof Error ? err : new Error("Signature failed"));
+        setSigningError(
+          err instanceof Error ? err : new Error("Signature failed")
+        );
         return;
       }
 

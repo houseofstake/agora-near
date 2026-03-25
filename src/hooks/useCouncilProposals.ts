@@ -17,7 +17,8 @@ export const useCouncilProposals = ({
 }) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["security-council", "proposals", status, page, search, wallet],
-    queryFn: () => fetchCouncilProposals(status, page, pageSize, search, wallet),
+    queryFn: () =>
+      fetchCouncilProposals(status, page, pageSize, search, wallet),
     refetchInterval: 1000 * 60 * 2,
   });
 

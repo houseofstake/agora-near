@@ -3,7 +3,11 @@
 import { Check, ExternalLink } from "lucide-react";
 
 export type ProposalTimelineStage = "completed" | "active" | "pending";
-export type ProposalTimelineBadgeTone = "success" | "info" | "danger" | "neutral";
+export type ProposalTimelineBadgeTone =
+  | "success"
+  | "info"
+  | "danger"
+  | "neutral";
 
 export type ProposalTimelineVoteSummary = {
   forLabel: string;
@@ -66,7 +70,9 @@ export const ProposalTimelineView = ({ rows }: ProposalTimelineViewProps) => {
                 >
                   {row.title}
                 </p>
-                <p className="text-xs leading-4 text-tertiary sm:text-right">{row.rightLabel}</p>
+                <p className="text-xs leading-4 text-tertiary sm:text-right">
+                  {row.rightLabel}
+                </p>
               </div>
 
               {(row.badgeLabel || row.detail || row.forumLinkLabel) && (
@@ -87,7 +93,9 @@ export const ProposalTimelineView = ({ rows }: ProposalTimelineViewProps) => {
                     </span>
                   )}
 
-                  {row.detail && <span className="break-words">{row.detail}</span>}
+                  {row.detail && (
+                    <span className="break-words">{row.detail}</span>
+                  )}
 
                   {row.forumLinkLabel && (
                     <span className="inline-flex items-center gap-1 text-[#404040]">
@@ -113,7 +121,9 @@ export const ProposalTimelineView = ({ rows }: ProposalTimelineViewProps) => {
                     <div className="flex h-full w-full overflow-hidden rounded-full">
                       <div
                         className="h-full bg-[#06ab34]"
-                        style={{ width: `${Math.max(0, Math.min(100, (row.voteSummary.forRatio ?? 0.66) * 100))}%` }}
+                        style={{
+                          width: `${Math.max(0, Math.min(100, (row.voteSummary.forRatio ?? 0.66) * 100))}%`,
+                        }}
                       />
                       <div className="h-full w-[2px] bg-[#171717]" />
                       <div className="h-full flex-1 bg-[#d62600]" />
@@ -121,8 +131,12 @@ export const ProposalTimelineView = ({ rows }: ProposalTimelineViewProps) => {
                   </div>
 
                   <div className="mt-2 flex items-center justify-between text-xs leading-4">
-                    <span className="text-[#404040]">{row.voteSummary.votersLabel}</span>
-                    <span className="text-tertiary">{row.voteSummary.quorumLabel}</span>
+                    <span className="text-[#404040]">
+                      {row.voteSummary.votersLabel}
+                    </span>
+                    <span className="text-tertiary">
+                      {row.voteSummary.quorumLabel}
+                    </span>
                   </div>
                 </div>
               )}
@@ -133,4 +147,3 @@ export const ProposalTimelineView = ({ rows }: ProposalTimelineViewProps) => {
     </div>
   );
 };
-

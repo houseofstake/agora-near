@@ -17,7 +17,9 @@ export const ProposalVisualizationCard = ({
   if (isLoading || !proposal) {
     return (
       <div className="rounded-lg border border-line bg-neutral p-4">
-        <div className="mb-3 text-xs font-semibold text-[#404040]">Proposal Visualization</div>
+        <div className="mb-3 text-xs font-semibold text-[#404040]">
+          Proposal Visualization
+        </div>
         <ChartSkeleton />
       </div>
     );
@@ -25,4 +27,3 @@ export const ProposalVisualizationCard = ({
 
   return <ProposalChart proposal={proposal} />;
 };
-

@@ -102,7 +102,8 @@ export const ScreeningCommittee = () => {
   const isPast = activeTab === "past";
 
   const typedCurrent = (currentProposals ?? []) as ScreeningCurrentProposal[];
-  const typedIncoming = (incomingProposals ?? []) as ScreeningIncomingProposal[];
+  const typedIncoming = (incomingProposals ??
+    []) as ScreeningIncomingProposal[];
   const typedPast = (pastProposals ?? []) as ScreeningPastProposal[];
 
   const pendingCount = currentStats?.pendingCount ?? 0;
@@ -216,103 +217,193 @@ export const ScreeningCommittee = () => {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
           <div className="flex-1">
             <div className="overflow-hidden rounded-2xl border border-line bg-neutral shadow-newDefault">
-            <div className="border-b border-line">
-              <div className="flex items-end justify-start gap-2 px-4 pt-3 pb-0">
-                <InfoTabButton
-                  label={screeningCommitteePageUiText.tabCurrent}
-                  isActive={isCurrent}
-                  onClick={() => { setActiveTab("current"); setCurrentPage(1); }}
-                  count={currentCount ?? 0}
-                />
-                <InfoTabButton
-                  label={screeningCommitteePageUiText.tabIncoming}
-                  isActive={isIncoming}
-                  onClick={() => { setActiveTab("incoming"); setIncomingPage(1); }}
-                  count={incomingCount ?? 0}
-                />
-                <InfoTabButton
-                  label={screeningCommitteePageUiText.tabPast}
-                  isActive={isPast}
-                  onClick={() => { setActiveTab("past"); setPastPage(1); }}
-                />
-                <div className="ml-auto mb-1 hidden sm:block">
-                  <InfoSearch
-                    placeholder="Search proposals"
-                    value={searchQuery}
-                    onChange={setSearchQuery}
+              <div className="border-b border-line">
+                <div className="flex items-end justify-start gap-2 px-4 pt-3 pb-0">
+                  <InfoTabButton
+                    label={screeningCommitteePageUiText.tabCurrent}
+                    isActive={isCurrent}
+                    onClick={() => {
+                      setActiveTab("current");
+                      setCurrentPage(1);
+                    }}
+                    count={currentCount ?? 0}
                   />
+                  <InfoTabButton
+                    label={screeningCommitteePageUiText.tabIncoming}
+                    isActive={isIncoming}
+                    onClick={() => {
+                      setActiveTab("incoming");
+                      setIncomingPage(1);
+                    }}
+                    count={incomingCount ?? 0}
+                  />
+                  <InfoTabButton
+                    label={screeningCommitteePageUiText.tabPast}
+                    isActive={isPast}
+                    onClick={() => {
+                      setActiveTab("past");
+                      setPastPage(1);
+                    }}
+                  />
+                  <div className="ml-auto mb-1 hidden sm:block">
+                    <InfoSearch
+                      placeholder="Search proposals"
+                      value={searchQuery}
+                      onChange={setSearchQuery}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="px-4 py-2 sm:hidden">
-              <InfoSearch
-                placeholder="Search proposals"
-                value={searchQuery}
-                onChange={setSearchQuery}
-              />
-            </div>
+              <div className="px-4 py-2 sm:hidden">
+                <InfoSearch
+                  placeholder="Search proposals"
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                />
+              </div>
 
-            <div>
-              {isLoading && (
-                <div className="flex items-center justify-center py-12">
-                  <div className="h-6 w-6 animate-spin rounded-full border-2 border-line border-t-primary" />
-                </div>
-              )}
+              <div>
+                {isLoading && (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-line border-t-primary" />
+                  </div>
+                )}
 
-              {!isLoading && isCurrent && (
-                <>
-                  {typedCurrent.length === 0 ? (
-                    <div className="px-5 py-12 text-center text-sm text-tertiary">
-                      No current proposals found.
-                    </div>
-                  ) : (
-                    <>
-                      <div className="px-4 py-1 sm:hidden">
-                        {typedCurrent.map((proposal) => {
-                          const voteBadge = mapMyVote(proposal.myVote);
-                          return (
-                            <div
-                              key={proposal.proposalId}
-                              className="border-b border-line bg-neutral px-2 py-3 text-sm text-left last:border-b-0 cursor-pointer hover:bg-wash"
-                              onClick={() =>
-                                router.push(`/proposals/screening-committee/${proposal.proposalId}`)
-                              }
-                            >
-                              <p className="text-xs text-tertiary mb-1">
-                                Submitted by {proposal.submittedBy}
-                              </p>
-                              <p className="font-semibold text-primary">
-                                {proposal.proposalId}: {proposal.title}
-                              </p>
-                              <div className="mt-2">
-                                {isMemberView && (
-                                  <span
-                                    className={`${badgeBaseClass} ${getVoteStatusClasses(voteBadge)}`}
+                {!isLoading && isCurrent && (
+                  <>
+                    {typedCurrent.length === 0 ? (
+                      <div className="px-5 py-12 text-center text-sm text-tertiary">
+                        No current proposals found.
+                      </div>
+                    ) : (
+                      <>
+                        <div className="px-4 py-1 sm:hidden">
+                          {typedCurrent.map((proposal) => {
+                            const voteBadge = mapMyVote(proposal.myVote);
+                            return (
+                              <div
+                                key={proposal.proposalId}
+                                className="border-b border-line bg-neutral px-2 py-3 text-sm text-left last:border-b-0 cursor-pointer hover:bg-wash"
+                                onClick={() =>
+                                  router.push(
+                                    `/proposals/screening-committee/${proposal.proposalId}`
+                                  )
+                                }
+                              >
+                                <p className="text-xs text-tertiary mb-1">
+                                  Submitted by {proposal.submittedBy}
+                                </p>
+                                <p className="font-semibold text-primary">
+                                  {proposal.proposalId}: {proposal.title}
+                                </p>
+                                <div className="mt-2">
+                                  {isMemberView && (
+                                    <span
+                                      className={`${badgeBaseClass} ${getVoteStatusClasses(voteBadge)}`}
+                                    >
+                                      My vote: {voteBadge}
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="mt-3 flex items-center justify-between gap-3">
+                                  <div className="flex flex-col items-start gap-1">
+                                    <p className="text-sm font-semibold text-primary">
+                                      {proposal.timeRemaining}
+                                    </p>
+                                    <div className="w-40 max-w-full">
+                                      <div className="h-1 w-full rounded-full bg-line">
+                                        <div
+                                          className="h-full rounded-full bg-primary"
+                                          style={{
+                                            width: `${clamp01(proposal.progressFraction) * 100}%`,
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                    <p className="text-[11px] text-tertiary">
+                                      Time remaining
+                                    </p>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      router.push(
+                                        `/proposals/screening-committee/${proposal.proposalId}?openComments=1`
+                                      );
+                                    }}
+                                    className="group flex items-center gap-1 rounded-full px-2 py-1 text-sm"
                                   >
-                                    My vote: {voteBadge}
-                                  </span>
-                                )}
+                                    <MessageCircle className="h-4 w-4 text-tertiary group-hover:text-primary transition-colors" />
+                                    <span className="font-medium text-secondary">
+                                      {proposal.commentsCount}
+                                    </span>
+                                  </button>
+                                </div>
                               </div>
-                              <div className="mt-3 flex items-center justify-between gap-3">
-                                <div className="flex flex-col items-start gap-1">
+                            );
+                          })}
+                        </div>
+
+                        <div className="hidden sm:block">
+                          <div className="flex items-center border-b border-line bg-wash px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.3px] text-tertiary">
+                            <div className="flex-[2.7]">
+                              {screeningCommitteePageUiText.tableProposal}
+                            </div>
+                            <div className="flex-[1.5] text-center">
+                              {screeningCommitteePageUiText.tableTimeRemaining}
+                            </div>
+                            {isMemberView && (
+                              <div className="flex-[1] text-center">
+                                {screeningCommitteePageUiText.tableMyVote}
+                              </div>
+                            )}
+                            <div className="flex-[0.8] text-center">
+                              {screeningCommitteePageUiText.tableComments}
+                            </div>
+                          </div>
+
+                          {typedCurrent.map((proposal) => {
+                            const voteBadge = mapMyVote(proposal.myVote);
+                            return (
+                              <div
+                                key={proposal.proposalId}
+                                className="flex items-center border-b border-line px-5 py-4 text-sm cursor-pointer hover:bg-wash"
+                                onClick={() =>
+                                  router.push(
+                                    `/proposals/screening-committee/${proposal.proposalId}`
+                                  )
+                                }
+                              >
+                                <div className="flex flex-[2.7] flex-col gap-1">
+                                  <p className="text-xs text-tertiary">
+                                    Submitted by {proposal.submittedBy}
+                                  </p>
+                                  <p className="font-semibold text-primary">{`${proposal.proposalId}: ${proposal.title}`}</p>
+                                </div>
+                                <div className="flex flex-[1.5] flex-col items-center gap-2">
                                   <p className="text-sm font-semibold text-primary">
                                     {proposal.timeRemaining}
                                   </p>
-                                  <div className="w-40 max-w-full">
-                                    <div className="h-1 w-full rounded-full bg-line">
-                                      <div
-                                        className="h-full rounded-full bg-primary"
-                                        style={{
-                                          width: `${clamp01(proposal.progressFraction) * 100}%`,
-                                        }}
-                                      />
-                                    </div>
+                                  <div className="h-1 w-full max-w-[180px] rounded-full bg-line">
+                                    <div
+                                      className="h-full rounded-full bg-primary"
+                                      style={{
+                                        width: `${clamp01(proposal.progressFraction) * 100}%`,
+                                      }}
+                                    />
                                   </div>
-                                  <p className="text-[11px] text-tertiary">
-                                    Time remaining
-                                  </p>
                                 </div>
+                                {isMemberView && (
+                                  <div className="flex flex-[1] items-center justify-center">
+                                    <span
+                                      className={`${badgeBaseClass} ${getVoteStatusClasses(voteBadge)}`}
+                                    >
+                                      {voteBadge}
+                                    </span>
+                                  </div>
+                                )}
                                 <button
                                   type="button"
                                   onClick={(e) => {
@@ -321,7 +412,7 @@ export const ScreeningCommittee = () => {
                                       `/proposals/screening-committee/${proposal.proposalId}?openComments=1`
                                     );
                                   }}
-                                  className="group flex items-center gap-1 rounded-full px-2 py-1 text-sm"
+                                  className="group flex flex-[0.8] items-center justify-center gap-2 rounded-full px-2 py-1 text-sm"
                                 >
                                   <MessageCircle className="h-4 w-4 text-tertiary group-hover:text-primary transition-colors" />
                                   <span className="font-medium text-secondary">
@@ -329,226 +420,243 @@ export const ScreeningCommittee = () => {
                                   </span>
                                 </button>
                               </div>
-                            </div>
-                          );
-                        })}
-                      </div>
+                            );
+                          })}
 
-                      <div className="hidden sm:block">
-                        <div className="flex items-center border-b border-line bg-wash px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.3px] text-tertiary">
-                          <div className="flex-[2.7]">{screeningCommitteePageUiText.tableProposal}</div>
-                          <div className="flex-[1.5] text-center">
-                            {screeningCommitteePageUiText.tableTimeRemaining}
+                          <div className="px-5 py-4 text-xs text-tertiary">
+                            {
+                              screeningCommitteePageUiText.showingActiveReviewPrefix
+                            }{" "}
+                            {currentCount ?? 0}{" "}
+                            {
+                              screeningCommitteePageUiText.showingActiveReviewSuffix
+                            }
                           </div>
-                          {isMemberView && <div className="flex-[1] text-center">{screeningCommitteePageUiText.tableMyVote}</div>}
-                          <div className="flex-[0.8] text-center">{screeningCommitteePageUiText.tableComments}</div>
                         </div>
+                      </>
+                    )}
+                  </>
+                )}
 
-                        {typedCurrent.map((proposal) => {
-                          const voteBadge = mapMyVote(proposal.myVote);
-                          return (
+                {!isLoading && isIncoming && (
+                  <>
+                    {typedIncoming.length === 0 ? (
+                      <div className="px-5 py-12 text-center text-sm text-tertiary">
+                        No incoming proposals found.
+                      </div>
+                    ) : (
+                      <>
+                        <div className="px-4 py-1 sm:hidden">
+                          {typedIncoming.map((proposal) => (
                             <div
-                              key={proposal.proposalId}
-                              className="flex items-center border-b border-line px-5 py-4 text-sm cursor-pointer hover:bg-wash"
-                              onClick={() =>
-                                router.push(`/proposals/screening-committee/${proposal.proposalId}`)
-                              }
+                              key={proposal.id}
+                              className="border-b border-line bg-neutral px-2 py-3 text-sm text-left last:border-b-0"
                             >
-                              <div className="flex flex-[2.7] flex-col gap-1">
-                                <p className="text-xs text-tertiary">
-                                  Submitted by {proposal.submittedBy}
-                                </p>
-                                <p className="font-semibold text-primary">{`${proposal.proposalId}: ${proposal.title}`}</p>
-                              </div>
-                              <div className="flex flex-[1.5] flex-col items-center gap-2">
-                                <p className="text-sm font-semibold text-primary">
-                                  {proposal.timeRemaining}
-                                </p>
-                                <div className="h-1 w-full max-w-[180px] rounded-full bg-line">
-                                  <div
-                                    className="h-full rounded-full bg-primary"
-                                    style={{ width: `${clamp01(proposal.progressFraction) * 100}%` }}
-                                  />
-                                </div>
-                              </div>
-                              {isMemberView && (
-                                <div className="flex flex-[1] items-center justify-center">
-                                  <span
-                                    className={`${badgeBaseClass} ${getVoteStatusClasses(voteBadge)}`}
-                                  >
-                                    {voteBadge}
-                                  </span>
-                                </div>
-                              )}
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  router.push(
-                                    `/proposals/screening-committee/${proposal.proposalId}?openComments=1`
-                                  );
-                                }}
-                                className="group flex flex-[0.8] items-center justify-center gap-2 rounded-full px-2 py-1 text-sm"
-                              >
-                                <MessageCircle className="h-4 w-4 text-tertiary group-hover:text-primary transition-colors" />
-                                <span className="font-medium text-secondary">
-                                  {proposal.commentsCount}
-                                </span>
-                              </button>
-                            </div>
-                          );
-                        })}
-
-                        <div className="px-5 py-4 text-xs text-tertiary">
-                          {screeningCommitteePageUiText.showingActiveReviewPrefix}{" "}
-                          {currentCount ?? 0}{" "}
-                          {screeningCommitteePageUiText.showingActiveReviewSuffix}
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </>
-              )}
-
-              {!isLoading && isIncoming && (
-                <>
-                  {typedIncoming.length === 0 ? (
-                    <div className="px-5 py-12 text-center text-sm text-tertiary">
-                      No incoming proposals found.
-                    </div>
-                  ) : (
-                    <>
-                      <div className="px-4 py-1 sm:hidden">
-                        {typedIncoming.map((proposal) => (
-                          <div
-                            key={proposal.id}
-                            className="border-b border-line bg-neutral px-2 py-3 text-sm text-left last:border-b-0"
-                          >
-                            <p className="text-xs text-tertiary mb-1">
-                              Posted by {proposal.submittedBy}
-                            </p>
-                            <p className="font-semibold text-primary">
-                              {proposal.title}
-                            </p>
-                            <div className="mt-3 flex items-center justify-between gap-3">
-                              <span className="inline-flex items-center rounded-full border border-line bg-wash px-3 py-0.5 text-xs font-semibold text-secondary">
-                                Forum
-                              </span>
-                              {isSafeExternalUrl(proposal.forumLink) && (
-                                <Link
-                                  href={proposal.forumLink}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1 text-xs font-medium text-secondary hover:text-primary"
-                                >
-                                  <span>View on Forum</span>
-                                  <Image
-                                    src={icons.northEast}
-                                    alt="Opens in a new tab"
-                                    className="h-3 w-3"
-                                  />
-                                </Link>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="hidden sm:block">
-                        <div className="flex items-center border-b border-line bg-wash px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.3px] text-tertiary">
-                          <div className="flex-[3]">{screeningCommitteePageUiText.tableProposal}</div>
-                          <div className="flex-[1] text-center">{screeningCommitteePageUiText.tableType}</div>
-                          <div className="flex-[1.5] text-center">{screeningCommitteePageUiText.tableLink}</div>
-                        </div>
-
-                        {typedIncoming.map((proposal) => (
-                          <div
-                            key={proposal.id}
-                            className="flex items-center border-b border-line px-5 py-4 text-sm"
-                          >
-                            <div className="flex flex-[3] flex-col gap-1">
-                              <p className="text-xs text-tertiary">
+                              <p className="text-xs text-tertiary mb-1">
                                 Posted by {proposal.submittedBy}
                               </p>
                               <p className="font-semibold text-primary">
                                 {proposal.title}
                               </p>
+                              <div className="mt-3 flex items-center justify-between gap-3">
+                                <span className="inline-flex items-center rounded-full border border-line bg-wash px-3 py-0.5 text-xs font-semibold text-secondary">
+                                  Forum
+                                </span>
+                                {isSafeExternalUrl(proposal.forumLink) && (
+                                  <Link
+                                    href={proposal.forumLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 text-xs font-medium text-secondary hover:text-primary"
+                                  >
+                                    <span>View on Forum</span>
+                                    <Image
+                                      src={icons.northEast}
+                                      alt="Opens in a new tab"
+                                      className="h-3 w-3"
+                                    />
+                                  </Link>
+                                )}
+                              </div>
                             </div>
-                            <div className="flex flex-[1] items-center justify-center">
-                              <span className="inline-flex items-center rounded-full border border-line bg-wash px-3 py-1 text-xs font-semibold text-secondary">
-                                {screeningCommitteePageUiText.forumTag}
-                              </span>
+                          ))}
+                        </div>
+
+                        <div className="hidden sm:block">
+                          <div className="flex items-center border-b border-line bg-wash px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.3px] text-tertiary">
+                            <div className="flex-[3]">
+                              {screeningCommitteePageUiText.tableProposal}
                             </div>
-                            <div className="flex flex-[1.5] items-center justify-center">
-                              {isSafeExternalUrl(proposal.forumLink) && (
-                                <Link
-                                  href={proposal.forumLink}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1 text-sm font-medium text-secondary hover:text-primary"
-                                >
-                                  <span>{screeningCommitteePageUiText.forumViewLabel}</span>
-                                  <Image
-                                    src={icons.northEast}
-                                    alt="Opens in a new tab"
-                                    className="h-3 w-3"
-                                  />
-                                </Link>
-                              )}
+                            <div className="flex-[1] text-center">
+                              {screeningCommitteePageUiText.tableType}
+                            </div>
+                            <div className="flex-[1.5] text-center">
+                              {screeningCommitteePageUiText.tableLink}
                             </div>
                           </div>
-                        ))}
 
-                        <div className="px-5 py-4 text-xs text-tertiary">
-                          {screeningCommitteePageUiText.incomingInfo}
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </>
-              )}
-
-              {!isLoading && isPast && (
-                <>
-                  {typedPast.length === 0 ? (
-                    <div className="px-5 py-12 text-center text-sm text-tertiary">
-                      No past proposals found.
-                    </div>
-                  ) : (
-                    <>
-                      <div className="px-4 py-1 sm:hidden">
-                        {typedPast.map((proposal) => (
-                          <Link
-                            key={`${proposal.proposalId}-${proposal.decidedAt}`}
-                            href={`/proposals/screening-committee/${proposal.proposalId}`}
-                            className="block border-b border-line bg-neutral px-2 py-3 text-sm text-left last:border-b-0 hover:bg-wash"
-                          >
-                            <p className="text-xs text-tertiary mb-1">
-                              Submitted by {proposal.submittedBy}
-                            </p>
-                            <p className="font-semibold text-primary">
-                              {proposal.proposalId}: {proposal.title}
-                            </p>
-                            <div className="mt-3 flex items-center justify-between gap-3">
-                              <div className="flex-1">
-                                <p className="text-[11px] text-tertiary">Decided</p>
+                          {typedIncoming.map((proposal) => (
+                            <div
+                              key={proposal.id}
+                              className="flex items-center border-b border-line px-5 py-4 text-sm"
+                            >
+                              <div className="flex flex-[3] flex-col gap-1">
                                 <p className="text-xs text-tertiary">
-                                  {proposal.decidedAt}
+                                  Posted by {proposal.submittedBy}
+                                </p>
+                                <p className="font-semibold text-primary">
+                                  {proposal.title}
                                 </p>
                               </div>
-                              <div className="flex-1 flex justify-center">
-                                <span
-                                  className={`${badgeBaseClass} ${
-                                    proposal.status === "APPROVED"
-                                      ? "bg-emerald-100 text-emerald-700"
-                                      : "bg-red-100 text-red-700"
-                                  }`}
-                                >
-                                  {proposal.status === "APPROVED" ? "Approved" : "Rejected"}
+                              <div className="flex flex-[1] items-center justify-center">
+                                <span className="inline-flex items-center rounded-full border border-line bg-wash px-3 py-1 text-xs font-semibold text-secondary">
+                                  {screeningCommitteePageUiText.forumTag}
                                 </span>
                               </div>
+                              <div className="flex flex-[1.5] items-center justify-center">
+                                {isSafeExternalUrl(proposal.forumLink) && (
+                                  <Link
+                                    href={proposal.forumLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 text-sm font-medium text-secondary hover:text-primary"
+                                  >
+                                    <span>
+                                      {
+                                        screeningCommitteePageUiText.forumViewLabel
+                                      }
+                                    </span>
+                                    <Image
+                                      src={icons.northEast}
+                                      alt="Opens in a new tab"
+                                      className="h-3 w-3"
+                                    />
+                                  </Link>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+
+                          <div className="px-5 py-4 text-xs text-tertiary">
+                            {screeningCommitteePageUiText.incomingInfo}
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </>
+                )}
+
+                {!isLoading && isPast && (
+                  <>
+                    {typedPast.length === 0 ? (
+                      <div className="px-5 py-12 text-center text-sm text-tertiary">
+                        No past proposals found.
+                      </div>
+                    ) : (
+                      <>
+                        <div className="px-4 py-1 sm:hidden">
+                          {typedPast.map((proposal) => (
+                            <Link
+                              key={`${proposal.proposalId}-${proposal.decidedAt}`}
+                              href={`/proposals/screening-committee/${proposal.proposalId}`}
+                              className="block border-b border-line bg-neutral px-2 py-3 text-sm text-left last:border-b-0 hover:bg-wash"
+                            >
+                              <p className="text-xs text-tertiary mb-1">
+                                Submitted by {proposal.submittedBy}
+                              </p>
+                              <p className="font-semibold text-primary">
+                                {proposal.proposalId}: {proposal.title}
+                              </p>
+                              <div className="mt-3 flex items-center justify-between gap-3">
+                                <div className="flex-1">
+                                  <p className="text-[11px] text-tertiary">
+                                    Decided
+                                  </p>
+                                  <p className="text-xs text-tertiary">
+                                    {proposal.decidedAt}
+                                  </p>
+                                </div>
+                                <div className="flex-1 flex justify-center">
+                                  <span
+                                    className={`${badgeBaseClass} ${
+                                      proposal.status === "APPROVED"
+                                        ? "bg-emerald-100 text-emerald-700"
+                                        : "bg-red-100 text-red-700"
+                                    }`}
+                                  >
+                                    {proposal.status === "APPROVED"
+                                      ? "Approved"
+                                      : "Rejected"}
+                                  </span>
+                                </div>
+                                <div
+                                  className="group flex items-center gap-1 rounded-full px-2 py-1 text-sm"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    openDiscussion(proposal.proposalId);
+                                  }}
+                                >
+                                  <MessageCircle className="h-4 w-4 text-tertiary group-hover:text-primary transition-colors" />
+                                  <span className="font-medium text-secondary">
+                                    {proposal.commentsCount}
+                                  </span>
+                                </div>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+
+                        <div className="hidden sm:block">
+                          <div className="flex items-center border-b border-line bg-wash px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.3px] text-tertiary">
+                            <div className="flex-[3]">
+                              {screeningCommitteePageUiText.tableProposal}
+                            </div>
+                            <div className="flex-[1] text-center">
+                              {screeningCommitteePageUiText.tableDecision}
+                            </div>
+                            <div className="flex-[1] text-center">
+                              {screeningCommitteePageUiText.tableDecided}
+                            </div>
+                            <div className="flex-[1] text-center">
+                              {screeningCommitteePageUiText.tableComments}
+                            </div>
+                          </div>
+
+                          {typedPast.map((proposal) => (
+                            <Link
+                              key={`${proposal.proposalId}-${proposal.decidedAt}`}
+                              href={`/proposals/screening-committee/${proposal.proposalId}`}
+                              className="flex items-center border-b border-line px-5 py-4 text-sm hover:bg-wash"
+                            >
+                              <div className="flex flex-[3] flex-col gap-1">
+                                <p className="text-xs text-tertiary">
+                                  Submitted by {proposal.submittedBy}
+                                </p>
+                                <p className="font-semibold text-primary">
+                                  {`${proposal.proposalId}: ${proposal.title}`}
+                                </p>
+                              </div>
+                              <div className="flex flex-[1] items-center justify-center">
+                                {proposal.status === "APPROVED" ? (
+                                  <span
+                                    className={`${badgeBaseClass} bg-emerald-100 text-emerald-700`}
+                                  >
+                                    Approved
+                                  </span>
+                                ) : (
+                                  <span
+                                    className={`${badgeBaseClass} bg-red-100 text-red-700`}
+                                  >
+                                    Rejected
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex flex-[1] items-center justify-center text-xs text-tertiary">
+                                {proposal.decidedAt}
+                              </div>
                               <div
-                                className="group flex items-center gap-1 rounded-full px-2 py-1 text-sm"
+                                className="group flex flex-[1] items-center justify-center gap-2 rounded-full px-2 py-1 text-sm"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
@@ -560,98 +668,47 @@ export const ScreeningCommittee = () => {
                                   {proposal.commentsCount}
                                 </span>
                               </div>
-                            </div>
-                          </Link>
-                        ))}
-                      </div>
+                            </Link>
+                          ))}
 
-                      <div className="hidden sm:block">
-                        <div className="flex items-center border-b border-line bg-wash px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.3px] text-tertiary">
-                          <div className="flex-[3]">{screeningCommitteePageUiText.tableProposal}</div>
-                          <div className="flex-[1] text-center">{screeningCommitteePageUiText.tableDecision}</div>
-                          <div className="flex-[1] text-center">{screeningCommitteePageUiText.tableDecided}</div>
-                          <div className="flex-[1] text-center">{screeningCommitteePageUiText.tableComments}</div>
+                          <div className="px-5 py-4 text-xs text-tertiary">
+                            {screeningCommitteePageUiText.pastInfoPrefix}{" "}
+                            {pastCount ?? 0}{" "}
+                            {screeningCommitteePageUiText.pastInfoSuffix}
+                          </div>
                         </div>
+                      </>
+                    )}
+                  </>
+                )}
 
-                        {typedPast.map((proposal) => (
-                          <Link
-                            key={`${proposal.proposalId}-${proposal.decidedAt}`}
-                            href={`/proposals/screening-committee/${proposal.proposalId}`}
-                            className="flex items-center border-b border-line px-5 py-4 text-sm hover:bg-wash"
-                          >
-                            <div className="flex flex-[3] flex-col gap-1">
-                              <p className="text-xs text-tertiary">
-                                Submitted by {proposal.submittedBy}
-                              </p>
-                              <p className="font-semibold text-primary">
-                                {`${proposal.proposalId}: ${proposal.title}`}
-                              </p>
-                            </div>
-                            <div className="flex flex-[1] items-center justify-center">
-                              {proposal.status === "APPROVED" ? (
-                                <span className={`${badgeBaseClass} bg-emerald-100 text-emerald-700`}>
-                                  Approved
-                                </span>
-                              ) : (
-                                <span className={`${badgeBaseClass} bg-red-100 text-red-700`}>
-                                  Rejected
-                                </span>
-                              )}
-                            </div>
-                            <div className="flex flex-[1] items-center justify-center text-xs text-tertiary">
-                              {proposal.decidedAt}
-                            </div>
-                            <div
-                              className="group flex flex-[1] items-center justify-center gap-2 rounded-full px-2 py-1 text-sm"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                openDiscussion(proposal.proposalId);
-                              }}
-                            >
-                              <MessageCircle className="h-4 w-4 text-tertiary group-hover:text-primary transition-colors" />
-                              <span className="font-medium text-secondary">
-                                {proposal.commentsCount}
-                              </span>
-                            </div>
-                          </Link>
-                        ))}
-
-                        <div className="px-5 py-4 text-xs text-tertiary">
-                          {screeningCommitteePageUiText.pastInfoPrefix} {pastCount ?? 0}{" "}
-                          {screeningCommitteePageUiText.pastInfoSuffix}
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </>
-              )}
-
-              {!isLoading && (activeTotalPages ?? 0) > 1 && (
-                <div className="flex items-center justify-center gap-2 border-t border-line px-5 py-3">
-                  <button
-                    type="button"
-                    disabled={activeCurrentPage <= 1}
-                    onClick={() => activePageSetter((p) => Math.max(1, p - 1))}
-                    className="rounded-lg border border-line px-3 py-1 text-xs font-medium text-secondary hover:bg-wash disabled:opacity-40"
-                  >
-                    Previous
-                  </button>
-                  <span className="text-xs text-tertiary">
-                    Page {activeCurrentPage} of {activeTotalPages}
-                  </span>
-                  <button
-                    type="button"
-                    disabled={activeCurrentPage >= (activeTotalPages ?? 1)}
-                    onClick={() => activePageSetter((p) => p + 1)}
-                    className="rounded-lg border border-line px-3 py-1 text-xs font-medium text-secondary hover:bg-wash disabled:opacity-40"
-                  >
-                    Next
-                  </button>
-                </div>
-              )}
+                {!isLoading && (activeTotalPages ?? 0) > 1 && (
+                  <div className="flex items-center justify-center gap-2 border-t border-line px-5 py-3">
+                    <button
+                      type="button"
+                      disabled={activeCurrentPage <= 1}
+                      onClick={() =>
+                        activePageSetter((p) => Math.max(1, p - 1))
+                      }
+                      className="rounded-lg border border-line px-3 py-1 text-xs font-medium text-secondary hover:bg-wash disabled:opacity-40"
+                    >
+                      Previous
+                    </button>
+                    <span className="text-xs text-tertiary">
+                      Page {activeCurrentPage} of {activeTotalPages}
+                    </span>
+                    <button
+                      type="button"
+                      disabled={activeCurrentPage >= (activeTotalPages ?? 1)}
+                      onClick={() => activePageSetter((p) => p + 1)}
+                      className="rounded-lg border border-line px-3 py-1 text-xs font-medium text-secondary hover:bg-wash disabled:opacity-40"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
           </div>
 
           <InfoMembersSidebar

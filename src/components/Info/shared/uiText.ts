@@ -120,7 +120,8 @@ export const securityExpansionUiText = {
   issueVetoSubtitleBold: "No action required to allow this proposal to pass.",
   issueVetoSubtitleRest: "A public rationale is required if you veto.",
   issueVetoPlaceholder: "Rationale for veto (required)...",
-  issueVetoHint: "This rationale will be posted publicly and recorded on-chain.",
+  issueVetoHint:
+    "This rationale will be posted publicly and recorded on-chain.",
   cancelButton: "Cancel",
   postCommentButton: "Post comment",
 };
@@ -187,18 +188,19 @@ export const stripLeadingJsonMetadata = (raw: string): StrippedDescription => {
   return { description: raw, v0Meta: null };
 };
 
-const PROPOSAL_TYPE_DISPLAY: Record<string, { label: string; blurb: string }> = {
-  standard: {
-    label: "Standard Proposal",
-    blurb:
-      "This is a binding proposal. If approved by the required majority, its outcome will be enacted on-chain.",
-  },
-  sensing: {
-    label: "Sensing Proposal",
-    blurb:
-      "This is a sensing proposal and serves to gauge community sentiment and facilitate open discussion ahead of a binding decision proposal.",
-  },
-};
+const PROPOSAL_TYPE_DISPLAY: Record<string, { label: string; blurb: string }> =
+  {
+    standard: {
+      label: "Standard Proposal",
+      blurb:
+        "This is a binding proposal. If approved by the required majority, its outcome will be enacted on-chain.",
+    },
+    sensing: {
+      label: "Sensing Proposal",
+      blurb:
+        "This is a sensing proposal and serves to gauge community sentiment and facilitate open discussion ahead of a binding decision proposal.",
+    },
+  };
 
 const SENSING_NOTICE =
   "It is non-binding and carries no direct outcomes. Its purpose is to gather input, build visibility, and allow stakeholders to prepare for the formal vote.";
@@ -212,9 +214,7 @@ export const buildProposalTypeMarkdown = (
   v1ProposalType?: string
 ): string => {
   const typeKey =
-    v0Meta?.proposalType?.toLowerCase() ??
-    v1ProposalType?.toLowerCase() ??
-    "";
+    v0Meta?.proposalType?.toLowerCase() ?? v1ProposalType?.toLowerCase() ?? "";
 
   const display = PROPOSAL_TYPE_DISPLAY[typeKey];
   if (!display) return "";

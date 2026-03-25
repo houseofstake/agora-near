@@ -68,7 +68,7 @@ export const EnterAmountStep = ({
   const formattedVeNearAmount = useMemo(() => {
     return (
       <TokenAmount
-        amount={Big(venearAmount ?? "0").lte(0) ? "0" : (venearAmount ?? "0")}
+        amount={Big(venearAmount ?? "0").lte(0) ? "0" : venearAmount ?? "0"}
         hideCurrency
         minimumFractionDigits={4}
         className="tabular-nums text-lg"

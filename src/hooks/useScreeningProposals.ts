@@ -16,8 +16,16 @@ export const useScreeningProposals = ({
   wallet?: string;
 }) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["screening-committee", "proposals", status, page, search, wallet],
-    queryFn: () => fetchScreeningProposals(status, page, pageSize, search, wallet),
+    queryKey: [
+      "screening-committee",
+      "proposals",
+      status,
+      page,
+      search,
+      wallet,
+    ],
+    queryFn: () =>
+      fetchScreeningProposals(status, page, pageSize, search, wallet),
     refetchInterval: 1000 * 60 * 2,
   });
 

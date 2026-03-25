@@ -35,11 +35,14 @@ export const ProposalReviewMembersList = ({
               {member.initials}
             </span>
             <div className="flex-1">
-              <p className="text-sm font-medium text-[#171717]">{member.name}</p>
+              <p className="text-sm font-medium text-[#171717]">
+                {member.name}
+              </p>
               <p className="text-xs text-tertiary">{member.subtitle}</p>
             </div>
 
-            {member.statusTone === "none" ? null : member.statusTone === "danger" ? (
+            {member.statusTone === "none" ? null : member.statusTone ===
+              "danger" ? (
               <span className="inline-flex h-6 items-center gap-1 rounded-full bg-[#fee2e2] px-[10px] text-xs font-semibold leading-4 text-[#c52f00]">
                 <span className="text-[10px] leading-none">x</span>
                 <span>{member.statusLabel}</span>
@@ -60,4 +63,3 @@ export const ProposalReviewMembersList = ({
     </>
   );
 };
-

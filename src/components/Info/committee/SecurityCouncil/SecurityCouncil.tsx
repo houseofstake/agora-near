@@ -93,7 +93,9 @@ export const SecurityCouncil = () => {
   const notificationMessage = (
     <>
       {securityCouncilPageUiText.notificationActivePrefix}{" "}
-      <span className="font-bold">{activeStats?.activeCount ?? 0} proposals</span>{" "}
+      <span className="font-bold">
+        {activeStats?.activeCount ?? 0} proposals
+      </span>{" "}
       {securityCouncilPageUiText.notificationActiveSuffix}
     </>
   );
@@ -186,26 +188,35 @@ export const SecurityCouncil = () => {
 
         {isMemberView && <InfoNotificationBar message={notificationMessage} />}
 
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-            <div className="flex-1 overflow-hidden rounded-2xl border border-line bg-neutral shadow-newDefault">
-              <div className="border-b border-line">
-                <div className="flex items-end justify-start gap-2 px-4 pt-3 pb-0">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+          <div className="flex-1 overflow-hidden rounded-2xl border border-line bg-neutral shadow-newDefault">
+            <div className="border-b border-line">
+              <div className="flex items-end justify-start gap-2 px-4 pt-3 pb-0">
                 <InfoTabButton
                   label={securityCouncilPageUiText.tabActive}
                   isActive={isActive}
-                  onClick={() => { setActiveTab("active"); setActivePage(1); }}
+                  onClick={() => {
+                    setActiveTab("active");
+                    setActivePage(1);
+                  }}
                   count={activeCount ?? 0}
                 />
                 <InfoTabButton
                   label={securityCouncilPageUiText.tabPassed}
                   isActive={isPassed}
-                  onClick={() => { setActiveTab("passed"); setPassedPage(1); }}
+                  onClick={() => {
+                    setActiveTab("passed");
+                    setPassedPage(1);
+                  }}
                   count={passedCount ?? 0}
                 />
                 <InfoTabButton
                   label={securityCouncilPageUiText.tabVetoed}
                   isActive={isVetoed}
-                  onClick={() => { setActiveTab("vetoed"); setVetoedPage(1); }}
+                  onClick={() => {
+                    setActiveTab("vetoed");
+                    setVetoedPage(1);
+                  }}
                   count={vetoedCount ?? 0}
                   countActiveClassName="bg-red-600 text-neutral"
                   countInactiveClassName="bg-red-100 text-red-600"
@@ -217,8 +228,8 @@ export const SecurityCouncil = () => {
                     onChange={setSearchQuery}
                   />
                 </div>
-                </div>
               </div>
+            </div>
 
             <div className="px-4 py-2 sm:hidden">
               <InfoSearch
@@ -252,7 +263,9 @@ export const SecurityCouncil = () => {
                               key={window.proposalId}
                               className="block cursor-pointer border-b border-line bg-neutral px-2 py-3 text-sm text-left last:border-b-0 hover:bg-wash"
                               onClick={() =>
-                                router.push(`/proposals/security-council/${window.proposalId}`)
+                                router.push(
+                                  `/proposals/security-council/${window.proposalId}`
+                                )
                               }
                             >
                               <p className="text-xs text-tertiary mb-1">
@@ -330,7 +343,9 @@ export const SecurityCouncil = () => {
 
                       <div className="hidden sm:block">
                         <div className="flex items-center border-b border-line bg-wash px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.3px] text-tertiary">
-                          <div className="flex-[2.7]">{securityCouncilPageUiText.tableProposal}</div>
+                          <div className="flex-[2.7]">
+                            {securityCouncilPageUiText.tableProposal}
+                          </div>
                           <div className="flex-[2] text-center">
                             {securityCouncilPageUiText.tableVetoWindowCloses}
                           </div>
@@ -350,7 +365,9 @@ export const SecurityCouncil = () => {
                               key={window.proposalId}
                               className="flex cursor-pointer items-stretch border-b border-line px-5 py-4 text-sm hover:bg-wash"
                               onClick={() =>
-                                router.push(`/proposals/security-council/${window.proposalId}`)
+                                router.push(
+                                  `/proposals/security-council/${window.proposalId}`
+                                )
                               }
                             >
                               <div className="flex flex-[2.7] flex-col gap-1">
@@ -454,7 +471,9 @@ export const SecurityCouncil = () => {
                               {proposal.votesSummary}
                             </p>
                             <div className="mt-3 flex items-center justify-between gap-3">
-                              <span className={`${badgeBaseClass} bg-emerald-100 text-emerald-700`}>
+                              <span
+                                className={`${badgeBaseClass} bg-emerald-100 text-emerald-700`}
+                              >
                                 {securityCouncilPageUiText.ratifiedLabel}
                               </span>
                               <div className="text-right">
@@ -469,15 +488,22 @@ export const SecurityCouncil = () => {
                           </div>
                         ))}
                         <p className="px-1 text-xs text-tertiary">
-                          {passedCount ?? 0} {securityCouncilPageUiText.ratifiedSummarySuffix}
+                          {passedCount ?? 0}{" "}
+                          {securityCouncilPageUiText.ratifiedSummarySuffix}
                         </p>
                       </div>
 
                       <div className="hidden sm:block">
                         <div className="flex items-center border-b border-line bg-wash px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.3px] text-tertiary">
-                          <div className="flex-[3]">{securityCouncilPageUiText.tableProposal}</div>
-                          <div className="flex-[1.5] text-center">{securityCouncilPageUiText.tableOutcome}</div>
-                          <div className="flex-[1.5] text-center">{securityCouncilPageUiText.tableRatifiedOn}</div>
+                          <div className="flex-[3]">
+                            {securityCouncilPageUiText.tableProposal}
+                          </div>
+                          <div className="flex-[1.5] text-center">
+                            {securityCouncilPageUiText.tableOutcome}
+                          </div>
+                          <div className="flex-[1.5] text-center">
+                            {securityCouncilPageUiText.tableRatifiedOn}
+                          </div>
                         </div>
 
                         {typedPassed.map((proposal) => (
@@ -497,7 +523,9 @@ export const SecurityCouncil = () => {
                               </p>
                             </div>
                             <div className="flex flex-[1.5] items-center justify-center">
-                              <span className={`${badgeBaseClass} bg-emerald-100 text-emerald-700`}>
+                              <span
+                                className={`${badgeBaseClass} bg-emerald-100 text-emerald-700`}
+                              >
                                 {securityCouncilPageUiText.ratifiedLabel}
                               </span>
                             </div>
@@ -508,7 +536,8 @@ export const SecurityCouncil = () => {
                         ))}
 
                         <div className="px-5 py-4 text-xs text-tertiary">
-                          {passedCount ?? 0} {securityCouncilPageUiText.ratifiedSummarySuffix}
+                          {passedCount ?? 0}{" "}
+                          {securityCouncilPageUiText.ratifiedSummarySuffix}
                         </div>
                       </div>
                     </>
@@ -545,7 +574,9 @@ export const SecurityCouncil = () => {
                                 {proposal.votesSummary}
                               </p>
                               <div className="mt-3 flex items-center justify-between gap-3">
-                                <span className={`${badgeBaseClass} bg-red-100 text-red-700`}>
+                                <span
+                                  className={`${badgeBaseClass} bg-red-100 text-red-700`}
+                                >
                                   Vetoed
                                 </span>
                                 <div className="text-right text-xs text-tertiary">
@@ -561,7 +592,9 @@ export const SecurityCouncil = () => {
                                   <span className="font-medium text-secondary">
                                     {proposal.rationaleAuthor.name}
                                   </span>
-                                  <span className="ml-auto text-tertiary">›</span>
+                                  <span className="ml-auto text-tertiary">
+                                    ›
+                                  </span>
                                 </div>
                               )}
                             </Link>
@@ -569,16 +602,25 @@ export const SecurityCouncil = () => {
                         })}
                         <p className="px-1 text-xs text-tertiary">
                           {vetoedCount ?? 0} proposal
-                          {(vetoedCount ?? 0) === 1 ? "" : "s"} {securityCouncilPageUiText.vetoedSummarySuffix}
+                          {(vetoedCount ?? 0) === 1 ? "" : "s"}{" "}
+                          {securityCouncilPageUiText.vetoedSummarySuffix}
                         </p>
                       </div>
 
                       <div className="hidden sm:block">
                         <div className="flex items-center border-b border-line bg-wash px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.3px] text-tertiary">
-                          <div className="flex-[3]">{securityCouncilPageUiText.tableProposal}</div>
-                          <div className="flex-[1.2] text-center">{securityCouncilPageUiText.tableOutcome}</div>
-                          <div className="flex-[1.2] text-center">{securityCouncilPageUiText.tableVetoedOn}</div>
-                          <div className="flex-[1.6] text-center">{securityCouncilPageUiText.tableRationale}</div>
+                          <div className="flex-[3]">
+                            {securityCouncilPageUiText.tableProposal}
+                          </div>
+                          <div className="flex-[1.2] text-center">
+                            {securityCouncilPageUiText.tableOutcome}
+                          </div>
+                          <div className="flex-[1.2] text-center">
+                            {securityCouncilPageUiText.tableVetoedOn}
+                          </div>
+                          <div className="flex-[1.6] text-center">
+                            {securityCouncilPageUiText.tableRationale}
+                          </div>
                         </div>
 
                         {typedVetoed.map((proposal) => {
@@ -603,7 +645,9 @@ export const SecurityCouncil = () => {
                                 </p>
                               </div>
                               <div className="flex flex-[1.2] items-center justify-center">
-                                <span className={`${badgeBaseClass} bg-red-100 text-red-700`}>
+                                <span
+                                  className={`${badgeBaseClass} bg-red-100 text-red-700`}
+                                >
                                   Vetoed
                                 </span>
                               </div>
@@ -619,7 +663,9 @@ export const SecurityCouncil = () => {
                                     <span className="font-medium text-secondary">
                                       {proposal.rationaleAuthor.name}
                                     </span>
-                                    <span aria-hidden className="text-tertiary">›</span>
+                                    <span aria-hidden className="text-tertiary">
+                                      ›
+                                    </span>
                                   </span>
                                 )}
                               </div>
@@ -629,7 +675,8 @@ export const SecurityCouncil = () => {
 
                         <div className="px-5 py-4 text-xs text-tertiary">
                           {vetoedCount ?? 0} proposal
-                          {(vetoedCount ?? 0) === 1 ? "" : "s"} {securityCouncilPageUiText.vetoedSummarySuffix}
+                          {(vetoedCount ?? 0) === 1 ? "" : "s"}{" "}
+                          {securityCouncilPageUiText.vetoedSummarySuffix}
                         </div>
                       </div>
                     </>

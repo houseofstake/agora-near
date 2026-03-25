@@ -93,7 +93,7 @@ export const EnterAmountStep = ({ handleReview }: EnterAmountStepProps) => {
 
     return (
       <TokenAmount
-        amount={Big(nearAmount ?? "0").lte(0) ? "0" : (nearAmount ?? "0")}
+        amount={Big(nearAmount ?? "0").lte(0) ? "0" : nearAmount ?? "0"}
         hideCurrency
         minimumFractionDigits={4}
         className="tabular-nums text-lg"

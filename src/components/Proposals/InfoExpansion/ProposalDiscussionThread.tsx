@@ -24,7 +24,9 @@ export const ProposalDiscussionThread = ({
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-3">
-        <p className="text-[11px] font-bold uppercase tracking-[0.66px] text-tertiary">{title}</p>
+        <p className="text-[11px] font-bold uppercase tracking-[0.66px] text-tertiary">
+          {title}
+        </p>
         <div className="h-px flex-1 bg-line" />
       </div>
 
@@ -43,7 +45,9 @@ export const ProposalDiscussionThread = ({
                 <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex flex-wrap items-center gap-2 sm:gap-4">
                     <div className="flex items-center gap-2">
-                      <p className="text-sm font-semibold leading-5 text-[#171717]">{item.name}</p>
+                      <p className="text-sm font-semibold leading-5 text-[#171717]">
+                        {item.name}
+                      </p>
                       <p className="text-xs text-tertiary">{item.subtitle}</p>
                     </div>
                     {item.isVeto && (
@@ -53,7 +57,9 @@ export const ProposalDiscussionThread = ({
                       </span>
                     )}
                   </div>
-                  <p className="text-xs leading-4 text-tertiary sm:text-right">{item.date}</p>
+                  <p className="text-xs leading-4 text-tertiary sm:text-right">
+                    {item.date}
+                  </p>
                 </div>
                 <div
                   className={`rounded-xl px-[15px] py-[13px] text-sm leading-[22.75px] text-[#404040] ${
@@ -74,4 +80,3 @@ export const ProposalDiscussionThread = ({
 };
 
 export type { ProposalDiscussionItem };
-
