@@ -173,7 +173,7 @@ function DraftDetailsForm() {
         <div className="flex items-center justify-between">
           <h4 className="text-xs font-semibold mb-1 text-secondary">Link</h4>
           <Link
-            href="/info?item=proposal-process"
+            href="https://hos-docs.vercel.app/docs/governance-system/proposal-and-voting-process"
             target="_blank"
             className="text-xs text-primary hover:text-secondary underline flex items-center gap-1"
           >
@@ -200,7 +200,7 @@ function DraftDetailsForm() {
             {errors.link.message?.includes("https://gov.near.org/") && (
               <div className="mt-1">
                 <Link
-                  href="/info?item=proposal-process"
+                  href="https://hos-docs.vercel.app/docs/governance-system/proposal-and-voting-process"
                   target="_blank"
                   className="text-primary hover:text-secondary underline flex items-center gap-1"
                 >
@@ -370,27 +370,6 @@ const DraftEditForm = forwardRef<DraftEditFormRef, DraftEditFormProps>(
                 <TokenAmount amount={totalDeposit} minimumFractionDigits={2} />.
               </li>
             </ul>
-          </div>
-          <div className="bg-wash rounded-xl border border-line p-6 mt-6">
-            <h2 className="text-2xl font-extrabold mb-4 text-primary">
-              How to pick your type
-            </h2>
-            <div className="space-y-4 text-sm text-muted-foreground">
-              <div>
-                <h3 className="font-semibold text-primary">Simple Majority</h3>
-                <p>
-                  Requires &gt; 50% of participating votes (excluding
-                  abstentions) to pass. Best for general decisions.
-                </p>
-              </div>
-              <div>
-                <h3 className="font-semibold text-primary">Super Majority</h3>
-                <p>
-                  Requires &ge; 66.67% of participating votes to pass (excluding
-                  abstentions). Required to amend the constitutional documents.
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       </HStack>

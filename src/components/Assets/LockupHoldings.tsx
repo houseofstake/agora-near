@@ -7,6 +7,7 @@ import { useStakedBalance } from "@/hooks/useStakedBalance";
 import { useStakeNear } from "@/hooks/useStakeNear";
 import { useVenearAccountInfo } from "@/hooks/useVenearAccountInfo";
 import { useUnstakedBalance } from "@/hooks/useUnstakedBalance";
+import { useAvailableToUnlock } from "@/hooks/useAvailableToUnlock";
 import { filterDust } from "@/lib/tokenUtils";
 import Big from "big.js";
 import { memo, useMemo } from "react";
@@ -42,7 +43,12 @@ export const LockupHoldings = memo(
     const { isLoading: isLoadingLiquidLockupBalance, liquidLockupBalance } =
       useLiquidLockupBalance({ lockupAccountId });
 
-    const { data: accountInfo, isLoading: isLoadingAccountInfo } =
+    const { availableToUnlock, isLoading: isLoadingAvailableToUnlock } =
+      useAvailableToUnlock({
+        lockupAccountId: lockupAccountId ?? "",
+      });
+
+    const { isLoading: isLoadingAccountInfo } =
       useVenearAccountInfo(signedAccountId);
 
     const {
@@ -56,11 +62,8 @@ export const LockupHoldings = memo(
     });
 
     const balanceWithRewards = useMemo(
-      () =>
-        Big(accountInfo?.totalBalance.near ?? "0")
-          .add(accountInfo?.totalBalance.extraBalance ?? "0")
-          .toFixed(),
-      [accountInfo]
+      () => availableToUnlock ?? "0",
+      [availableToUnlock]
     );
 
     const { stakingPoolId, isLoadingStakingPoolId } = useCurrentStakingPoolId({
@@ -113,6 +116,7 @@ export const LockupHoldings = memo(
       [
         filteredLiquidLockupBalance.lockableNearBalance,
         filteredLiquidLockupBalance.stakableNearBalance,
+        filteredLiquidLockupBalance.withdrawableNearBalance,
       ]
     );
 
@@ -121,21 +125,20 @@ export const LockupHoldings = memo(
       const unstaked = Big(unstakedBalance ?? "0");
       const pending = Big(pendingBalance ?? "0");
 
-      const totalBalance = Big(accountInfo?.totalBalance.near ?? "0");
-      const MAX_REMAINING_FOR_DELETE = Big("2.1").mul(Big(10).pow(24));
+      const availableToUnlockAmount = Big(availableToUnlock ?? "0");
 
       return (
         staked.eq(0) &&
         unstaked.eq(0) &&
         pending.eq(0) &&
-        totalBalance.lte(MAX_REMAINING_FOR_DELETE) &&
+        availableToUnlockAmount.lte(0) &&
         !!lockupAccountId
       );
     }, [
       stakedBalance,
       unstakedBalance,
       pendingBalance,
-      accountInfo?.totalBalance.near,
+      availableToUnlock,
       lockupAccountId,
     ]);
 
@@ -146,7 +149,8 @@ export const LockupHoldings = memo(
       isLoadingLockupPendingBalance ||
       isLoadingStakedBalance ||
       isLoadingUnstakedBalance ||
-      isLoadingLiquidLockupBalance;
+      isLoadingLiquidLockupBalance ||
+      isLoadingAvailableToUnlock;
 
     if (isLoading) {
       return (

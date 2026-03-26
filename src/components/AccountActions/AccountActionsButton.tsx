@@ -110,9 +110,16 @@ export const AccountActions = memo(({ close }: AccountActionsProps) => {
             });
           }
         }}
-        className="self-stretch h-12 pl-4 text-secondary flex items-center hover:bg-neutral hover:font-bold hover:rounded-md"
+        className="self-stretch flex h-12 items-center pl-4 text-secondary hover:rounded-md hover:bg-neutral hover:font-bold"
       >
         {hasStatement ? "Edit delegate statement" : "Create delegate statement"}
+      </Link>
+      <Link
+        href="/api-keys"
+        onClick={close}
+        className="self-stretch flex h-12 items-center pl-4 text-secondary hover:rounded-md hover:bg-neutral hover:font-bold"
+      >
+        API Keys
       </Link>
     </div>
   );

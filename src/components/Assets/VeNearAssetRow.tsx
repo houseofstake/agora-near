@@ -86,6 +86,7 @@ export const VeNearAssetRow = memo<VeNearAssetRowProps>(
             amount={pendingBalance ?? "0"}
             maximumSignificantDigits={4}
             minimumFractionDigits={4}
+            showDustTooltip={true}
           />
         ),
       };
@@ -96,22 +97,24 @@ export const VeNearAssetRow = memo<VeNearAssetRowProps>(
       unlockTimestamp,
     ]);
 
-    const columns = useMemo(
-      () => [
+    const columns = useMemo(() => {
+      const lockedAmount = (
+        <TokenAmount
+          amount={balanceWithRewards}
+          maximumSignificantDigits={4}
+          minimumFractionDigits={4}
+          showDustTooltip={true}
+        />
+      );
+
+      return [
         {
           title: "Locked",
-          subtitle: (
-            <TokenAmount
-              amount={balanceWithRewards}
-              maximumSignificantDigits={4}
-              minimumFractionDigits={4}
-            />
-          ),
+          subtitle: lockedAmount,
         },
         ...(pendingBalanceCol ? [pendingBalanceCol] : []),
-      ],
-      [balanceWithRewards, pendingBalanceCol]
-    );
+      ];
+    }, [balanceWithRewards, pendingBalanceCol]);
 
     const actionButton = useMemo(
       () => ({

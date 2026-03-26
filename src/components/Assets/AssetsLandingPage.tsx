@@ -12,11 +12,10 @@ import { UpdatedButton } from "../Button";
 import { useOpenDialog } from "../Dialogs/DialogProvider/DialogProvider";
 import { LiquidStakingTokenLockWarning } from "../Dialogs/LockDialog/LiquidStakingTokenLockWarning";
 import AgoraLoader from "../shared/AgoraLoader/AgoraLoader";
-import { ProjectionSlider } from "../shared/ProjectionSlider";
 import { LockTokensCard } from "./LockTokensCard";
 import { StakingRewardsCard } from "./StakingRewardsCard";
-
-const DEFAULT_BALANCE_FOR_PROJECTION = 10000;
+import { TotalVeNearSupplyChart } from "./TotalVeNearSupplyChart";
+import { VeNearCalculator } from "./VeNearCalculator";
 
 export const AssetsLandingPage = memo(
   ({ shouldShowLSTWarning }: { shouldShowLSTWarning: boolean }) => {
@@ -85,7 +84,7 @@ export const AssetsLandingPage = memo(
             </div>
           </div>
         )}
-        <div className="flex flex-col gap-8 lg:gap-16 mt-6 lg:mt-12">
+        <div className="flex flex-col gap-8 mt-6">
           <div className="grid relative mx-auto py-8 lg:py-16">
             <div className="absolute inset-0 overflow-hidden p-4">
               <div
@@ -115,7 +114,7 @@ export const AssetsLandingPage = memo(
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-8 items-center px-4 lg:px-0">
               <div className="text-center lg:text-left order-1 lg:order-1 z-10 bg-white py-6 lg:py-8 lg:ml-10">
                 <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-5xl font-bold text-black mb-4 lg:mb-6 leading-tight">
-                  Lock & stake tokens for boosted voting power & veNEAR rewards
+                  Lock & stake tokens for boosted voting power
                 </h1>
                 <UpdatedButton
                   type="primary"
@@ -141,14 +140,14 @@ export const AssetsLandingPage = memo(
             </div>
           </div>
 
-          <div className="mb-8 lg:mb-16 px-4 lg:px-0">
-            <ProjectionSlider
-              apy={Number(lockApy) / 100}
-              startingAmount={DEFAULT_BALANCE_FOR_PROJECTION}
-              onProjectionChange={handleProjectionChange}
-            />
+          <div className="mb-8 px-4 lg:px-0 w-full">
+            <TotalVeNearSupplyChart />
           </div>
-          <div className="mb-8 lg:mb-16 px-4 lg:px-0">
+
+          <div className="mb-8 px-4 lg:px-0 w-full">
+            <VeNearCalculator defaultAmount="1000" />
+          </div>
+          <div className="mb-8 px-4 lg:px-0">
             <p className="text-sm sm:text-base lg:text-sm text-gray-500 mb-2">
               *Source of APY comes from non-liquid staking pools and is subject
               to change. For up to date APY, please refer to the staking pools

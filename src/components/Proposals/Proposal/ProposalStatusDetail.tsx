@@ -75,7 +75,7 @@ export default function ProposalStatusDetail({
                   <QuorumExplanation quorumAmount={quorum} />{" "}
                   <a
                     className="text-blue-500"
-                    href="/info?item=quorum-requirements"
+                    href="https://hos-docs.vercel.app/docs/overview/faqs#quorum-requirements"
                   >
                     Learn more here
                   </a>

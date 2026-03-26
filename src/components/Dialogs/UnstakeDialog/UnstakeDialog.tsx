@@ -230,7 +230,10 @@ export const UnstakeDialog = ({ closeDialog }: UnstakeDialogProps) => {
           </div>
           <div>
             <span className="text-3xl font-bold text-primary">
-              <TokenAmount amount={stakedBalance ?? "0"} />
+              <TokenAmount
+                amount={stakedBalance ?? "0"}
+                showDustTooltip={true}
+              />
             </span>
             <div className="h-[16px]">
               <p className="text-sm text-red-500">{amountError}</p>

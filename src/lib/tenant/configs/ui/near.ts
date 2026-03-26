@@ -1,8 +1,8 @@
 import nearLogo from "@/assets/near_logo.svg";
-import infoPageCard00 from "@/assets/info_0.png";
+import { TenantUI } from "@/lib/tenant/tenantUI";
+import infoPageCard00 from "@/assets/info_0.svg";
 import infoPageCard01 from "@/assets/info_1.png";
 import infoPageCard02 from "@/assets/info_2.png";
-import { TenantUI } from "@/lib/tenant/tenantUI";
 
 export const nearTenantUIConfig = new TenantUI({
   title: "",
@@ -96,7 +96,7 @@ export const nearTenantUIConfig = new TenantUI({
       route: "/",
       title: "House of Stake is the home of NEAR voters",
       description:
-        "NEAR House of Stake governance empowers token holders to lock NEAR for voting rights, delegate votes to trusted representatives, and earn rewards for active participation.",
+        "NEAR House of Stake governance empowers token holders to lock NEAR for voting rights, and delegate votes to trusted representatives.",
       meta: {
         title: "NEAR Agora",
         description: "Home of the NEAR House of Stake governance",
@@ -108,7 +108,7 @@ export const nearTenantUIConfig = new TenantUI({
       route: "proposals",
       title: "House of Stake is the home of NEAR voters",
       description:
-        "NEAR House of Stake governance empowers token holders to lock NEAR for voting rights, delegate votes to trusted representatives, and earn rewards for active participation.",
+        "NEAR House of Stake governance empowers token holders to lock NEAR for voting rights, and delegate votes to trusted representatives.",
       meta: {
         title: "NEAR Proposals | House of Stake Governance",
         description:
@@ -121,7 +121,7 @@ export const nearTenantUIConfig = new TenantUI({
       route: "delegates",
       title: "House of Stake is the home of NEAR voters",
       description:
-        "NEAR House of Stake governance empowers token holders to lock NEAR for voting rights, delegate votes to trusted representatives, and earn rewards for active participation.",
+        "NEAR House of Stake governance empowers token holders to lock NEAR for voting rights, and delegate votes to trusted representatives.",
       meta: {
         title: "NEAR Voters | Delegate Your Voting Power",
         description:
@@ -135,11 +135,11 @@ export const nearTenantUIConfig = new TenantUI({
       route: "assets",
       title: "House of Stake is the home of NEAR voters",
       description:
-        "NEAR House of Stake governance empowers token holders to lock NEAR for voting rights, delegate votes to trusted representatives, and earn rewards for active participation.",
+        "NEAR House of Stake governance empowers token holders to lock NEAR for voting rights, and delegate votes to trusted representatives.",
       meta: {
         title: "NEAR Assets | Lock & Stake Your Tokens",
         description:
-          "Manage your NEAR governance assets. Lock NEAR tokens, stake with liquid staking protocols like LiNEAR and stNEAR, and earn voting power and rewards.",
+          "Manage your NEAR governance assets. Lock NEAR tokens, stake with liquid staking protocols like LiNEAR and stNEAR, and earn voting power.",
         imageTitle: "NEAR Assets",
         imageDescription:
           "Lock & stake NEAR tokens to participate in governance",
@@ -167,13 +167,13 @@ export const nearTenantUIConfig = new TenantUI({
         {
           name: "House of Stake Docs",
           title: "House of Stake Docs",
-          url: "https://houseofstake.org/",
+          url: "https://houseofstake.org/docs/overview",
           image: infoPageCard02,
         },
         {
-          name: "Community Discord",
-          title: "Community Discord",
-          url: "https://discord.gg/nearprotocol",
+          name: "Community Telegram",
+          title: "Community Telegram",
+          url: "https://t.me/NEAR_HouseOfStake",
           image: infoPageCard00,
         },
       ],

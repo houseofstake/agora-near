@@ -49,6 +49,7 @@ export const EnterAmountStep = ({
     lockupAccountId,
     stakingPoolId,
     canLockSelectedToken,
+    formattedUnlockDuration,
   } = useLockProviderContext();
 
   useStakedBalance({
@@ -133,6 +134,7 @@ export const EnterAmountStep = ({
               amount={maxAmountToLock ?? "0"}
               minimumFractionDigits={4}
               currency={selectedToken?.metadata?.symbol}
+              showDustTooltip={true}
             />
           </span>
           <div className="h-[16px]">
@@ -210,6 +212,12 @@ export const EnterAmountStep = ({
         <div className="flex flex-row justify-between">
           <span className="text-secondary">Voting Power Growth</span>
           <span className="text-primary font-bold">{annualAPY}%</span>
+        </div>
+        <div className="flex flex-row justify-between">
+          <span className="text-secondary">Unlock wait period</span>
+          <span className="text-primary font-bold">
+            {formattedUnlockDuration}
+          </span>
         </div>
       </div>
       {!canLockSelectedToken && (

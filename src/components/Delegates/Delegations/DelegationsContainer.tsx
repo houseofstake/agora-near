@@ -2,6 +2,7 @@
 
 import DelegationToRow from "./DelegationToRow";
 import DelegationFromRow from "./DelegationFromRow";
+import TokenAmount from "@/components/shared/TokenAmount";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
@@ -28,6 +29,7 @@ function DelegationsContainer({ address }: { address: string }) {
     isFetchingNextPage,
     isLoading: isLoadingDelegatedFrom,
     fetchNextPage,
+    selfLockedVotingPower,
   } = useDelegatedFrom({
     pageSize: 20,
     address,
@@ -74,6 +76,14 @@ function DelegationsContainer({ address }: { address: string }) {
         </div>
         <TabsContent value="delegatedFrom" className="max-w-full">
           <div className="flex flex-col gap-3 border border-line shadow-sm rounded-xl overflow-auto max-h-[500px] bg-wash">
+            {selfLockedVotingPower != null && (
+              <div className="px-4 pt-3 flex items-center gap-2">
+                <span className="text-secondary text-sm">
+                  Self-locked voting power:
+                </span>
+                <TokenAmount amount={selfLockedVotingPower} currency="veNEAR" />
+              </div>
+            )}
             <div className="w-full overflow-x-auto">
               <div className="min-w-[600px]">
                 <Table className="min-w-full">

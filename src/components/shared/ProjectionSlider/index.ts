@@ -1,1 +1,0 @@
-export { ProjectionSlider } from "./ProjectionSlider";
