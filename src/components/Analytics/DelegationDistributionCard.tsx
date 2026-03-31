@@ -1,61 +1,60 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
+import Big from "big.js";
 import { UserPlus, UserCircle } from "lucide-react";
 import { convertYoctoToNear, formatVotingPower } from "@/lib/utils";
 
-interface DelegationStat {
-  isEndorsed: boolean;
-  uniqueAddresses: string;
-  totalDelegatedYocto: string;
+export interface DelegationStatusBreakdownRow {
+  isActivelyDelegating: boolean;
+  uniqueAddresses: number | string | bigint;
+  totalVotingPower: string;
 }
 
 interface DelegationDistributionCardProps {
-  delegationData: DelegationStat[];
-  selfDelegationData: DelegationStat[];
+  breakdown?: DelegationStatusBreakdownRow[];
+}
+
+function addressCount(v: unknown): number {
+  if (typeof v === "bigint") return Number(v);
+  if (typeof v === "number") return Number.isFinite(v) ? v : 0;
+  if (typeof v === "string") return parseInt(v, 10) || 0;
+  return 0;
 }
 
 export const DelegationDistributionCard: React.FC<
   DelegationDistributionCardProps
-> = ({ delegationData, selfDelegationData }) => {
-  if (!delegationData || !selfDelegationData) {
-    return (
-      <div className="flex h-full min-h-[300px] flex-col items-center justify-center p-8 text-sm text-gray-400 bg-gray-50/50 rounded-2xl border border-gray-100">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="w-8 h-8 rounded-full border-4 border-gray-200 border-t-[#00E391] animate-spin mb-4"></div>
-          Analyzing distribution...
-        </div>
-      </div>
-    );
-  }
+> = ({ breakdown = [] }) => {
+  const { activeVolume, inactiveVolume, activeAddresses, inactiveAddresses } =
+    useMemo(() => {
+      const rows = breakdown;
+      let activeNear = Big(0);
+      let inactiveNear = Big(0);
+      let activeAddr = 0;
+      let inactiveAddr = 0;
 
-  // Parse total vs self delegation addresses
-  const totalDelegatedAddresses = delegationData.reduce(
-    (acc, curr) => acc + Number(curr.uniqueAddresses || 0),
-    0
-  );
-  const totalSelfDelegatedAddresses = selfDelegationData.reduce(
-    (acc, curr) => acc + Number(curr.uniqueAddresses || 0),
-    0
-  );
+      for (const row of rows) {
+        const nearStr = convertYoctoToNear(row.totalVotingPower || "0");
+        const add = Big(nearStr || "0");
+        const addrs = addressCount(row.uniqueAddresses);
+        if (row.isActivelyDelegating === true) {
+          activeNear = activeNear.add(add);
+          activeAddr += addrs;
+        } else {
+          inactiveNear = inactiveNear.add(add);
+          inactiveAddr += addrs;
+        }
+      }
 
-  // Parse total vs self delegated volume (Convert YoctoNEAR to NEAR)
-  const totalDelegatedVolume = delegationData.reduce(
-    (acc, curr) =>
-      acc +
-      parseFloat(
-        convertYoctoToNear(curr.totalDelegatedYocto?.toString() || "0")
-      ),
-    0
-  );
-  const totalSelfDelegatedVolume = selfDelegationData.reduce(
-    (acc, curr) =>
-      acc +
-      parseFloat(
-        convertYoctoToNear(curr.totalDelegatedYocto?.toString() || "0")
-      ),
-    0
-  );
+      return {
+        activeVolume: parseFloat(activeNear.toFixed(18)),
+        inactiveVolume: parseFloat(inactiveNear.toFixed(18)),
+        activeAddresses: activeAddr,
+        inactiveAddresses: inactiveAddr,
+      };
+    }, [breakdown]);
+
+  const maxVol = Math.max(activeVolume, inactiveVolume, 1);
 
   return (
     <div className="flex flex-col h-full space-y-6">
@@ -63,7 +62,7 @@ export const DelegationDistributionCard: React.FC<
         <div className="flex items-start justify-between relative z-10 mb-4">
           <div>
             <h4 className="text-sm font-bold text-gray-800 flex items-center gap-2">
-              Delegated to Others
+              Actively Delegating
             </h4>
           </div>
           <div className="p-2 bg-[#00E391]/10 rounded-lg border border-[#00E391]/20">
@@ -77,7 +76,7 @@ export const DelegationDistributionCard: React.FC<
               Volume (veNEAR)
             </span>
             <span className="text-xl font-black text-gray-900">
-              {formatVotingPower(totalDelegatedVolume, totalDelegatedVolume)}
+              {formatVotingPower(activeVolume, maxVol)}
             </span>
           </div>
           <div className="flex items-end justify-between border-b border-gray-50 pb-3">
@@ -85,7 +84,7 @@ export const DelegationDistributionCard: React.FC<
               Unique Addresses
             </span>
             <span className="text-xl font-black text-gray-900">
-              {totalDelegatedAddresses.toLocaleString()}
+              {activeAddresses.toLocaleString()}
             </span>
           </div>
         </div>
@@ -95,7 +94,7 @@ export const DelegationDistributionCard: React.FC<
         <div className="flex items-start justify-between relative z-10 mb-4">
           <div>
             <h4 className="text-sm font-bold text-gray-800 flex items-center gap-2">
-              Self-Delegated
+              Not Actively Delegating
             </h4>
           </div>
           <div className="p-2 bg-gray-50 rounded-lg border border-gray-100">
@@ -109,10 +108,7 @@ export const DelegationDistributionCard: React.FC<
               Volume (veNEAR)
             </span>
             <span className="text-xl font-black text-gray-900">
-              {formatVotingPower(
-                totalSelfDelegatedVolume,
-                totalSelfDelegatedVolume
-              )}
+              {formatVotingPower(inactiveVolume, maxVol)}
             </span>
           </div>
           <div className="flex items-end justify-between border-b border-gray-50 pb-3">
@@ -120,7 +116,7 @@ export const DelegationDistributionCard: React.FC<
               Unique Addresses
             </span>
             <span className="text-xl font-black text-gray-900">
-              {totalSelfDelegatedAddresses.toLocaleString()}
+              {inactiveAddresses.toLocaleString()}
             </span>
           </div>
         </div>

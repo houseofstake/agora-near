@@ -15,6 +15,8 @@ import {
   getProposalAnalytics,
 } from "@/lib/api/analytics/analytics";
 import { motion } from "framer-motion";
+import { Info } from "lucide-react";
+import { TooltipWithTap } from "@/components/ui/tooltip-with-tap";
 
 export default function AnalyticsDashboard() {
   const [selectedProposalId, setSelectedProposalId] = useState<string | null>(
@@ -149,7 +151,6 @@ export default function AnalyticsDashboard() {
                 <div className="w-full max-w-xs md:max-w-sm">
                   <DistributionPieChart
                     data={globalData?.delegationDistribution || []}
-                    dataKey="totalDelegatedYocto"
                   />
                 </div>
               </div>
@@ -158,15 +159,33 @@ export default function AnalyticsDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
               <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-8 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group">
                 <h4 className="flex items-center gap-2 text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-6 relative z-10">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>{" "}
-                  Delegation Distribution
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0"></span>
+                  <span className="flex items-center gap-1.5 min-w-0">
+                    Delegation Distribution
+                    <TooltipWithTap
+                      content={
+                        <p className="max-w-xs text-xs font-medium text-center text-gray-700">
+                          These figures do not sum to total veNEAR supply; the
+                          underlying data does not account for growth.
+                        </p>
+                      }
+                      side="top"
+                    >
+                      <button
+                        type="button"
+                        className="inline-flex shrink-0 text-gray-400 hover:text-gray-600 transition-colors p-0 border-0 bg-transparent cursor-pointer"
+                        aria-label="About delegation distribution figures"
+                      >
+                        <Info className="w-3.5 h-3.5" strokeWidth={2.5} />
+                      </button>
+                    </TooltipWithTap>
+                  </span>
                 </h4>
                 <div className="relative z-10 w-full flex justify-center h-full pb-4">
                   <div className="w-full flex-1 min-h-[140px]">
                     <DelegationDistributionCard
-                      delegationData={globalData?.delegationDistribution || []}
-                      selfDelegationData={
-                        globalData?.selfDelegationDistribution || []
+                      breakdown={
+                        globalData?.delegationStatusBreakdown ?? []
                       }
                     />
                   </div>

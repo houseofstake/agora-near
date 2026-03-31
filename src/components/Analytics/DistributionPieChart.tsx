@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
+import Big from "big.js";
 import {
   ResponsiveContainer,
   PieChart,
@@ -12,8 +13,8 @@ import {
 import { convertYoctoToNear } from "@/lib/utils";
 
 interface DistributionPieChartProps {
-  data: any[];
-  dataKey: string;
+  data: { isEndorsed?: boolean; totalVotingPower?: string | number }[];
+  dataKey?: string;
 }
 
 const CustomTooltip = ({ active, payload }: any) => {
@@ -65,12 +66,11 @@ const renderCustomLegend = (props: any) => {
 
 export const DistributionPieChart: React.FC<DistributionPieChartProps> = ({
   data,
-  dataKey,
+  dataKey = "totalVotingPower",
 }) => {
   const chartData = useMemo(() => {
     if (!data || data.length === 0) return [];
 
-    // The backend splits by voteOption AND isEndorsed. We just want composition by isEndorsed.
     const aggregated = data.reduce(
       (acc, curr) => {
         const isEndorsed = curr.isEndorsed === true;
@@ -79,24 +79,26 @@ export const DistributionPieChart: React.FC<DistributionPieChartProps> = ({
         if (!acc[key]) {
           acc[key] = {
             name: isEndorsed ? "Endorsed Delegates" : "Standard Accounts",
-            rawFraction: 0,
+            rawNear: Big(0),
           };
         }
 
-        const rawFloat = curr[dataKey] || "0";
-        acc[key].rawFraction +=
-          parseFloat(convertYoctoToNear(rawFloat.toString())) || 0;
+        const raw = curr[dataKey as keyof typeof curr];
+        const yoctoStr =
+          raw === undefined || raw === null ? "" : String(raw).trim();
+        const nearStr = convertYoctoToNear(yoctoStr);
+        acc[key].rawNear = acc[key].rawNear.add(Big(nearStr || "0"));
         return acc;
       },
-      {} as Record<string, { name: string; rawFraction: number }>
+      {} as Record<string, { name: string; rawNear: Big }>
     );
 
     return Object.values(aggregated)
-      .map((item: any) => ({
+      .map((item) => ({
         name: item.name,
-        value: Number(item.rawFraction.toFixed(2)),
+        value: Number(item.rawNear.toFixed(2)),
       }))
-      .sort((a: any, b: any) => b.value - a.value);
+      .sort((a, b) => b.value - a.value);
   }, [data, dataKey]);
 
   if (chartData.length === 0) {
