@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-
-import { baseApiUrl } from "@/lib/api/constants";
+import { ChevronDown, FileText } from "lucide-react";
 
 interface ProposalAnalyticDropdownProps {
   onSelect: (proposalId: string | null) => void;
@@ -15,27 +14,29 @@ export const ProposalAnalyticDropdown: React.FC<
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${baseApiUrl}/v1/proposals?status=closed`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data && data.proposals) {
-          setProposals(data.proposals);
-        }
-      })
-      .catch((err) => console.error("Error fetching proposals:", err))
-      .finally(() => setLoading(false));
+    import("@/lib/api/proposal/requests").then(({ fetchApprovedProposals }) => {
+      fetchApprovedProposals(100, 1)
+        .then((data) => {
+          if (data && data.proposals) {
+            setProposals(data.proposals);
+          }
+        })
+        .catch((err) => console.error("Error fetching proposals:", err))
+        .finally(() => setLoading(false));
+    });
   }, []);
 
   return (
     <div className="relative w-full max-w-xl">
       <label
         htmlFor="proposal-select"
-        className="block text-sm font-semibold text-gray-700 mb-2"
+        className="flex items-center gap-2 text-sm font-bold text-gray-800 mb-3"
       >
+        <FileText className="w-4 h-4 text-[#00E391]" />
         Select a Historical Proposal
       </label>
 
-      <div className="relative">
+      <div className="relative group">
         <select
           id="proposal-select"
           disabled={loading}
@@ -43,7 +44,7 @@ export const ProposalAnalyticDropdown: React.FC<
             const val = e.target.value;
             onSelect(val === "" ? null : val);
           }}
-          className="w-full appearance-none bg-white border border-gray-300 hover:border-gray-400 text-gray-800 text-sm rounded-xl px-4 py-3.5 pr-10 focus:outline-none focus:ring-2 focus:ring-[#00E391] focus:border-transparent transition-all shadow-sm font-medium disabled:opacity-50 disabled:bg-gray-50"
+          className="w-full appearance-none bg-white border border-gray-200 hover:border-[#00E391]/50 text-gray-800 text-sm md:text-base rounded-2xl px-5 py-4 pr-12 focus:outline-none focus:ring-4 focus:ring-[#00E391]/10 focus:border-[#00E391] transition-all shadow-[0_4px_20px_-8px_rgba(0,0,0,0.05)] font-semibold disabled:opacity-50 disabled:bg-gray-50/50 cursor-pointer"
         >
           <option value="">
             {loading
@@ -52,10 +53,13 @@ export const ProposalAnalyticDropdown: React.FC<
           </option>
           {proposals.map((p) => (
             <option key={p.proposalId} value={p.proposalId}>
-              #{p.proposalId} - {p.title || `Unnamed Proposal`}
+              #{p.proposalId} - {p.proposalTitle || `Unnamed Proposal`}
             </option>
           ))}
         </select>
+        <div className="absolute inset-y-0 right-0 flex items-center px-5 pointer-events-none text-gray-400 group-hover:text-[#00E391] transition-colors">
+          <ChevronDown className="w-5 h-5" />
+        </div>
       </div>
     </div>
   );
