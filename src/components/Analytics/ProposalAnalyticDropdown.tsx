@@ -46,7 +46,11 @@ export const ProposalAnalyticDropdown: React.FC<
               : "-- Choose a Governance Proposal --"}
           </option>
           {proposals.map((p) => (
-            <option key={p.proposalId} value={p.proposalId} title={`#${p.proposalId} - ${p.proposalTitle || `Unnamed Proposal`}`}>
+            <option
+              key={p.proposalId}
+              value={p.proposalId}
+              title={`#${p.proposalId} - ${p.proposalTitle || `Unnamed Proposal`}`}
+            >
               #{p.proposalId} - {p.proposalTitle || `Unnamed Proposal`}
             </option>
           ))}
