@@ -2,6 +2,7 @@ import React from "react";
 import { Users } from "lucide-react";
 import { convertYoctoToNear, formatVotingPower } from "@/lib/utils";
 import { TooltipWithTap } from "@/components/ui/tooltip-with-tap";
+
 export function VoterEngagementCard({
   voterEngagement,
 }: {
@@ -56,23 +57,49 @@ export function VoterEngagementCard({
       <div className="w-full flex-grow flex items-center justify-center my-4">
         <div className="w-full">
           {/* Stacked Bar container */}
-          <div className="h-6 w-full rounded-full overflow-hidden flex shadow-[inset_0_2px_4px_rgba(0,0,0,0.06)] bg-gray-100">
-            <div
-              className="h-full bg-[#00E391] transition-all duration-1000 ease-out"
-              style={{ width: `${activePct}%` }}
-            />
-            <div
-              className="h-full bg-yellow-400 transition-all duration-1000 ease-out"
-              style={{ width: `${occasionalPct}%` }}
-            />
-            <div
-              className="h-full bg-[#FF4D4F] transition-all duration-1000 ease-out"
-              style={{ width: `${sleepingPct}%` }}
-            />
+          <div className="h-6 w-full rounded-full flex overflow-hidden shadow-[inset_0_2px_4px_rgba(0,0,0,0.04)] bg-gray-100/80 border border-gray-200/50">
+            {totalNear > 0 ? (
+              <>
+                <TooltipWithTap content={`Active: ${activePct.toFixed(1)}%`}>
+                  <div
+                    className="h-full bg-[#00E391] transition-all duration-1000 ease-out hover:opacity-90 cursor-default"
+                    style={{
+                      width: `${Math.max(activePct, activePct > 0 ? 2 : 0)}%`,
+                    }}
+                  />
+                </TooltipWithTap>
+                <TooltipWithTap
+                  content={`Occasional: ${occasionalPct.toFixed(1)}%`}
+                >
+                  <div
+                    className="h-full bg-yellow-400 transition-all duration-1000 ease-out hover:opacity-90 cursor-default"
+                    style={{
+                      width: `${Math.max(occasionalPct, occasionalPct > 0 ? 2 : 0)}%`,
+                    }}
+                  />
+                </TooltipWithTap>
+                <TooltipWithTap
+                  content={`Sleeping: ${sleepingPct.toFixed(1)}%`}
+                >
+                  <div
+                    className="h-full bg-[#FF4D4F] transition-all duration-1000 ease-out hover:opacity-90 cursor-default"
+                    style={{
+                      width: `${Math.max(sleepingPct, sleepingPct > 0 ? 2 : 0)}%`,
+                    }}
+                  />
+                </TooltipWithTap>
+              </>
+            ) : (
+              <div className="w-full h-full bg-gray-100/50 flex items-center justify-center">
+                <span className="text-[10px] text-gray-400 font-medium uppercase tracking-widest">
+                  Awaiting Data
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Labels */}
-          <div className="mt-8 space-y-4">
+          <div className="mt-8 space-y-5">
             {[
               {
                 label: "Active",
@@ -97,20 +124,22 @@ export function VoterEngagementCard({
                 key={i}
                 className="flex justify-between items-center text-sm"
               >
-                <div className="flex items-center gap-2">
-                  <span className={`w-3 h-3 rounded-full ${tier.color}`} />
-                  <span className="font-semibold text-gray-800">
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`w-3 h-3 rounded-full ${tier.color} shadow-sm`}
+                  />
+                  <span className="font-bold text-gray-800 tracking-tight">
                     {tier.label}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-right justify-end flex-wrap">
-                  <span className="font-bold text-gray-900 whitespace-nowrap">
-                    {formatVotingPower(tier.near, tier.near)}{" "}
-                    <span className="text-[10px] text-gray-400 font-medium uppercase">
+                <div className="flex flex-col items-end justify-center">
+                  <span className="font-black text-gray-900">
+                    {tier.near > 0 ? formatVotingPower(tier.near, 1) : "0"}{" "}
+                    <span className="text-[11px] text-gray-400 font-bold uppercase">
                       VP
                     </span>
                   </span>
-                  <span className="text-[11px] text-gray-500 font-medium bg-gray-50 px-2 py-0.5 rounded border border-gray-100 whitespace-nowrap">
+                  <span className="text-[12px] text-gray-400 font-medium mt-0.5">
                     {tier.accounts || 0} Accounts
                   </span>
                 </div>
