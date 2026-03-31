@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProposalVotes } from "@/lib/api/proposal/requests";
 import { ProposalVotingHistoryRecord } from "@/lib/api/proposal/types";
 import Link from "next/link";
-import { ExternalLink, UserCircle2 } from "lucide-react";
+import { ExternalLink, UserCircle2, Search, ArrowUpDown } from "lucide-react";
 import { convertYoctoToNear, formatVotingPower } from "@/lib/utils";
 
 interface ProposalVotersListProps {
@@ -22,6 +22,44 @@ export const ProposalVotersList: React.FC<ProposalVotersListProps> = ({
   });
 
   const votes = data?.votes || [];
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"vp_desc" | "vp_asc" | "az">("vp_desc");
+
+  const filteredAndSortedVotes = useMemo(() => {
+    let result = [...votes];
+
+    if (searchQuery) {
+      result = result.filter((v: ProposalVotingHistoryRecord) => {
+        const accId = v.accountId || (v as any).voter_id;
+        return accId?.toLowerCase().includes(searchQuery.toLowerCase());
+      });
+    }
+
+    result.sort(
+      (a: ProposalVotingHistoryRecord, b: ProposalVotingHistoryRecord) => {
+        const accIdA = a.accountId || (a as any).voter_id || "";
+        const accIdB = b.accountId || (b as any).voter_id || "";
+
+        const rawVpA = parseFloat(
+          a.votingPower || (a as any).voting_power || "0"
+        );
+        const rawVpB = parseFloat(
+          b.votingPower || (b as any).voting_power || "0"
+        );
+
+        if (sortBy === "az") {
+          return accIdA.localeCompare(accIdB);
+        }
+        if (sortBy === "vp_asc") {
+          return rawVpA - rawVpB;
+        }
+        return rawVpB - rawVpA;
+      }
+    );
+
+    return result;
+  }, [votes, searchQuery, sortBy]);
 
   if (loading) {
     return (
@@ -55,69 +93,109 @@ export const ProposalVotersList: React.FC<ProposalVotersListProps> = ({
 
   return (
     <div className="mt-12 pt-10 border-t border-gray-100/80 w-full">
-      <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 px-2 flex justify-between items-center">
-        <span>Individual Delegate Voters</span>
-        <span className="bg-[#00E391]/15 text-teal-800 font-extrabold px-3 py-1.5 rounded-full text-[10px] tracking-normal">
-          {votes.length} Participants
-        </span>
+      <h4 className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div className="flex items-center justify-between w-full sm:w-auto">
+          <span className="text-xs font-bold text-gray-500 uppercase tracking-widest px-2">
+            Individual Delegate Voters
+          </span>
+          <span className="bg-[#00E391]/15 text-teal-800 font-extrabold px-3 py-1.5 rounded-full text-[10px] tracking-normal sm:hidden">
+            {filteredAndSortedVotes.length} / {votes.length}
+          </span>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+          <span className="hidden sm:inline-flex bg-[#00E391]/15 text-teal-800 font-extrabold px-3 py-1.5 rounded-full text-[10px] tracking-normal whitespace-nowrap">
+            {filteredAndSortedVotes.length} / {votes.length}
+          </span>
+
+          <div className="relative w-full sm:w-64">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search by account ID..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-xl leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00E391]/20 focus:border-[#00E391] sm:text-xs transition-colors shadow-sm"
+            />
+          </div>
+
+          <div className="relative w-full sm:w-36">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <ArrowUpDown className="h-4 w-4 text-gray-400" />
+            </div>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="block w-full pl-9 pr-3 py-2 border border-gray-200 rounded-xl leading-5 bg-white focus:outline-none focus:ring-2 focus:ring-[#00E391]/20 focus:border-[#00E391] sm:text-xs transition-colors shadow-sm appearance-none cursor-pointer text-gray-600 font-medium"
+            >
+              <option value="vp_desc">Highest VP</option>
+              <option value="vp_asc">Lowest VP</option>
+              <option value="az">A - Z</option>
+            </select>
+          </div>
+        </div>
       </h4>
       <div className="max-h-[360px] overflow-y-auto pr-3 space-y-3 custom-scrollbar">
-        {votes.map((v: ProposalVotingHistoryRecord, i: number) => {
-          // Handle backend potential snake_case vs frontend camelCase mapping
-          const accountId = v.accountId || (v as any).voter_id;
-          const voteOption = v.voteOption || (v as any).vote_option;
-          const rawVotingPower = v.votingPower || (v as any).voting_power;
+        {filteredAndSortedVotes.map(
+          (v: ProposalVotingHistoryRecord, i: number) => {
+            // Handle backend potential snake_case vs frontend camelCase mapping
+            const accountId = v.accountId || (v as any).voter_id;
+            const voteOption = v.voteOption || (v as any).vote_option;
+            const rawVotingPower = v.votingPower || (v as any).voting_power;
 
-          if (!accountId) return null;
+            if (!accountId) return null;
 
-          return (
-            <Link
-              key={`${accountId}-${i}`}
-              href={`/delegates/${accountId}`}
-              className="group flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white/40 hover:bg-white rounded-2xl border border-gray-100 hover:border-[#00E391]/40 hover:shadow-[0_4px_20px_-4px_rgba(0,227,145,0.15)] transition-all duration-300"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100 group-hover:border-[#00E391]/30 transition-colors">
-                  <UserCircle2 className="w-6 h-6 text-gray-400 group-hover:text-[#00E391] transition-colors" />
+            return (
+              <Link
+                key={`${accountId}-${i}`}
+                href={`/delegates/${accountId}`}
+                className="group flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white/40 hover:bg-white rounded-2xl border border-gray-100 hover:border-[#00E391]/40 hover:shadow-[0_4px_20px_-4px_rgba(0,227,145,0.15)] transition-all duration-300"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100 group-hover:border-[#00E391]/30 transition-colors">
+                    <UserCircle2 className="w-6 h-6 text-gray-400 group-hover:text-[#00E391] transition-colors" />
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-sm font-bold text-gray-800 break-all truncate max-w-[180px] md:max-w-xs">
+                      {accountId}
+                    </p>
+                    <p className="text-xs font-semibold text-gray-500 capitalize flex items-center gap-1">
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          String(voteOption) === "0"
+                            ? "bg-[#00E391]"
+                            : "bg-red-400"
+                        }`}
+                      ></span>
+                      Voted{" "}
+                      {String(voteOption) === "0"
+                        ? "For"
+                        : String(voteOption) === "1"
+                          ? "Against"
+                          : "Abstain"}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <p className="text-sm font-bold text-gray-800 break-all truncate max-w-[180px] md:max-w-xs">
-                    {accountId}
-                  </p>
-                  <p className="text-xs font-semibold text-gray-500 capitalize flex items-center gap-1">
-                    <span
-                      className={`w-1.5 h-1.5 rounded-full ${
-                        String(voteOption) === "0"
-                          ? "bg-[#00E391]"
-                          : "bg-red-400"
-                      }`}
-                    ></span>
-                    Voted{" "}
-                    {String(voteOption) === "0"
-                      ? "For"
-                      : String(voteOption) === "1"
-                        ? "Against"
-                        : "Abstain"}
-                  </p>
-                </div>
-              </div>
 
-              <div className="mt-4 sm:mt-0 flex items-center justify-end gap-3 sm:w-auto w-full border-t sm:border-t-0 border-gray-100 pt-3 sm:pt-0">
-                <div className="flex flex-col items-end">
-                  <span className="text-[13px] font-black text-gray-800">
-                    {formatVoteValue(rawVotingPower)}
-                  </span>
-                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
-                    veNEAR
-                  </span>
+                <div className="mt-4 sm:mt-0 flex items-center justify-end gap-3 sm:w-auto w-full border-t sm:border-t-0 border-gray-100 pt-3 sm:pt-0">
+                  <div className="flex flex-col items-end">
+                    <span className="text-[13px] font-black text-gray-800">
+                      {formatVoteValue(rawVotingPower)}
+                    </span>
+                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                      veNEAR
+                    </span>
+                  </div>
+                  <div className="hidden sm:flex w-8 h-8 rounded-full bg-gray-50 items-center justify-center opacity-0 group-hover:opacity-100 group-hover:bg-[#00E391]/10 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                    <ExternalLink className="w-4 h-4 text-[#00E391]" />
+                  </div>
                 </div>
-                <div className="hidden sm:flex w-8 h-8 rounded-full bg-gray-50 items-center justify-center opacity-0 group-hover:opacity-100 group-hover:bg-[#00E391]/10 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-                  <ExternalLink className="w-4 h-4 text-[#00E391]" />
-                </div>
-              </div>
-            </Link>
-          );
-        })}
+              </Link>
+            );
+          }
+        )}
       </div>
 
       <style
