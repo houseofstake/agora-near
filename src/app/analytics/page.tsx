@@ -285,13 +285,13 @@ export default function AnalyticsDashboard() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-6 sm:gap-8">
-              <div className="w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+              <div className="w-full lg:col-span-2">
                 <GovernanceHealthChart
                   turnoutTrend={globalData?.governanceHealth?.turnoutTrend}
                 />
               </div>
-              <div className="grid grid-cols-1 gap-6 sm:gap-8 max-w-[36rem] mx-auto">
+              <div className="w-full lg:col-span-1 h-full">
                 <VoterEngagementCard
                   voterEngagement={
                     globalData?.governanceHealth?.voterEngagement
