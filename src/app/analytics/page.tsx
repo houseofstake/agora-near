@@ -52,32 +52,58 @@ export default function AnalyticsDashboard() {
       // Small artificial delay to allow UI to update the toast
       await new Promise((resolve) => setTimeout(resolve, 600));
 
-      let csv = "Metric,Value\n";
-      csv += `Total Proxied VP (RAW),${globalData.totalVotingPower || 0}\n`;
-
-      if (globalData.totalVotingPower) {
-        csv += `Total Proxied VP (NEAR),${convertYoctoToNear(globalData.totalVotingPower.toString())}\n`;
-      }
-
-      csv += `Total Delegators,${globalData.totalDelegators || 0}\n`;
-      csv += `Ecosystem Participation Rate (%),${globalData.overallParticipationRate || 0}\n`;
-      csv += `Active Addresses,${globalData.activeAddresses || 0}\n`;
-
-      if (globalData.voterEngagement) {
-        csv += "\n--- Engagement Tiers ---\n";
-        csv += `Active Voters (>80%),${globalData.voterEngagement.activeVoters || 0}\n`;
-        csv += `Occasional Voters (20-80%),${globalData.voterEngagement.occasionalVoters || 0}\n`;
-        csv += `Sleeping Entities (<20%),${globalData.voterEngagement.sleepingVoters || 0}\n`;
-      }
+      let csv = "Agora Ecosystem Report\n\n";
 
       if (globalData.delegationDistribution) {
-        csv += "\n--- Ecosystem Composition ---\n";
-        globalData.delegationDistribution.forEach((d: any) => {
-          const nearVal = d.totalDelegatedYocto
-            ? convertYoctoToNear(d.totalDelegatedYocto.toString())
+        let totalVP = 0;
+        let totalAddresses = 0;
+        csv += "--- Delegation Breakdown ---\n";
+        csv += "Category,Voting Power (NEAR),Addresses\n";
+        globalData.delegationDistribution.forEach((row: any) => {
+          const title = row.isActivelyDelegating
+            ? "Active Delegations"
+            : "Inactive / Self-Delegated";
+          const nearVal =
+            parseFloat(convertYoctoToNear(row.totalVotingPower || "0")) || 0;
+          const addresses = row.uniqueAddresses
+            ? parseInt(row.uniqueAddresses.toString(), 10)
             : 0;
-          csv += `${d.title},${nearVal} NEAR (${d.percentage}%)\n`;
+
+          totalVP += nearVal;
+          totalAddresses += addresses;
+
+          csv += `${title},${nearVal},${addresses}\n`;
         });
+        csv += `TOTAL ECOSYSTEM,${totalVP},${totalAddresses}\n\n`;
+      }
+
+      if (globalData.governanceHealth?.voterEngagement) {
+        const ve = globalData.governanceHealth.voterEngagement;
+        csv += "--- TVL Engagement Tiers ---\n";
+        csv += "Tier,Voting Power (NEAR),Accounts\n";
+
+        const activeNear =
+          parseFloat(convertYoctoToNear(ve.activeVp || "0")) || 0;
+        const occNear =
+          parseFloat(convertYoctoToNear(ve.occasionalVp || "0")) || 0;
+        const sleepNear =
+          parseFloat(convertYoctoToNear(ve.sleepingVp || "0")) || 0;
+
+        csv += `Active (>=80%),${activeNear},${ve.activeVoters || 0}\n`;
+        csv += `Occasional (20%-80%),${occNear},${ve.occasionalVoters || 0}\n`;
+        csv += `Sleeping (<20%),${sleepNear},${ve.sleepingVoters || 0}\n\n`;
+      }
+
+      if (globalData.votingActivity) {
+        csv += "--- Voting Activity (Endorsed vs Regular) ---\n";
+        csv += "Is Endorsed,Participating VP (NEAR),Active Voters\n";
+        globalData.votingActivity.forEach((row: any) => {
+          const nearVal =
+            parseFloat(convertYoctoToNear(row.uniqueParticipatingVP || "0")) ||
+            0;
+          csv += `${row.isEndorsed},${nearVal},${row.activeVoters || 0}\n`;
+        });
+        csv += "\n";
       }
 
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
