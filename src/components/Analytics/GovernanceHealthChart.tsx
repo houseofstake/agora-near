@@ -72,7 +72,6 @@ export function GovernanceHealthChart({
             />
             <XAxis
               dataKey="name"
-              scale="band"
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 10, fill: "#9ca3af" }}
