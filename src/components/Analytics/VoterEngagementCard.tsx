@@ -1,5 +1,5 @@
 import React from "react";
-import { Users, Info } from "lucide-react";
+import { Users } from "lucide-react";
 import { TooltipWithTap } from "@/components/ui/tooltip-with-tap";
 export function VoterEngagementCard({
   voterEngagement,
@@ -28,21 +28,29 @@ export function VoterEngagementCard({
   return (
     <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden flex flex-col items-center justify-between group h-full">
       <div className="w-full border-b border-gray-100 pb-4 mb-4 flex items-start justify-between">
-        <div className="flex items-center gap-2">
-          <h4 className="text-[11px] font-bold text-gray-500 uppercase tracking-widest relative z-10">
+        <div>
+          <h4 className="flex items-center gap-2 text-[11px] font-bold text-gray-500 uppercase tracking-widest relative z-10">
             TVL Engagement Tiers
           </h4>
-          <TooltipWithTap
-            content={
-              <p className="text-xs text-white max-w-xs text-center p-1">
-                Voting frequency of locked tokens
-              </p>
-            }
-          >
-            <Info className="w-4 h-4 text-gray-400 cursor-pointer hover:text-gray-600 transition-colors" />
-          </TooltipWithTap>
+          <p className="text-xs text-gray-400 mt-1">
+            Voting frequency of locked tokens
+          </p>
         </div>
-        <Users className="text-[#00E391] w-5 h-5" />
+        <TooltipWithTap
+          content={
+            <div className="bg-gray-900 border border-gray-700 p-2 rounded-lg shadow-xl">
+              <p className="text-xs text-white max-w-xs font-medium">
+                Classifies accounts by historical voting frequency: Active
+                (≥80%), Occasional, or Sleeping (≤20%).
+              </p>
+            </div>
+          }
+          side="left"
+        >
+          <div className="cursor-help p-1">
+            <Users className="text-[#00E391] w-5 h-5 hover:opacity-80 transition-opacity" />
+          </div>
+        </TooltipWithTap>
       </div>
 
       <div className="w-full flex-grow flex items-center justify-center my-4">
@@ -66,25 +74,49 @@ export function VoterEngagementCard({
           {/* Labels */}
           <div className="mt-8 space-y-4">
             {[
-              { label: "Active (+80%)", color: "bg-[#00E391]", near: activeNear, accounts: voterEngagement?.activeVoters },
-              { label: "Occasional", color: "bg-yellow-400", near: occasionalNear, accounts: voterEngagement?.occasionalVoters },
-              { label: "Sleeping (Never/<20%)", color: "bg-[#FF4D4F]", near: sleepingNear, accounts: voterEngagement?.sleepingVoters },
+              {
+                label: "Active (+80%)",
+                color: "bg-[#00E391]",
+                near: activeNear,
+                accounts: voterEngagement?.activeVoters,
+              },
+              {
+                label: "Occasional",
+                color: "bg-yellow-400",
+                near: occasionalNear,
+                accounts: voterEngagement?.occasionalVoters,
+              },
+              {
+                label: "Sleeping (Never/<20%)",
+                color: "bg-[#FF4D4F]",
+                near: sleepingNear,
+                accounts: voterEngagement?.sleepingVoters,
+              },
             ].map((tier, i) => (
-              <div key={i} className="flex justify-between items-center text-sm">
+              <div
+                key={i}
+                className="flex justify-between items-center text-sm"
+              >
                 <div className="flex items-center gap-2">
                   <span className={`w-3 h-3 rounded-full ${tier.color}`} />
-                  <span className="font-semibold text-gray-800">{tier.label}</span>
+                  <span className="font-semibold text-gray-800">
+                    {tier.label}
+                  </span>
                 </div>
                 <div className="text-right">
                   <span className="font-bold text-gray-900 block">
                     {tier.near === 0
                       ? "0"
                       : tier.near >= 1_000_000
-                      ? `${(tier.near / 1_000_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}M`
-                      : tier.near >= 1_000
-                      ? `${(tier.near / 1_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}k`
-                      : tier.near.toLocaleString("en-US", { maximumFractionDigits: 0 })}{" "}
-                    <span className="text-xs text-gray-400 font-medium">VP</span>
+                        ? `${(tier.near / 1_000_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}M`
+                        : tier.near >= 1_000
+                          ? `${(tier.near / 1_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}k`
+                          : tier.near.toLocaleString("en-US", {
+                              maximumFractionDigits: 0,
+                            })}{" "}
+                    <span className="text-xs text-gray-400 font-medium">
+                      VP
+                    </span>
                   </span>
                   <span className="text-xs text-gray-400">
                     {tier.accounts || 0} Accounts

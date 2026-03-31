@@ -10,7 +10,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Activity, Info } from "lucide-react";
+import { Activity } from "lucide-react";
 import { TooltipWithTap } from "@/components/ui/tooltip-with-tap";
 export function GovernanceHealthChart({
   turnoutTrend,
@@ -30,21 +30,29 @@ export function GovernanceHealthChart({
   return (
     <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden flex flex-col items-center justify-between group w-full">
       <div className="w-full border-b border-gray-100 pb-4 mb-4 flex items-start justify-between">
-        <div className="flex items-center gap-2">
-          <h4 className="text-[11px] font-bold text-gray-500 uppercase tracking-widest relative z-10">
+        <div>
+          <h4 className="flex items-center gap-2 text-[11px] font-bold text-gray-500 uppercase tracking-widest relative z-10">
             Governance Pulse
           </h4>
-          <TooltipWithTap
-            content={
-              <p className="text-xs text-white max-w-xs text-center p-1">
-                Turnout trend over historical proposals
-              </p>
-            }
-          >
-            <Info className="w-4 h-4 text-gray-400 cursor-pointer hover:text-gray-600 transition-colors" />
-          </TooltipWithTap>
+          <p className="text-xs text-gray-400 mt-1">
+            Turnout trend over historical proposals
+          </p>
         </div>
-        <Activity className="text-blue-500 w-5 h-5" />
+        <TooltipWithTap
+          content={
+            <div className="bg-gray-900 border border-gray-700 p-2 rounded-lg shadow-xl">
+              <p className="text-xs text-white max-w-xs font-medium">
+                Tracks unique voting addresses and aggregated voting power
+                acting in past governance events.
+              </p>
+            </div>
+          }
+          side="left"
+        >
+          <div className="cursor-help p-1">
+            <Activity className="text-blue-500 w-5 h-5 hover:opacity-80 transition-opacity" />
+          </div>
+        </TooltipWithTap>
       </div>
 
       <div className="w-full h-72 relative z-10">
@@ -86,7 +94,8 @@ export function GovernanceHealthChart({
               tick={{ fontSize: 10, fill: "#9ca3af" }}
               tickFormatter={(value) => {
                 if (value === 0) return "0";
-                if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
+                if (value >= 1_000_000)
+                  return `${(value / 1_000_000).toFixed(1)}M`;
                 if (value >= 1_000) return `${(value / 1_000).toFixed(1)}k`;
                 return `${value}`;
               }}
@@ -111,10 +120,13 @@ export function GovernanceHealthChart({
                               ? entry.value === 0
                                 ? "0"
                                 : (entry.value as number) >= 1_000_000
-                                ? `${((entry.value as number) / 1_000_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}M`
-                                : (entry.value as number) >= 1_000
-                                ? `${((entry.value as number) / 1_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}k`
-                                : (entry.value as number).toLocaleString("en-US", { maximumFractionDigits: 0 })
+                                  ? `${((entry.value as number) / 1_000_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}M`
+                                  : (entry.value as number) >= 1_000
+                                    ? `${((entry.value as number) / 1_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}k`
+                                    : (entry.value as number).toLocaleString(
+                                        "en-US",
+                                        { maximumFractionDigits: 0 }
+                                      )
                               : entry.value}
                           </span>
                         </p>
