@@ -1,5 +1,6 @@
 import React from "react";
 import { Users } from "lucide-react";
+import { convertYoctoToNear, formatVotingPower } from "@/lib/utils";
 import { TooltipWithTap } from "@/components/ui/tooltip-with-tap";
 export function VoterEngagementCard({
   voterEngagement,
@@ -13,11 +14,12 @@ export function VoterEngagementCard({
     sleepingVoters: string;
   };
 }) {
-  const activeNear = parseFloat(voterEngagement?.activeVp || "0") / 1e24 || 0;
+  const activeNear =
+    parseFloat(convertYoctoToNear(voterEngagement?.activeVp || "0")) || 0;
   const occasionalNear =
-    parseFloat(voterEngagement?.occasionalVp || "0") / 1e24 || 0;
+    parseFloat(convertYoctoToNear(voterEngagement?.occasionalVp || "0")) || 0;
   const sleepingNear =
-    parseFloat(voterEngagement?.sleepingVp || "0") / 1e24 || 0;
+    parseFloat(convertYoctoToNear(voterEngagement?.sleepingVp || "0")) || 0;
 
   const totalNear = activeNear + occasionalNear + sleepingNear;
 
@@ -101,22 +103,14 @@ export function VoterEngagementCard({
                     {tier.label}
                   </span>
                 </div>
-                <div className="text-right">
-                  <span className="font-bold text-gray-900 block">
-                    {tier.near === 0
-                      ? "0"
-                      : tier.near >= 1_000_000
-                        ? `${(tier.near / 1_000_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}M`
-                        : tier.near >= 1_000
-                          ? `${(tier.near / 1_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}k`
-                          : tier.near.toLocaleString("en-US", {
-                              maximumFractionDigits: 0,
-                            })}{" "}
-                    <span className="text-xs text-gray-400 font-medium">
+                <div className="flex items-center gap-2 text-right justify-end flex-wrap">
+                  <span className="font-bold text-gray-900 whitespace-nowrap">
+                    {formatVotingPower(tier.near, tier.near)}{" "}
+                    <span className="text-[10px] text-gray-400 font-medium uppercase">
                       VP
                     </span>
                   </span>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-[11px] text-gray-500 font-medium bg-gray-50 px-2 py-0.5 rounded border border-gray-100 whitespace-nowrap">
                     {tier.accounts || 0} Accounts
                   </span>
                 </div>

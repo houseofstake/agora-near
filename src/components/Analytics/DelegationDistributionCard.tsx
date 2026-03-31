@@ -2,6 +2,7 @@
 
 import React from "react";
 import { UserPlus, UserCircle } from "lucide-react";
+import { convertYoctoToNear, formatVotingPower } from "@/lib/utils";
 
 interface DelegationStat {
   isEndorsed: boolean;
@@ -38,21 +39,23 @@ export const DelegationDistributionCard: React.FC<
     0
   );
 
-  // Parse total vs self delegated volume (Divide by 1e24 to format YoctoNEAR to NEAR)
+  // Parse total vs self delegated volume (Convert YoctoNEAR to NEAR)
   const totalDelegatedVolume = delegationData.reduce(
-    (acc, curr) => acc + Number(curr.totalDelegatedYocto || 0) / 1e24,
+    (acc, curr) =>
+      acc +
+      parseFloat(
+        convertYoctoToNear(curr.totalDelegatedYocto?.toString() || "0")
+      ),
     0
   );
   const totalSelfDelegatedVolume = selfDelegationData.reduce(
-    (acc, curr) => acc + Number(curr.totalDelegatedYocto || 0) / 1e24,
+    (acc, curr) =>
+      acc +
+      parseFloat(
+        convertYoctoToNear(curr.totalDelegatedYocto?.toString() || "0")
+      ),
     0
   );
-
-  const formatVolume = (val: number) => {
-    if (val >= 1e6) return (val / 1e6).toFixed(2) + "M";
-    if (val >= 1e3) return (val / 1e3).toFixed(2) + "k";
-    return val.toLocaleString(undefined, { maximumFractionDigits: 0 });
-  };
 
   return (
     <div className="flex flex-col h-full space-y-6">
@@ -74,7 +77,7 @@ export const DelegationDistributionCard: React.FC<
               Volume (veNEAR)
             </span>
             <span className="text-xl font-black text-gray-900">
-              {formatVolume(totalDelegatedVolume)}
+              {formatVotingPower(totalDelegatedVolume, totalDelegatedVolume)}
             </span>
           </div>
           <div className="flex items-end justify-between border-b border-gray-50 pb-3">
@@ -106,7 +109,10 @@ export const DelegationDistributionCard: React.FC<
               Volume (veNEAR)
             </span>
             <span className="text-xl font-black text-gray-900">
-              {formatVolume(totalSelfDelegatedVolume)}
+              {formatVotingPower(
+                totalSelfDelegatedVolume,
+                totalSelfDelegatedVolume
+              )}
             </span>
           </div>
           <div className="flex items-end justify-between border-b border-gray-50 pb-3">

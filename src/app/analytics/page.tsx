@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { DelegationDistributionCard } from "@/components/Analytics/DelegationDistributionCard";
 import { VotingActivityCard } from "@/components/Analytics/VotingActivityCard";
 import { DistributionPieChart } from "@/components/Analytics/DistributionPieChart";
@@ -16,42 +17,28 @@ import {
 import { motion } from "framer-motion";
 
 export default function AnalyticsDashboard() {
-  const [globalData, setGlobalData] = useState<any>(null);
-  const [proposalData, setProposalData] = useState<any>(null);
   const [selectedProposalId, setSelectedProposalId] = useState<string | null>(
     null
   );
-  const [loading, setLoading] = useState<boolean>(true);
-  const [proposalLoading, setProposalLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    getGlobalAnalytics()
-      .then((data) => {
-        if (!data) throw new Error("No data received");
-        setGlobalData(data);
-      })
-      .catch((err) => {
-        console.error("Failed to load global analytics:", err);
-        setError(
-          "Failed to load analytics data. Please ensure the backend is available."
-        );
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  const {
+    data: globalData,
+    isLoading: loading,
+    error: queryError,
+  } = useQuery({
+    queryKey: ["globalAnalytics"],
+    queryFn: getGlobalAnalytics,
+  });
 
-  useEffect(() => {
-    if (!selectedProposalId) {
-      setProposalData(null);
-      return;
-    }
+  const { data: proposalData, isLoading: proposalLoading } = useQuery({
+    queryKey: ["proposalAnalytics", selectedProposalId],
+    queryFn: () => getProposalAnalytics(selectedProposalId!),
+    enabled: !!selectedProposalId,
+  });
 
-    setProposalLoading(true);
-    getProposalAnalytics(selectedProposalId)
-      .then((data) => setProposalData(data))
-      .catch((err) => console.error("Failed to load proposal analytics:", err))
-      .finally(() => setProposalLoading(false));
-  }, [selectedProposalId]);
+  const error = queryError
+    ? "Failed to load analytics data. Please ensure the backend is available."
+    : null;
 
   if (loading) {
     return (

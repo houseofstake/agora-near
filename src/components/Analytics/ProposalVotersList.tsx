@@ -5,6 +5,7 @@ import { fetchProposalVotes } from "@/lib/api/proposal/requests";
 import { ProposalVotingHistoryRecord } from "@/lib/api/proposal/types";
 import Link from "next/link";
 import { ExternalLink, UserCircle2 } from "lucide-react";
+import { convertYoctoToNear, formatVotingPower } from "@/lib/utils";
 
 interface ProposalVotersListProps {
   proposalId: string;
@@ -55,12 +56,9 @@ export const ProposalVotersList: React.FC<ProposalVotersListProps> = ({
     if (!vp) return "0";
     const rawVal = parseFloat(vp);
     // The backend returns values in yoctoNEAR (24 decimals), so we convert it first
-    const nearVal = rawVal / 1e24;
+    const nearVal = parseFloat(convertYoctoToNear(rawVal.toString() || "0"));
 
-    // Rough abbreviation if large
-    if (nearVal >= 1e6) return (nearVal / 1e6).toFixed(2) + "M";
-    if (nearVal >= 1e3) return (nearVal / 1e3).toFixed(2) + "k";
-    return nearVal.toLocaleString(undefined, { maximumFractionDigits: 0 });
+    return formatVotingPower(nearVal, nearVal);
   };
 
   return (

@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { Activity } from "lucide-react";
 import { TooltipWithTap } from "@/components/ui/tooltip-with-tap";
+import { convertYoctoToNear, formatVotingPower } from "@/lib/utils";
 export function GovernanceHealthChart({
   turnoutTrend,
 }: {
@@ -24,7 +25,7 @@ export function GovernanceHealthChart({
   const chartData = (turnoutTrend || []).map((t) => ({
     name: `Prop ${t.proposalId}`,
     voters: Number(t.uniqueVoters || 0),
-    vp: parseFloat(t.totalTurnoutVp || "0") / 1e24 || 0,
+    vp: parseFloat(convertYoctoToNear(t.totalTurnoutVp || "0")) || 0,
   }));
 
   return (
@@ -92,10 +93,7 @@ export function GovernanceHealthChart({
               tick={{ fontSize: 10, fill: "#9ca3af" }}
               tickFormatter={(value) => {
                 if (value === 0) return "0";
-                if (value >= 1_000_000)
-                  return `${(value / 1_000_000).toFixed(1)}M`;
-                if (value >= 1_000) return `${(value / 1_000).toFixed(1)}k`;
-                return `${value}`;
+                return formatVotingPower(value, value);
               }}
             />
             <Tooltip
@@ -118,14 +116,10 @@ export function GovernanceHealthChart({
                             {entry.dataKey === "vp"
                               ? entry.value === 0
                                 ? "0"
-                                : (entry.value as number) >= 1_000_000
-                                  ? `${((entry.value as number) / 1_000_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}M`
-                                  : (entry.value as number) >= 1_000
-                                    ? `${((entry.value as number) / 1_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}k`
-                                    : (entry.value as number).toLocaleString(
-                                        "en-US",
-                                        { maximumFractionDigits: 0 }
-                                      )
+                                : formatVotingPower(
+                                    entry.value as number,
+                                    entry.value as number
+                                  )
                               : entry.value}
                           </span>
                         </p>

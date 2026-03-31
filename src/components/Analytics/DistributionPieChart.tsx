@@ -9,6 +9,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { convertYoctoToNear } from "@/lib/utils";
 
 interface DistributionPieChartProps {
   data: any[];
@@ -82,8 +83,9 @@ export const DistributionPieChart: React.FC<DistributionPieChartProps> = ({
           };
         }
 
-        const rawFloat = Number(curr[dataKey] || 0);
-        acc[key].rawFraction += rawFloat / 1e24;
+        const rawFloat = curr[dataKey] || "0";
+        acc[key].rawFraction +=
+          parseFloat(convertYoctoToNear(rawFloat.toString())) || 0;
         return acc;
       },
       {} as Record<string, { name: string; rawFraction: number }>

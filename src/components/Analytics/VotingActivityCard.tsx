@@ -2,6 +2,7 @@
 
 import React from "react";
 import { CheckCircle2, User } from "lucide-react";
+import { convertYoctoToNear, formatVotingPower } from "@/lib/utils";
 
 interface VotingActivityStat {
   isEndorsed: boolean;
@@ -37,14 +38,8 @@ export const VotingActivityCard: React.FC<VotingActivityCardProps> = ({
   const rawRegularVpy =
     data.find((d) => !d.isEndorsed)?.uniqueParticipatingVP || "0";
 
-  const endorsedVp = Number(rawEndorsedVpy) / 1e24;
-  const regularVp = Number(rawRegularVpy) / 1e24;
-
-  const formatVolume = (val: number) => {
-    if (val >= 1e6) return (val / 1e6).toFixed(2) + "M";
-    if (val >= 1e3) return (val / 1e3).toFixed(2) + "k";
-    return val.toLocaleString(undefined, { maximumFractionDigits: 0 });
-  };
+  const endorsedVp = parseFloat(convertYoctoToNear(rawEndorsedVpy || "0")) || 0;
+  const regularVp = parseFloat(convertYoctoToNear(rawRegularVpy || "0")) || 0;
 
   return (
     <div className="flex flex-col h-full space-y-6">
@@ -66,7 +61,7 @@ export const VotingActivityCard: React.FC<VotingActivityCardProps> = ({
               Active Volume
             </span>
             <span className="text-xl font-black text-gray-900">
-              {formatVolume(endorsedVp)}
+              {formatVotingPower(endorsedVp, endorsedVp)}
             </span>
           </div>
           <div className="flex items-end justify-between border-b border-[#00E391]/10 pb-3">
@@ -98,7 +93,7 @@ export const VotingActivityCard: React.FC<VotingActivityCardProps> = ({
               Active Volume
             </span>
             <span className="text-xl font-black text-gray-900">
-              {formatVolume(regularVp)}
+              {formatVotingPower(regularVp, regularVp)}
             </span>
           </div>
           <div className="flex items-end justify-between border-b border-gray-50 pb-3">
