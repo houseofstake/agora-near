@@ -28,7 +28,7 @@ export function GovernanceHealthChart({
   }));
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden flex flex-col items-center justify-between group col-span-1 lg:col-span-2">
+    <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden flex flex-col items-center justify-between group w-full">
       <div className="w-full border-b border-gray-100 pb-4 mb-4 flex items-start justify-between">
         <div>
           <h4 className="flex items-center gap-2 text-[11px] font-bold text-gray-500 uppercase tracking-widest relative z-10">

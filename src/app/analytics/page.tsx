@@ -216,31 +216,6 @@ export default function AnalyticsDashboard() {
               </div>
             </div>
 
-            {/* GOVERNANCE HEALTH GRID (NOVEL METRICS) */}
-            <div className="mt-8">
-              <div className="flex items-end justify-between border-b border-gray-200/50 pb-5 mb-8">
-                <div>
-                  <h3 className="text-xl font-black text-gray-900 tracking-tight">
-                    Governance Health &amp; Centralization Risk
-                  </h3>
-                  <p className="text-sm font-medium text-gray-500 mt-2">
-                    Advanced analytics isolating historical turnout, TVL
-                    engagement tiers, and voting power concentration.
-                  </p>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
-                <GovernanceHealthChart
-                  turnoutTrend={globalData?.governanceHealth?.turnoutTrend}
-                />
-                <VoterEngagementCard
-                  voterEngagement={globalData?.governanceHealth?.voterEngagement}
-                />
-                <WhaleConcentrationCard
-                  whaleRisk={globalData?.governanceHealth?.whaleRisk}
-                />
-              </div>
-            </div>
           </motion.section>
 
           {/* PROPOSAL SPECIFIC DISTRIBUTION */}
@@ -308,6 +283,37 @@ export default function AnalyticsDashboard() {
                   </span>
                 </div>
               )}
+            </div>
+          </motion.section>
+
+          {/* GOVERNANCE HEALTH GRID (NOVEL METRICS) */}
+          <motion.section variants={itemVariants} className="mt-12">
+            <div className="flex items-end justify-between border-b border-gray-200/50 pb-5 mb-8">
+              <div>
+                <h3 className="text-2xl font-black text-gray-900 tracking-tight">
+                  Governance Health &amp; Centralization Risk
+                </h3>
+                <p className="text-sm font-semibold text-gray-500 mt-2">
+                  Advanced analytics isolating historical turnout, TVL
+                  engagement tiers, and voting power concentration.
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex flex-col gap-6 sm:gap-8">
+              <div className="w-full">
+                <GovernanceHealthChart
+                  turnoutTrend={globalData?.governanceHealth?.turnoutTrend}
+                />
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+                <VoterEngagementCard
+                  voterEngagement={globalData?.governanceHealth?.voterEngagement}
+                />
+                <WhaleConcentrationCard
+                  whaleRisk={globalData?.governanceHealth?.whaleRisk}
+                />
+              </div>
             </div>
           </motion.section>
         </motion.div>

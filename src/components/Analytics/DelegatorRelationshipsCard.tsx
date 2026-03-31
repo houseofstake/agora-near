@@ -47,7 +47,7 @@ export const DelegatorRelationshipsCard: React.FC<
             <RefreshCcw className="w-5 h-5 text-gray-400" />
           </div>
         </div>
-        <p className="text-xs font-medium text-gray-400 mt-4">
+        <p className="text-xs font-medium text-gray-500 mt-4">
           Unique addresses that have historically switched their delegation to a
           different account.
         </p>
