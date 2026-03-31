@@ -9,7 +9,6 @@ import { ProposalAnalyticDropdown } from "@/components/Analytics/ProposalAnalyti
 import { ProposalVotersList } from "@/components/Analytics/ProposalVotersList";
 import { GovernanceHealthChart } from "@/components/Analytics/GovernanceHealthChart";
 import { VoterEngagementCard } from "@/components/Analytics/VoterEngagementCard";
-import { WhaleConcentrationCard } from "@/components/Analytics/WhaleConcentrationCard";
 import {
   getGlobalAnalytics,
   getProposalAnalytics,
@@ -305,14 +304,11 @@ export default function AnalyticsDashboard() {
                   turnoutTrend={globalData?.governanceHealth?.turnoutTrend}
                 />
               </div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+              <div className="grid grid-cols-1 gap-6 sm:gap-8 max-w-[36rem] mx-auto">
                 <VoterEngagementCard
                   voterEngagement={
                     globalData?.governanceHealth?.voterEngagement
                   }
-                />
-                <WhaleConcentrationCard
-                  whaleRisk={globalData?.governanceHealth?.whaleRisk}
                 />
               </div>
             </div>
