@@ -217,7 +217,7 @@ export default function AnalyticsDashboard() {
             </div>
 
             <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-8 lg:p-12 shadow-sm relative">
-              <div className="w-full max-w-2xl mx-auto mb-10 sm:mb-12">
+              <div className="w-full max-w-4xl mx-auto mb-4 sm:mb-6">
                 <ProposalAnalyticDropdown
                   onSelect={(id) => setSelectedProposalId(id)}
                 />
@@ -241,7 +241,7 @@ export default function AnalyticsDashboard() {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.5 }}
-                  className="mt-8 pt-10 border-t border-gray-100/80 flex flex-col items-center"
+                  className="mt-6 pt-8 border-t border-gray-100/80 flex flex-col items-center"
                 >
                   <h4 className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-10 text-center w-full">
                     On-chain Vote Weight Composition
@@ -276,7 +276,7 @@ export default function AnalyticsDashboard() {
             <div className="flex items-end justify-between border-b border-gray-200/50 pb-5 mb-8">
               <div>
                 <h3 className="text-2xl font-black text-gray-900 tracking-tight">
-                  Governance Health &amp; Centralization Risk
+                  Governance Health
                 </h3>
                 <p className="text-sm font-semibold text-gray-500 mt-2">
                   Advanced analytics isolating historical turnout, TVL
