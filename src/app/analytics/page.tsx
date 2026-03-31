@@ -7,6 +7,9 @@ import { DistributionPieChart } from "@/components/Analytics/DistributionPieChar
 import { DelegatorRelationshipsCard } from "@/components/Analytics/DelegatorRelationshipsCard";
 import { ProposalAnalyticDropdown } from "@/components/Analytics/ProposalAnalyticDropdown";
 import { ProposalVotersList } from "@/components/Analytics/ProposalVotersList";
+import { GovernanceHealthChart } from "@/components/Analytics/GovernanceHealthChart";
+import { VoterEngagementCard } from "@/components/Analytics/VoterEngagementCard";
+import { WhaleConcentrationCard } from "@/components/Analytics/WhaleConcentrationCard";
 import {
   getGlobalAnalytics,
   getProposalAnalytics,
@@ -210,6 +213,32 @@ export default function AnalyticsDashboard() {
                     />
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* GOVERNANCE HEALTH GRID (NOVEL METRICS) */}
+            <div className="mt-8">
+              <div className="flex items-end justify-between border-b border-gray-200/50 pb-5 mb-8">
+                <div>
+                  <h3 className="text-xl font-black text-gray-900 tracking-tight">
+                    Governance Health &amp; Centralization Risk
+                  </h3>
+                  <p className="text-sm font-medium text-gray-500 mt-2">
+                    Advanced analytics isolating historical turnout, TVL
+                    engagement tiers, and voting power concentration.
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
+                <GovernanceHealthChart
+                  turnoutTrend={globalData?.governanceHealth?.turnoutTrend}
+                />
+                <VoterEngagementCard
+                  voterEngagement={globalData?.governanceHealth?.voterEngagement}
+                />
+                <WhaleConcentrationCard
+                  whaleRisk={globalData?.governanceHealth?.whaleRisk}
+                />
               </div>
             </div>
           </motion.section>
