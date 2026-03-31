@@ -15,8 +15,10 @@ import {
   getProposalAnalytics,
 } from "@/lib/api/analytics/analytics";
 import { motion } from "framer-motion";
-import { Info } from "lucide-react";
+import { Info, DownloadCloud } from "lucide-react";
 import { TooltipWithTap } from "@/components/ui/tooltip-with-tap";
+import { convertYoctoToNear } from "@/lib/utils";
+import toast from "react-hot-toast";
 
 export default function AnalyticsDashboard() {
   const [selectedProposalId, setSelectedProposalId] = useState<string | null>(
@@ -41,6 +43,105 @@ export default function AnalyticsDashboard() {
   const error = queryError
     ? "Failed to load analytics data. Please ensure the backend is available."
     : null;
+
+  const exportGlobalCSV = async () => {
+    if (!globalData) return;
+    const toastId = toast.loading("Generating Global Ecosystem Report...");
+
+    try {
+      // Small artificial delay to allow UI to update the toast
+      await new Promise((resolve) => setTimeout(resolve, 600));
+
+      let csv = "Metric,Value\n";
+      csv += `Total Proxied VP (RAW),${globalData.totalVotingPower || 0}\n`;
+
+      if (globalData.totalVotingPower) {
+        csv += `Total Proxied VP (NEAR),${convertYoctoToNear(globalData.totalVotingPower.toString())}\n`;
+      }
+
+      csv += `Total Delegators,${globalData.totalDelegators || 0}\n`;
+      csv += `Ecosystem Participation Rate (%),${globalData.overallParticipationRate || 0}\n`;
+      csv += `Active Addresses,${globalData.activeAddresses || 0}\n`;
+
+      if (globalData.voterEngagement) {
+        csv += "\n--- Engagement Tiers ---\n";
+        csv += `Active Voters (>80%),${globalData.voterEngagement.activeVoters || 0}\n`;
+        csv += `Occasional Voters (20-80%),${globalData.voterEngagement.occasionalVoters || 0}\n`;
+        csv += `Sleeping Entities (<20%),${globalData.voterEngagement.sleepingVoters || 0}\n`;
+      }
+
+      if (globalData.delegationDistribution) {
+        csv += "\n--- Ecosystem Composition ---\n";
+        globalData.delegationDistribution.forEach((d: any) => {
+          const nearVal = d.totalDelegatedYocto
+            ? convertYoctoToNear(d.totalDelegatedYocto.toString())
+            : 0;
+          csv += `${d.title},${nearVal} NEAR (${d.percentage}%)\n`;
+        });
+      }
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "agora_global_ecosystem_report.csv";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success("Ecosystem report generated successfully", { id: toastId });
+    } catch (err) {
+      console.error("Export failed", err);
+      toast.error("Failed to generate ecosystem report", { id: toastId });
+    }
+  };
+
+  const exportProposalCSV = async () => {
+    if (!proposalData) return;
+    const toastId = toast.loading(
+      `Generating Report for Proposal #${selectedProposalId}...`
+    );
+
+    try {
+      // Small artificial delay to allow UI to update the toast
+      await new Promise((resolve) => setTimeout(resolve, 600));
+
+      let csv = `Proposal ${selectedProposalId} Report\n\n`;
+      csv += "Metric,Value\n";
+      csv += `Total VP Participated (RAW),${proposalData.totalVotes || 0}\n`;
+
+      if (proposalData.totalVotes) {
+        csv += `Total VP Participated (NEAR),${convertYoctoToNear(proposalData.totalVotes.toString())}\n`;
+      }
+
+      csv += `Total Unique Voters,${proposalData.totalVoters || 0}\n`;
+      csv += `Turnout Percentage (%),${proposalData.turnoutPercentage || 0}\n`;
+
+      if (proposalData.distribution) {
+        csv += "\n--- Vote Distribution ---\n";
+        proposalData.distribution.forEach((d: any) => {
+          const nearVal = d.amount
+            ? convertYoctoToNear(d.amount.toString())
+            : 0;
+          csv += `${d.type},${nearVal} NEAR (${d.percentage}%)\n`;
+        });
+      }
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `agora_proposal_${selectedProposalId}_report.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success("Proposal report generated successfully", { id: toastId });
+    } catch (err) {
+      console.error("Export failed", err);
+      toast.error("Failed to generate proposal report", { id: toastId });
+    }
+  };
 
   if (loading) {
     return (
@@ -124,15 +225,23 @@ export default function AnalyticsDashboard() {
         >
           {/* GLOBAL ECOSYSTEM Section */}
           <motion.section variants={itemVariants} className="space-y-8">
-            <div className="flex items-end justify-between border-b border-gray-200/50 pb-5">
-              <div>
-                <h3 className="text-2xl font-black text-gray-900 tracking-tight">
+            <div className="flex items-start sm:items-end justify-between border-b border-gray-200/50 pb-5 gap-4">
+              <div className="pr-2">
+                <h3 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
                   Ecosystem Voting Power
                 </h3>
-                <p className="text-sm font-semibold text-gray-500 mt-2">
+                <p className="text-xs sm:text-sm font-semibold text-gray-500 mt-2">
                   Macro distribution across the active NEAR participant set.
                 </p>
               </div>
+              <TooltipWithTap content="Export Global Report (CSV)">
+                <button
+                  onClick={exportGlobalCSV}
+                  className="group flex flex-col items-center justify-center w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 rounded-xl bg-white hover:bg-gray-50 transition-all border border-gray-200 shadow-sm hover:shadow-md hover:border-[#00E391]/40 mb-1"
+                >
+                  <DownloadCloud className="w-5 h-5 text-gray-500 group-hover:text-[#00E391] transition-colors" />
+                </button>
+              </TooltipWithTap>
             </div>
 
             <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-8 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group mb-6 sm:mb-8 flex flex-col md:flex-row items-center gap-8">
@@ -184,9 +293,7 @@ export default function AnalyticsDashboard() {
                 <div className="relative z-10 w-full flex justify-center h-full pb-4">
                   <div className="w-full flex-1 min-h-[140px]">
                     <DelegationDistributionCard
-                      breakdown={
-                        globalData?.delegationStatusBreakdown ?? []
-                      }
+                      breakdown={globalData?.delegationStatusBreakdown ?? []}
                     />
                   </div>
                 </div>
@@ -224,15 +331,26 @@ export default function AnalyticsDashboard() {
 
           {/* PROPOSAL SPECIFIC DISTRIBUTION */}
           <motion.section variants={itemVariants} className="space-y-8">
-            <div className="flex items-end justify-between border-b border-gray-200/50 pb-5 mt-10">
-              <div>
-                <h3 className="text-2xl font-black text-gray-900 tracking-tight">
+            <div className="flex items-start sm:items-end justify-between border-b border-gray-200/50 pb-5 mt-10 gap-4">
+              <div className="pr-2">
+                <h3 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
                   Proposal Endorsement Analysis
                 </h3>
-                <p className="text-sm font-semibold text-gray-500 mt-2">
+                <p className="text-xs sm:text-sm font-semibold text-gray-500 mt-2">
                   Isolate Endorsed Delegate influence dynamically per proposal.
                 </p>
               </div>
+              <TooltipWithTap
+                content={`Export Proposal #${selectedProposalId} Report (CSV)`}
+              >
+                <button
+                  onClick={exportProposalCSV}
+                  disabled={!selectedProposalId || !proposalData}
+                  className="group flex flex-col items-center justify-center w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 rounded-xl bg-white hover:bg-gray-50 transition-all border border-gray-200 shadow-sm hover:shadow-md hover:border-[#00E391]/40 mb-1 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-sm disabled:hover:border-gray-200"
+                >
+                  <DownloadCloud className="w-5 h-5 text-gray-500 group-hover:text-[#00E391] transition-colors" />
+                </button>
+              </TooltipWithTap>
             </div>
 
             <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-6 lg:p-8 shadow-sm relative">
