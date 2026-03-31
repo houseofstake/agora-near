@@ -23,7 +23,7 @@ export function GovernanceHealthChart({
   }>;
 }) {
   const chartData = (turnoutTrend || []).map((t) => ({
-    name: `Prop ${t.proposalId}`,
+    name: `#${t.proposalId}`,
     voters: Number(t.uniqueVoters || 0),
     vp: parseFloat(convertYoctoToNear(t.totalTurnoutVp || "0")) || 0,
   }));
