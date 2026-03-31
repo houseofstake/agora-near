@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 
+import { baseApiUrl } from "@/lib/api/constants";
+
 interface ProposalAnalyticDropdownProps {
   onSelect: (proposalId: string | null) => void;
 }
@@ -13,7 +15,7 @@ export const ProposalAnalyticDropdown: React.FC<
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/v1/proposals?status=closed")
+    fetch(`${baseApiUrl}/v1/proposals?status=closed`)
       .then((res) => res.json())
       .then((data) => {
         if (data && data.proposals) {
