@@ -99,6 +99,7 @@ export function GovernanceHealthChart({
               }}
             />
             <Tooltip
+              cursor={false}
               content={({ active, payload, label }) => {
                 if (active && payload && payload.length) {
                   return (
