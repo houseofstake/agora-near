@@ -215,7 +215,6 @@ export default function AnalyticsDashboard() {
                 </div>
               </div>
             </div>
-
           </motion.section>
 
           {/* PROPOSAL SPECIFIC DISTRIBUTION */}
@@ -299,7 +298,7 @@ export default function AnalyticsDashboard() {
                 </p>
               </div>
             </div>
-            
+
             <div className="flex flex-col gap-6 sm:gap-8">
               <div className="w-full">
                 <GovernanceHealthChart
@@ -308,7 +307,9 @@ export default function AnalyticsDashboard() {
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
                 <VoterEngagementCard
-                  voterEngagement={globalData?.governanceHealth?.voterEngagement}
+                  voterEngagement={
+                    globalData?.governanceHealth?.voterEngagement
+                  }
                 />
                 <WhaleConcentrationCard
                   whaleRisk={globalData?.governanceHealth?.whaleRisk}
