@@ -38,16 +38,14 @@ export function VoterEngagementCard({
         </div>
         <TooltipWithTap
           content={
-            <div className="bg-gray-900 border border-gray-700 p-2 rounded-lg shadow-xl">
-              <p className="text-xs text-white max-w-xs font-medium">
-                Classifies accounts by historical voting frequency: Active
-                (≥80%), Occasional, or Sleeping (≤20%).
-              </p>
-            </div>
+            <p className="max-w-xs text-xs font-medium text-center">
+              Classifies accounts by historical voting frequency: Active (≥80%),
+              Occasional, or Sleeping (≤20%).
+            </p>
           }
           side="left"
         >
-          <div className="cursor-help p-1">
+          <div className="cursor-pointer p-1">
             <Users className="text-[#00E391] w-5 h-5 hover:opacity-80 transition-opacity" />
           </div>
         </TooltipWithTap>

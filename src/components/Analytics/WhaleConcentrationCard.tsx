@@ -51,16 +51,14 @@ export function WhaleConcentrationCard({
         </div>
         <TooltipWithTap
           content={
-            <div className="bg-gray-900 border border-gray-700 p-2 rounded-lg shadow-xl">
-              <p className="text-xs text-white max-w-xs font-medium">
-                Compares the combined voting power of the top 10 accounts
-                against the rest of the ecosystem.
-              </p>
-            </div>
+            <p className="max-w-xs text-xs font-medium text-center">
+              Compares the combined voting power of the top 10 accounts against
+              the rest of the ecosystem.
+            </p>
           }
           side="left"
         >
-          <div className="cursor-help p-1">
+          <div className="cursor-pointer p-1">
             <ShieldAlert
               className={
                 whalePercent > 50

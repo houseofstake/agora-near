@@ -40,16 +40,14 @@ export function GovernanceHealthChart({
         </div>
         <TooltipWithTap
           content={
-            <div className="bg-gray-900 border border-gray-700 p-2 rounded-lg shadow-xl">
-              <p className="text-xs text-white max-w-xs font-medium">
-                Tracks unique voting addresses and aggregated voting power
-                acting in past governance events.
-              </p>
-            </div>
+            <p className="max-w-xs text-xs font-medium text-center">
+              Tracks unique voting addresses and aggregated voting power acting
+              in past governance events.
+            </p>
           }
           side="left"
         >
-          <div className="cursor-help p-1">
+          <div className="cursor-pointer p-1">
             <Activity className="text-blue-500 w-5 h-5 hover:opacity-80 transition-opacity" />
           </div>
         </TooltipWithTap>
