@@ -75,7 +75,7 @@ export function VoterEngagementCard({
           <div className="mt-8 space-y-4">
             {[
               {
-                label: "Active (+80%)",
+                label: "Active",
                 color: "bg-[#00E391]",
                 near: activeNear,
                 accounts: voterEngagement?.activeVoters,
@@ -87,7 +87,7 @@ export function VoterEngagementCard({
                 accounts: voterEngagement?.occasionalVoters,
               },
               {
-                label: "Sleeping (Never/<20%)",
+                label: "Sleeping",
                 color: "bg-[#FF4D4F]",
                 near: sleepingNear,
                 accounts: voterEngagement?.sleepingVoters,
