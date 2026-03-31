@@ -10,8 +10,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Activity } from "lucide-react";
-
+import { Activity, Info } from "lucide-react";
+import { TooltipWithTap } from "@/components/ui/tooltip-with-tap";
 export function GovernanceHealthChart({
   turnoutTrend,
 }: {
@@ -30,13 +30,19 @@ export function GovernanceHealthChart({
   return (
     <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden flex flex-col items-center justify-between group w-full">
       <div className="w-full border-b border-gray-100 pb-4 mb-4 flex items-start justify-between">
-        <div>
-          <h4 className="flex items-center gap-2 text-[11px] font-bold text-gray-500 uppercase tracking-widest relative z-10">
+        <div className="flex items-center gap-2">
+          <h4 className="text-[11px] font-bold text-gray-500 uppercase tracking-widest relative z-10">
             Governance Pulse
           </h4>
-          <p className="text-xs text-gray-400 mt-1">
-            Turnout trend over historical proposals
-          </p>
+          <TooltipWithTap
+            content={
+              <p className="text-xs text-white max-w-xs text-center p-1">
+                Turnout trend over historical proposals
+              </p>
+            }
+          >
+            <Info className="w-4 h-4 text-gray-400 cursor-pointer hover:text-gray-600 transition-colors" />
+          </TooltipWithTap>
         </div>
         <Activity className="text-blue-500 w-5 h-5" />
       </div>
@@ -78,7 +84,12 @@ export function GovernanceHealthChart({
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 10, fill: "#9ca3af" }}
-              tickFormatter={(value) => `${(value / 1e6).toFixed(1)}M`}
+              tickFormatter={(value) => {
+                if (value === 0) return "0";
+                if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
+                if (value >= 1_000) return `${(value / 1_000).toFixed(1)}k`;
+                return `${value}`;
+              }}
             />
             <Tooltip
               content={({ active, payload, label }) => {
@@ -97,12 +108,13 @@ export function GovernanceHealthChart({
                           <span>{entry.name}:</span>
                           <span className="font-bold text-gray-900">
                             {entry.dataKey === "vp"
-                              ? `${(entry.value as number).toLocaleString(
-                                  "en-US",
-                                  {
-                                    maximumFractionDigits: 1,
-                                  }
-                                )} M`
+                              ? entry.value === 0
+                                ? "0"
+                                : (entry.value as number) >= 1_000_000
+                                ? `${((entry.value as number) / 1_000_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}M`
+                                : (entry.value as number) >= 1_000
+                                ? `${((entry.value as number) / 1_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}k`
+                                : (entry.value as number).toLocaleString("en-US", { maximumFractionDigits: 0 })
                               : entry.value}
                           </span>
                         </p>
@@ -126,7 +138,7 @@ export function GovernanceHealthChart({
               yAxisId="right"
               type="monotone"
               dataKey="vp"
-              name="Total VP (M)"
+              name="Total VP"
               stroke="#3b82f6"
               strokeWidth={3}
               dot={{ r: 4, fill: "#3b82f6", strokeWidth: 2, stroke: "#fff" }}

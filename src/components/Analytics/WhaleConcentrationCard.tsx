@@ -7,8 +7,8 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { ShieldAlert } from "lucide-react";
-
+import { ShieldAlert, Info } from "lucide-react";
+import { TooltipWithTap } from "@/components/ui/tooltip-with-tap";
 export function WhaleConcentrationCard({
   whaleRisk,
 }: {
@@ -41,13 +41,19 @@ export function WhaleConcentrationCard({
   return (
     <div className="bg-white rounded-2xl border border-gray-200/60 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden flex flex-col items-center justify-between group h-full">
       <div className="w-full p-5 sm:p-6 border-b border-gray-100 flex items-start justify-between">
-        <div>
-          <h4 className="flex items-center gap-2 text-[11px] font-bold text-gray-500 uppercase tracking-widest relative z-10">
+        <div className="flex items-center gap-2">
+          <h4 className="text-[11px] font-bold text-gray-500 uppercase tracking-widest relative z-10">
             Whale Concentration
           </h4>
-          <p className="text-xs text-gray-400 mt-1">
-            Top 10 vs Retail Centralization
-          </p>
+          <TooltipWithTap
+            content={
+              <p className="text-xs text-white max-w-xs text-center p-1">
+                Top 10 vs Retail Centralization
+              </p>
+            }
+          >
+            <Info className="w-4 h-4 text-gray-400 cursor-pointer hover:text-gray-600 transition-colors" />
+          </TooltipWithTap>
         </div>
         <ShieldAlert
           className={
@@ -90,10 +96,14 @@ export function WhaleConcentrationCard({
                         {payload[0].name}
                       </p>
                       <p className="text-[11px] font-medium text-gray-500 mt-1 uppercase tracking-wide">
-                        {(payload[0].value as number).toLocaleString("en-US", {
-                          maximumFractionDigits: 0,
-                        })}{" "}
-                        M veNEAR
+                        {payload[0].value === 0
+                          ? "0"
+                          : (payload[0].value as number) >= 1_000_000
+                          ? `${((payload[0].value as number) / 1_000_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}M`
+                          : (payload[0].value as number) >= 1_000
+                          ? `${((payload[0].value as number) / 1_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}k`
+                          : (payload[0].value as number).toLocaleString("en-US", { maximumFractionDigits: 0 })}{" "}
+                        veNEAR
                       </p>
                     </div>
                   );
@@ -115,7 +125,13 @@ export function WhaleConcentrationCard({
                         className="w-2 h-2 rounded-full"
                         style={{ backgroundColor: entry.color }}
                       />
-                      {entry.value}
+                      {entry.value === 0
+                        ? "0"
+                        : (entry.value as number) >= 1_000_000
+                        ? `${((entry.value as number) / 1_000_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}M`
+                        : (entry.value as number) >= 1_000
+                        ? `${((entry.value as number) / 1_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}k`
+                        : (entry.value as number).toLocaleString("en-US", { maximumFractionDigits: 0 })}
                     </li>
                   ))}
                 </ul>
