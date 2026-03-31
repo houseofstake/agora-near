@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ChevronDown, FileText } from "lucide-react";
+
+import { useQuery } from "@tanstack/react-query";
+import { fetchApprovedProposals } from "@/lib/api/proposal/requests";
 
 interface ProposalAnalyticDropdownProps {
   onSelect: (proposalId: string | null) => void;
@@ -10,21 +13,12 @@ interface ProposalAnalyticDropdownProps {
 export const ProposalAnalyticDropdown: React.FC<
   ProposalAnalyticDropdownProps
 > = ({ onSelect }) => {
-  const [proposals, setProposals] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ["approved-proposals"],
+    queryFn: () => fetchApprovedProposals(100, 1),
+  });
 
-  useEffect(() => {
-    import("@/lib/api/proposal/requests").then(({ fetchApprovedProposals }) => {
-      fetchApprovedProposals(100, 1)
-        .then((data) => {
-          if (data && data.proposals) {
-            setProposals(data.proposals);
-          }
-        })
-        .catch((err) => console.error("Error fetching proposals:", err))
-        .finally(() => setLoading(false));
-    });
-  }, []);
+  const proposals = data?.proposals || [];
 
   return (
     <div className="relative w-full max-w-xl">

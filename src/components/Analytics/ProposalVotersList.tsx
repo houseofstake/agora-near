@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import { fetchProposalVotes } from "@/lib/api/proposal/requests";
 import { ProposalVotingHistoryRecord } from "@/lib/api/proposal/types";
 import Link from "next/link";
@@ -14,22 +15,13 @@ interface ProposalVotersListProps {
 export const ProposalVotersList: React.FC<ProposalVotersListProps> = ({
   proposalId,
 }) => {
-  const [votes, setVotes] = useState<ProposalVotingHistoryRecord[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ["proposal-votes", proposalId],
+    queryFn: () => fetchProposalVotes(proposalId, 100, 1),
+    enabled: !!proposalId,
+  });
 
-  useEffect(() => {
-    setLoading(true);
-    // Fetch top 100 voters mapped to this proposal
-    fetchProposalVotes(proposalId, 100, 1)
-      .then((data) => {
-        if (data && data.votes) {
-          // Some APIs might return snake_case (voting_power), we handle safely
-          setVotes(data.votes);
-        }
-      })
-      .catch((err) => console.error("Error fetching voters:", err))
-      .finally(() => setLoading(false));
-  }, [proposalId]);
+  const votes = data?.votes || [];
 
   if (loading) {
     return (
@@ -70,7 +62,7 @@ export const ProposalVotersList: React.FC<ProposalVotersListProps> = ({
         </span>
       </h4>
       <div className="max-h-[360px] overflow-y-auto pr-3 space-y-3 custom-scrollbar">
-        {votes.map((v, i) => {
+        {votes.map((v: ProposalVotingHistoryRecord, i: number) => {
           // Handle backend potential snake_case vs frontend camelCase mapping
           const accountId = v.accountId || (v as any).voter_id;
           const voteOption = v.voteOption || (v as any).vote_option;
