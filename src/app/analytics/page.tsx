@@ -216,7 +216,7 @@ export default function AnalyticsDashboard() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-8 lg:p-12 shadow-sm relative">
+            <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-6 lg:p-8 shadow-sm relative">
               <div className="w-full max-w-4xl mx-auto mb-4 sm:mb-6">
                 <ProposalAnalyticDropdown
                   onSelect={(id) => setSelectedProposalId(id)}
