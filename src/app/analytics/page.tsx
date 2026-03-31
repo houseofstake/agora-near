@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { DelegationDistributionCard } from "@/components/Analytics/DelegationDistributionCard";
+import { VotingActivityCard } from "@/components/Analytics/VotingActivityCard";
 import { DistributionPieChart } from "@/components/Analytics/DistributionPieChart";
 import { DelegatorRelationshipsCard } from "@/components/Analytics/DelegatorRelationshipsCard";
 import { ProposalAnalyticDropdown } from "@/components/Analytics/ProposalAnalyticDropdown";
@@ -142,17 +144,41 @@ export default function AnalyticsDashboard() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+            <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-8 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group mb-6 sm:mb-8 flex flex-col md:flex-row items-center gap-8">
+              <div className="flex-1 w-full relative z-10">
+                <h4 className="flex items-center gap-2 text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-4">
+                  <span className="w-1.5 h-1.5 rounded-full bg-gray-400"></span>{" "}
+                  Ecosystem Composition
+                </h4>
+                <p className="text-sm font-medium text-gray-500 max-w-sm">
+                  Overview of all active voting power distributed across the
+                  platform, contrasting Endorsed Delegates against Standard
+                  Accounts.
+                </p>
+              </div>
+              <div className="relative z-10 w-full md:w-1/2 flex justify-center mt-[-30px] md:mt-0">
+                <div className="w-full max-w-xs md:max-w-sm">
+                  <DistributionPieChart
+                    data={globalData?.delegationDistribution || []}
+                    dataKey="totalDelegatedYocto"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
               <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-8 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group">
                 <h4 className="flex items-center gap-2 text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-6 relative z-10">
-                  <span className="w-1.5 h-1.5 rounded-full bg-gray-400"></span>{" "}
-                  Global Distribution
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>{" "}
+                  Delegation Distribution
                 </h4>
-                <div className="relative z-10 w-full flex justify-center">
-                  <div className="w-full max-w-sm">
-                    <DistributionPieChart
-                      data={globalData?.delegationDistribution || []}
-                      dataKey="totalDelegatedYocto"
+                <div className="relative z-10 w-full flex justify-center h-full pb-4">
+                  <div className="w-full flex-1 min-h-[140px]">
+                    <DelegationDistributionCard
+                      delegationData={globalData?.delegationDistribution || []}
+                      selfDelegationData={
+                        globalData?.selfDelegationDistribution || []
+                      }
                     />
                   </div>
                 </div>
@@ -160,13 +186,29 @@ export default function AnalyticsDashboard() {
 
               <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-8 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group">
                 <h4 className="flex items-center gap-2 text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-6 relative z-10">
-                  <span className="w-1.5 h-1.5 rounded-full bg-gray-400"></span>{" "}
-                  Activity & Fluidity Metrics
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00E391]"></span>{" "}
+                  Voting Activity
                 </h4>
-                <div className="relative z-10 h-full">
-                  <DelegatorRelationshipsCard
-                    data={globalData?.relationships}
-                  />
+                <div className="relative z-10 h-full pb-4">
+                  <div className="w-full flex-1 min-h-[140px]">
+                    <VotingActivityCard
+                      data={globalData?.votingActivity || []}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-8 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group">
+                <h4 className="flex items-center gap-2 text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-6 relative z-10">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400"></span>{" "}
+                  Delegate Relationships
+                </h4>
+                <div className="relative z-10 h-full pb-4">
+                  <div className="w-full flex-1 min-h-[140px]">
+                    <DelegatorRelationshipsCard
+                      data={globalData?.relationships}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
