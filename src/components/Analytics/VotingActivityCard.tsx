@@ -66,7 +66,7 @@ export const VotingActivityCard: React.FC<VotingActivityCardProps> = ({
                 maximumFractionDigits: 2,
               }).format(endorsedVp)} NEAR`}
             >
-              <span className="text-xl font-black text-gray-900 cursor-help">
+              <span className="text-xl font-black text-gray-900 cursor-pointer">
                 {formatVotingPower(endorsedVp, Math.max(endorsedVp, regularVp))}
               </span>
             </TooltipWithTap>
@@ -80,7 +80,7 @@ export const VotingActivityCard: React.FC<VotingActivityCardProps> = ({
                 Number(endorsedVoters)
               )} Voters`}
             >
-              <span className="text-xl font-black text-gray-900 cursor-help">
+              <span className="text-xl font-black text-gray-900 cursor-pointer">
                 {Number(endorsedVoters).toLocaleString()}
               </span>
             </TooltipWithTap>
@@ -110,7 +110,7 @@ export const VotingActivityCard: React.FC<VotingActivityCardProps> = ({
                 maximumFractionDigits: 2,
               }).format(regularVp)} NEAR`}
             >
-              <span className="text-xl font-black text-gray-900 cursor-help">
+              <span className="text-xl font-black text-gray-900 cursor-pointer">
                 {formatVotingPower(regularVp, Math.max(endorsedVp, regularVp))}
               </span>
             </TooltipWithTap>
@@ -124,7 +124,7 @@ export const VotingActivityCard: React.FC<VotingActivityCardProps> = ({
                 Number(regularVoters)
               )} Voters`}
             >
-              <span className="text-xl font-black text-gray-900 cursor-help">
+              <span className="text-xl font-black text-gray-900 cursor-pointer">
                 {Number(regularVoters).toLocaleString()}
               </span>
             </TooltipWithTap>

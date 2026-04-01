@@ -29,7 +29,7 @@ export function GovernanceHealthChart({
   }));
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden flex flex-col items-center justify-between group w-full">
+    <div className="bg-white rounded-2xl border border-gray-200/60 p-3 sm:p-6 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden flex flex-col items-center justify-between group w-full">
       <div className="w-full border-b border-gray-100 pb-4 mb-4 flex items-start justify-between">
         <div>
           <h4 className="flex items-center gap-2 text-[11px] font-bold text-gray-500 uppercase tracking-widest relative z-10">
@@ -55,15 +55,23 @@ export function GovernanceHealthChart({
       </div>
 
       <div className="w-full h-72 relative z-10 overflow-x-auto overflow-y-hidden border-t sm:border-t-0 border-gray-100 mt-2 sm:mt-0">
-        <div className="min-w-[450px] sm:min-w-0 h-full pb-2">
+        <div
+          className="h-full pb-2 sm:pb-0"
+          style={{
+            minWidth: Math.max(
+              chartData.length * 45 + 100, // Approx 45px per bar + 100px for axes
+              typeof window !== "undefined" && window.innerWidth < 640 ? 320 : 0
+            ),
+          }}
+        >
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart
               data={chartData}
               margin={{
                 top: 20,
-                right: 20,
-                bottom: 20,
-                left: 20,
+                right: 0,
+                bottom: 0,
+                left: -15, // Pull to the left to compensate for Recharts default YAxis spacing
               }}
             >
               <CartesianGrid
@@ -84,6 +92,7 @@ export function GovernanceHealthChart({
                 tickLine={false}
                 tick={{ fontSize: 10, fill: "#9ca3af" }}
                 tickFormatter={(value) => `${value}`}
+                width={40}
               />
               <YAxis
                 yAxisId="right"
@@ -95,6 +104,7 @@ export function GovernanceHealthChart({
                   if (value === 0) return "0";
                   return formatVotingPower(value, value);
                 }}
+                width={45}
               />
               <Tooltip
                 cursor={false}
@@ -130,12 +140,12 @@ export function GovernanceHealthChart({
                   return null;
                 }}
               />
-              <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "20px" }} />
+              <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "15px" }} />
               <Bar
                 yAxisId="left"
                 dataKey="voters"
                 name="Unique Voters"
-                barSize={20}
+                barSize={16}
                 fill="#00E391"
                 radius={[4, 4, 0, 0]}
               />

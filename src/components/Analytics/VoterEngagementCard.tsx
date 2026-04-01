@@ -138,7 +138,7 @@ export function VoterEngagementCard({
                       maximumFractionDigits: 2,
                     }).format(tier.near)} NEAR`}
                   >
-                    <span className="font-black text-gray-900 cursor-help">
+                    <span className="font-black text-gray-900 cursor-pointer">
                       {tier.near > 0
                         ? formatVotingPower(
                             tier.near,
@@ -155,7 +155,7 @@ export function VoterEngagementCard({
                       Number(tier.accounts) || 0
                     )} Addresses`}
                   >
-                    <span className="text-[12px] text-gray-400 font-medium mt-0.5 cursor-help">
+                    <span className="text-[12px] text-gray-400 font-medium mt-0.5 cursor-pointer">
                       {tier.accounts || 0} Accounts
                     </span>
                   </TooltipWithTap>

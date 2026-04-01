@@ -81,7 +81,7 @@ export const DelegationDistributionCard: React.FC<
                 maximumFractionDigits: 2,
               }).format(activeVolume)} NEAR`}
             >
-              <span className="text-xl font-black text-gray-900 cursor-help">
+              <span className="text-xl font-black text-gray-900 cursor-pointer">
                 {formatVotingPower(activeVolume, maxVol)}
               </span>
             </TooltipWithTap>
@@ -95,7 +95,7 @@ export const DelegationDistributionCard: React.FC<
                 activeAddresses
               )} Addresses`}
             >
-              <span className="text-xl font-black text-gray-900 cursor-help">
+              <span className="text-xl font-black text-gray-900 cursor-pointer">
                 {activeAddresses.toLocaleString()}
               </span>
             </TooltipWithTap>
@@ -125,7 +125,7 @@ export const DelegationDistributionCard: React.FC<
                 maximumFractionDigits: 2,
               }).format(inactiveVolume)} NEAR`}
             >
-              <span className="text-xl font-black text-gray-900 cursor-help">
+              <span className="text-xl font-black text-gray-900 cursor-pointer">
                 {formatVotingPower(inactiveVolume, maxVol)}
               </span>
             </TooltipWithTap>
@@ -139,7 +139,7 @@ export const DelegationDistributionCard: React.FC<
                 inactiveAddresses
               )} Addresses`}
             >
-              <span className="text-xl font-black text-gray-900 cursor-help">
+              <span className="text-xl font-black text-gray-900 cursor-pointer">
                 {inactiveAddresses.toLocaleString()}
               </span>
             </TooltipWithTap>
