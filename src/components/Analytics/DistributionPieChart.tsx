@@ -2,13 +2,7 @@
 
 import React, { useMemo } from "react";
 import Big from "big.js";
-import {
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-} from "recharts";
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 import { convertYoctoToNear } from "@/lib/utils";
 
 interface DistributionPieChartProps {
@@ -40,8 +34,6 @@ const CustomTooltip = ({ active, payload }: any) => {
     </div>
   );
 };
-
-
 
 export const DistributionPieChart: React.FC<DistributionPieChartProps> = ({
   data,
@@ -76,7 +68,7 @@ export const DistributionPieChart: React.FC<DistributionPieChartProps> = ({
       .map((item, index) => ({
         name: item.name,
         value: Number(item.rawNear.toFixed(2)),
-        color: ["#00E391", "#111827"][index % 2]
+        color: ["#00E391", "#111827"][index % 2],
       }))
       .sort((a, b) => b.value - a.value);
   }, [data, dataKey]);
@@ -137,7 +129,7 @@ export const DistributionPieChart: React.FC<DistributionPieChartProps> = ({
           </PieChart>
         </ResponsiveContainer>
       </div>
-      
+
       {/* Custom External Legend */}
       <div className="flex flex-wrap justify-center gap-3 sm:gap-6 mt-2 relative z-10 w-full px-2">
         {chartData.map((entry, index) => (
@@ -149,7 +141,9 @@ export const DistributionPieChart: React.FC<DistributionPieChartProps> = ({
               className="w-3.5 h-3.5 rounded-full shadow-inner flex-shrink-0"
               style={{ backgroundColor: entry.color }}
             />
-            <span className="text-xs sm:text-sm font-bold text-gray-700 truncate">{entry.name}</span>
+            <span className="text-xs sm:text-sm font-bold text-gray-700 truncate">
+              {entry.name}
+            </span>
           </div>
         ))}
       </div>
