@@ -34,9 +34,12 @@ export const WalletHoldings = memo(
       () =>
         walletTokens.map((token) => ({
           ...token,
-          balance: removeDeposit({
-            amount: filterDust({ amount: token.balance }),
-          }),
+          balance:
+            token.type === "near"
+              ? removeDeposit({
+                  amount: filterDust({ amount: token.balance }),
+                })
+              : filterDust({ amount: token.balance }),
         })),
       [walletTokens]
     );
