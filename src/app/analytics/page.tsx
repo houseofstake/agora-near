@@ -282,7 +282,7 @@ export default function AnalyticsDashboard() {
                   Accounts.
                 </p>
               </div>
-              <div className="relative z-10 w-full md:w-1/2 flex justify-center mt-[-30px] md:mt-0">
+              <div className="relative z-10 w-full md:w-1/2 flex justify-center mt-2 md:mt-0">
                 <div className="w-full max-w-xs md:max-w-sm">
                   <DistributionPieChart
                     data={globalData?.delegationDistribution || []}
