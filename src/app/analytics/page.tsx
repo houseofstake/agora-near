@@ -171,10 +171,10 @@ export default function AnalyticsDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#FDFDFD] via-white to-[#EAF8F1] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FDFDFD] flex items-center justify-center pt-20">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-16 h-16 rounded-full border-4 border-gray-100 border-t-[#00E391] animate-spin shadow-lg"></div>
-          <span className="text-gray-500 font-medium tracking-wide animate-pulse uppercase text-sm">
+          <div className="w-12 h-12 rounded-full border-[3px] border-gray-100 border-t-[#00E391] border-r-[#00E391] animate-spin"></div>
+          <span className="text-gray-500 font-bold tracking-widest uppercase text-xs animate-pulse">
             Aggregating Global Metrics
           </span>
         </div>
@@ -270,7 +270,7 @@ export default function AnalyticsDashboard() {
               </TooltipWithTap>
             </div>
 
-            <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-8 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group mb-6 sm:mb-8 flex flex-col md:flex-row items-center gap-8">
+            <div className="bg-white rounded-2xl border border-gray-200/60 p-4 sm:p-6 lg:p-8 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group mb-6 sm:mb-8 flex flex-col md:flex-row items-center gap-8">
               <div className="flex-1 w-full relative z-10">
                 <h4 className="flex items-center gap-2 text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-4">
                   <span className="w-1.5 h-1.5 rounded-full bg-gray-400"></span>{" "}
@@ -292,7 +292,7 @@ export default function AnalyticsDashboard() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-              <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-8 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group">
+              <div className="bg-white rounded-2xl border border-gray-200/60 p-4 sm:p-6 lg:p-8 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group">
                 <h4 className="flex items-center gap-2 text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-6 relative z-10">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0"></span>
                   <span className="flex items-center gap-1.5 min-w-0">
@@ -325,7 +325,7 @@ export default function AnalyticsDashboard() {
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-8 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group">
+              <div className="bg-white rounded-2xl border border-gray-200/60 p-4 sm:p-6 lg:p-8 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group">
                 <h4 className="flex items-center gap-2 text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-6 relative z-10">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#00E391]"></span>{" "}
                   Voting Activity
@@ -339,7 +339,7 @@ export default function AnalyticsDashboard() {
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl border border-gray-200/60 p-5 sm:p-8 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group">
+              <div className="bg-white rounded-2xl border border-gray-200/60 p-4 sm:p-6 lg:p-8 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden group">
                 <h4 className="flex items-center gap-2 text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-6 relative z-10">
                   <span className="w-1.5 h-1.5 rounded-full bg-purple-400"></span>{" "}
                   Delegate Relationships

@@ -4,6 +4,7 @@ import React, { useMemo } from "react";
 import Big from "big.js";
 import { UserPlus, UserCircle } from "lucide-react";
 import { convertYoctoToNear, formatVotingPower } from "@/lib/utils";
+import { TooltipWithTap } from "@/components/ui/tooltip-with-tap";
 
 export interface DelegationStatusBreakdownRow {
   isActivelyDelegating: boolean;
@@ -75,17 +76,29 @@ export const DelegationDistributionCard: React.FC<
             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Volume (veNEAR)
             </span>
-            <span className="text-xl font-black text-gray-900">
-              {formatVotingPower(activeVolume, maxVol)}
-            </span>
+            <TooltipWithTap
+              content={`${new Intl.NumberFormat("en", {
+                maximumFractionDigits: 2,
+              }).format(activeVolume)} NEAR`}
+            >
+              <span className="text-xl font-black text-gray-900 cursor-help">
+                {formatVotingPower(activeVolume, maxVol)}
+              </span>
+            </TooltipWithTap>
           </div>
           <div className="flex items-end justify-between border-b border-gray-50 pb-3">
             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Unique Addresses
             </span>
-            <span className="text-xl font-black text-gray-900">
-              {activeAddresses.toLocaleString()}
-            </span>
+            <TooltipWithTap
+              content={`${new Intl.NumberFormat("en").format(
+                activeAddresses
+              )} Addresses`}
+            >
+              <span className="text-xl font-black text-gray-900 cursor-help">
+                {activeAddresses.toLocaleString()}
+              </span>
+            </TooltipWithTap>
           </div>
         </div>
       </div>
@@ -107,17 +120,29 @@ export const DelegationDistributionCard: React.FC<
             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Volume (veNEAR)
             </span>
-            <span className="text-xl font-black text-gray-900">
-              {formatVotingPower(inactiveVolume, maxVol)}
-            </span>
+            <TooltipWithTap
+              content={`${new Intl.NumberFormat("en", {
+                maximumFractionDigits: 2,
+              }).format(inactiveVolume)} NEAR`}
+            >
+              <span className="text-xl font-black text-gray-900 cursor-help">
+                {formatVotingPower(inactiveVolume, maxVol)}
+              </span>
+            </TooltipWithTap>
           </div>
           <div className="flex items-end justify-between border-b border-gray-50 pb-3">
             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Unique Addresses
             </span>
-            <span className="text-xl font-black text-gray-900">
-              {inactiveAddresses.toLocaleString()}
-            </span>
+            <TooltipWithTap
+              content={`${new Intl.NumberFormat("en").format(
+                inactiveAddresses
+              )} Addresses`}
+            >
+              <span className="text-xl font-black text-gray-900 cursor-help">
+                {inactiveAddresses.toLocaleString()}
+              </span>
+            </TooltipWithTap>
           </div>
         </div>
       </div>

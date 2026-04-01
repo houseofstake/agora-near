@@ -54,102 +54,104 @@ export function GovernanceHealthChart({
         </TooltipWithTap>
       </div>
 
-      <div className="w-full h-72 relative z-10">
-        <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart
-            data={chartData}
-            margin={{
-              top: 20,
-              right: 20,
-              bottom: 20,
-              left: 20,
-            }}
-          >
-            <CartesianGrid
-              stroke="#f5f5f5"
-              strokeDasharray="3 3"
-              vertical={false}
-            />
-            <XAxis
-              dataKey="name"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 10, fill: "#9ca3af" }}
-              dy={10}
-            />
-            <YAxis
-              yAxisId="left"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 10, fill: "#9ca3af" }}
-              tickFormatter={(value) => `${value}`}
-            />
-            <YAxis
-              yAxisId="right"
-              orientation="right"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 10, fill: "#9ca3af" }}
-              tickFormatter={(value) => {
-                if (value === 0) return "0";
-                return formatVotingPower(value, value);
+      <div className="w-full h-72 relative z-10 overflow-x-auto overflow-y-hidden border-t sm:border-t-0 border-gray-100 mt-2 sm:mt-0">
+        <div className="min-w-[450px] sm:min-w-0 h-full pb-2">
+          <ResponsiveContainer width="100%" height="100%">
+            <ComposedChart
+              data={chartData}
+              margin={{
+                top: 20,
+                right: 20,
+                bottom: 20,
+                left: 20,
               }}
-            />
-            <Tooltip
-              cursor={false}
-              content={({ active, payload, label }) => {
-                if (active && payload && payload.length) {
-                  return (
-                    <div className="bg-white/95 backdrop-blur-md border border-gray-100 p-3 rounded-xl shadow-lg">
-                      <p className="text-sm font-bold text-gray-800 mb-2">
-                        {label}
-                      </p>
-                      {payload.map((entry, index) => (
-                        <p
-                          key={index}
-                          className="text-[11px] font-medium mt-1 uppercase tracking-wide flex justify-between gap-4"
-                          style={{ color: entry.color }}
-                        >
-                          <span>{entry.name}:</span>
-                          <span className="font-bold text-gray-900">
-                            {entry.dataKey === "vp"
-                              ? entry.value === 0
-                                ? "0"
-                                : formatVotingPower(
-                                    entry.value as number,
-                                    entry.value as number
-                                  )
-                              : entry.value}
-                          </span>
+            >
+              <CartesianGrid
+                stroke="#f5f5f5"
+                strokeDasharray="3 3"
+                vertical={false}
+              />
+              <XAxis
+                dataKey="name"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 10, fill: "#9ca3af" }}
+                dy={10}
+              />
+              <YAxis
+                yAxisId="left"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 10, fill: "#9ca3af" }}
+                tickFormatter={(value) => `${value}`}
+              />
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 10, fill: "#9ca3af" }}
+                tickFormatter={(value) => {
+                  if (value === 0) return "0";
+                  return formatVotingPower(value, value);
+                }}
+              />
+              <Tooltip
+                cursor={false}
+                content={({ active, payload, label }) => {
+                  if (active && payload && payload.length) {
+                    return (
+                      <div className="bg-white/95 backdrop-blur-md border border-gray-100 p-3 rounded-xl shadow-lg">
+                        <p className="text-sm font-bold text-gray-800 mb-2">
+                          {label}
                         </p>
-                      ))}
-                    </div>
-                  );
-                }
-                return null;
-              }}
-            />
-            <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "20px" }} />
-            <Bar
-              yAxisId="left"
-              dataKey="voters"
-              name="Unique Voters"
-              barSize={20}
-              fill="#00E391"
-              radius={[4, 4, 0, 0]}
-            />
-            <Line
-              yAxisId="right"
-              type="monotone"
-              dataKey="vp"
-              name="Total VP"
-              stroke="#3b82f6"
-              strokeWidth={3}
-              dot={{ r: 4, fill: "#3b82f6", strokeWidth: 2, stroke: "#fff" }}
-              activeDot={{ r: 6 }}
-            />
-          </ComposedChart>
-        </ResponsiveContainer>
+                        {payload.map((entry, index) => (
+                          <p
+                            key={index}
+                            className="text-[11px] font-medium mt-1 uppercase tracking-wide flex justify-between gap-4"
+                            style={{ color: entry.color }}
+                          >
+                            <span>{entry.name}:</span>
+                            <span className="font-bold text-gray-900">
+                              {entry.dataKey === "vp"
+                                ? entry.value === 0
+                                  ? "0"
+                                  : formatVotingPower(
+                                      entry.value as number,
+                                      entry.value as number
+                                    )
+                                : entry.value}
+                            </span>
+                          </p>
+                        ))}
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
+              <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "20px" }} />
+              <Bar
+                yAxisId="left"
+                dataKey="voters"
+                name="Unique Voters"
+                barSize={20}
+                fill="#00E391"
+                radius={[4, 4, 0, 0]}
+              />
+              <Line
+                yAxisId="right"
+                type="monotone"
+                dataKey="vp"
+                name="Total VP"
+                stroke="#3b82f6"
+                strokeWidth={3}
+                dot={{ r: 4, fill: "#3b82f6", strokeWidth: 2, stroke: "#fff" }}
+                activeDot={{ r: 6 }}
+              />
+            </ComposedChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );

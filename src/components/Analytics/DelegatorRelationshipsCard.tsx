@@ -63,29 +63,29 @@ export const DelegatorRelationshipsCard: React.FC<
           </h4>
         </div>
 
-        <div className="flex items-center justify-between gap-4 mt-2 mb-4 bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+        <div className="flex items-center justify-between gap-2 mt-2 mb-4 bg-gray-50/50 p-3 rounded-xl border border-gray-100">
           <div className="flex flex-col items-center flex-1">
             <div className="flex items-center gap-1.5 mb-1.5 opacity-80">
               <CheckCircle2 className="w-3.5 h-3.5 text-[#00E391]" />
-              <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">
+              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">
                 Endorsed
               </span>
             </div>
-            <span className="text-2xl font-black text-gray-900">
+            <span className="text-xl sm:text-2xl font-black text-gray-900">
               {multiEndorsed}
             </span>
           </div>
 
-          <div className="w-px h-10 bg-gray-200"></div>
+          <div className="w-px h-10 bg-gray-200 shrink-0"></div>
 
           <div className="flex flex-col items-center flex-1">
             <div className="flex items-center gap-1.5 mb-1.5 opacity-80">
               <User className="w-3.5 h-3.5 text-gray-400" />
-              <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">
+              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">
                 Regular
               </span>
             </div>
-            <span className="text-2xl font-black text-gray-900">
+            <span className="text-xl sm:text-2xl font-black text-gray-900">
               {multiStandard}
             </span>
           </div>

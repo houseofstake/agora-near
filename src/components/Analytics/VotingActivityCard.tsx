@@ -3,6 +3,7 @@
 import React from "react";
 import { CheckCircle2, User } from "lucide-react";
 import { convertYoctoToNear, formatVotingPower } from "@/lib/utils";
+import { TooltipWithTap } from "@/components/ui/tooltip-with-tap";
 
 interface VotingActivityStat {
   isEndorsed: boolean;
@@ -60,17 +61,29 @@ export const VotingActivityCard: React.FC<VotingActivityCardProps> = ({
             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Active Volume
             </span>
-            <span className="text-xl font-black text-gray-900">
-              {formatVotingPower(endorsedVp, endorsedVp)}
-            </span>
+            <TooltipWithTap
+              content={`${new Intl.NumberFormat("en", {
+                maximumFractionDigits: 2,
+              }).format(endorsedVp)} NEAR`}
+            >
+              <span className="text-xl font-black text-gray-900 cursor-help">
+                {formatVotingPower(endorsedVp, Math.max(endorsedVp, regularVp))}
+              </span>
+            </TooltipWithTap>
           </div>
           <div className="flex items-end justify-between border-b border-[#00E391]/10 pb-3">
             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Active Voters
             </span>
-            <span className="text-xl font-black text-gray-900">
-              {Number(endorsedVoters).toLocaleString()}
-            </span>
+            <TooltipWithTap
+              content={`${new Intl.NumberFormat("en").format(
+                Number(endorsedVoters)
+              )} Voters`}
+            >
+              <span className="text-xl font-black text-gray-900 cursor-help">
+                {Number(endorsedVoters).toLocaleString()}
+              </span>
+            </TooltipWithTap>
           </div>
         </div>
       </div>
@@ -92,17 +105,29 @@ export const VotingActivityCard: React.FC<VotingActivityCardProps> = ({
             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Active Volume
             </span>
-            <span className="text-xl font-black text-gray-900">
-              {formatVotingPower(regularVp, regularVp)}
-            </span>
+            <TooltipWithTap
+              content={`${new Intl.NumberFormat("en", {
+                maximumFractionDigits: 2,
+              }).format(regularVp)} NEAR`}
+            >
+              <span className="text-xl font-black text-gray-900 cursor-help">
+                {formatVotingPower(regularVp, Math.max(endorsedVp, regularVp))}
+              </span>
+            </TooltipWithTap>
           </div>
           <div className="flex items-end justify-between border-b border-gray-50 pb-3">
             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Active Voters
             </span>
-            <span className="text-xl font-black text-gray-900">
-              {Number(regularVoters).toLocaleString()}
-            </span>
+            <TooltipWithTap
+              content={`${new Intl.NumberFormat("en").format(
+                Number(regularVoters)
+              )} Voters`}
+            >
+              <span className="text-xl font-black text-gray-900 cursor-help">
+                {Number(regularVoters).toLocaleString()}
+              </span>
+            </TooltipWithTap>
           </div>
         </div>
       </div>

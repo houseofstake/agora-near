@@ -133,15 +133,32 @@ export function VoterEngagementCard({
                   </span>
                 </div>
                 <div className="flex flex-col items-end justify-center">
-                  <span className="font-black text-gray-900">
-                    {tier.near > 0 ? formatVotingPower(tier.near, 1) : "0"}{" "}
-                    <span className="text-[11px] text-gray-400 font-bold uppercase">
-                      VP
+                  <TooltipWithTap
+                    content={`${new Intl.NumberFormat("en", {
+                      maximumFractionDigits: 2,
+                    }).format(tier.near)} NEAR`}
+                  >
+                    <span className="font-black text-gray-900 cursor-help">
+                      {tier.near > 0
+                        ? formatVotingPower(
+                            tier.near,
+                            Math.max(activeNear, occasionalNear, sleepingNear)
+                          )
+                        : "0"}{" "}
+                      <span className="text-[11px] text-gray-400 font-bold uppercase">
+                        VP
+                      </span>
                     </span>
-                  </span>
-                  <span className="text-[12px] text-gray-400 font-medium mt-0.5">
-                    {tier.accounts || 0} Accounts
-                  </span>
+                  </TooltipWithTap>
+                  <TooltipWithTap
+                    content={`${new Intl.NumberFormat("en").format(
+                      Number(tier.accounts) || 0
+                    )} Addresses`}
+                  >
+                    <span className="text-[12px] text-gray-400 font-medium mt-0.5 cursor-help">
+                      {tier.accounts || 0} Accounts
+                    </span>
+                  </TooltipWithTap>
                 </div>
               </div>
             ))}
