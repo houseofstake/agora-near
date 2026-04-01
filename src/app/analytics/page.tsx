@@ -390,10 +390,10 @@ export default function AnalyticsDashboard() {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="flex flex-col items-center justify-center py-16"
+                  className="flex flex-col items-center justify-center py-16 gap-4"
                 >
-                  <div className="w-12 h-12 rounded-full border-4 border-gray-100 border-t-[#00E391] animate-spin mb-4"></div>
-                  <span className="text-sm font-bold text-gray-400 uppercase tracking-widest animate-pulse">
+                  <div className="w-12 h-12 rounded-full border-[3px] border-gray-100 border-t-[#00E391] border-r-[#00E391] animate-spin"></div>
+                  <span className="text-gray-400 font-bold tracking-widest uppercase text-[10px] sm:text-xs animate-pulse text-center px-4 max-w-full leading-relaxed">
                     Computing Weights...
                   </span>
                 </motion.div>
