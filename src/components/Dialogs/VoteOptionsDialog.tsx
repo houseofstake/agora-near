@@ -110,13 +110,18 @@ export function VoteOptionsDialog({
             title={option}
             checked={selectedOption === index}
             onClick={() => handleOptionSelect(index)}
+            data-testid={`vote-option-${index}`}
           />
         ))}
       </div>
 
       <div className="flex flex-col gap-4">
         <div className="flex flex-col justify-between items-stretch">
-          <Button onClick={handleVote} disabled={selectedOption === undefined}>
+          <Button
+            onClick={handleVote}
+            disabled={selectedOption === undefined}
+            data-testid="submit-vote-button"
+          >
             {selectedOption !== undefined ? (
               <>
                 {`Vote ${capitalizeFirstLetter(
