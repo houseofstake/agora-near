@@ -53,7 +53,14 @@ function DelegationsContainer({ address }: { address: string }) {
     return <DelegationsContainerSkeleton />;
   }
 
-  if (delegatedTo?.length === 0 && delegatedFrom?.length === 0) {
+  const hasSelfLockedVP =
+    selfLockedVotingPower && selfLockedVotingPower !== "0";
+
+  if (
+    delegatedTo?.length === 0 &&
+    delegatedFrom?.length === 0 &&
+    !hasSelfLockedVP
+  ) {
     return (
       <div className="p-8 text-center text-secondary align-middle bg-wash rounded-xl">
         No delegations found.
