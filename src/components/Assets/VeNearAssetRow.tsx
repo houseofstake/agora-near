@@ -116,13 +116,32 @@ export const VeNearAssetRow = memo<VeNearAssetRowProps>(
       ];
     }, [balanceWithRewards, pendingBalanceCol]);
 
-    const actionButton = useMemo(
-      () => ({
-        title: "Unlock",
+    const actionButton = useMemo(() => {
+      const canWithdraw = isEligibleToUnlock && hasPendingBalance;
+      const canUnlock = Number(balanceWithRewards) > 0;
+
+      if (!canWithdraw && !canUnlock) {
+        if (hasPendingBalance) {
+          return {
+            title: "Withdraw",
+            onClick: () => {},
+            disabled: true,
+            tooltip: "Wait for the unlock period to finish",
+          };
+        }
+        return undefined;
+      }
+
+      return {
+        title: canWithdraw ? "Withdraw" : "Unlock",
         onClick: handleUnlockTokens,
-      }),
-      [handleUnlockTokens]
-    );
+      };
+    }, [
+      handleUnlockTokens,
+      isEligibleToUnlock,
+      hasPendingBalance,
+      balanceWithRewards,
+    ]);
 
     return (
       <ResponsiveAssetRow
