@@ -121,17 +121,18 @@ export const LockupHoldings = memo(
     );
 
     const showDeleteLockup = useMemo(() => {
-      const staked = Big(stakedBalance ?? "0");
-      const unstaked = Big(unstakedBalance ?? "0");
-      const pending = Big(pendingBalance ?? "0");
-
-      const availableToUnlockAmount = Big(availableToUnlock ?? "0");
+      const staked = filterDust({ amount: stakedBalance ?? "0" });
+      const unstaked = filterDust({ amount: unstakedBalance ?? "0" });
+      const pending = filterDust({ amount: pendingBalance ?? "0" });
+      const availableToUnlockAmount = filterDust({
+        amount: availableToUnlock ?? "0",
+      });
 
       return (
-        staked.eq(0) &&
-        unstaked.eq(0) &&
-        pending.eq(0) &&
-        availableToUnlockAmount.lte(0) &&
+        Big(staked).eq(0) &&
+        Big(unstaked).eq(0) &&
+        Big(pending).eq(0) &&
+        Big(availableToUnlockAmount).lte(0) &&
         !!lockupAccountId
       );
     }, [
