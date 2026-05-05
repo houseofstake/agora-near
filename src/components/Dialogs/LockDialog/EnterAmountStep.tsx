@@ -172,6 +172,7 @@ export const EnterAmountStep = ({
                 }
                 onChange={handleAmountChange}
                 className="w-full bg-transparent border-none text-lg text-right h-auto focus-visible:ring-0 focus-visible:ring-offset-0 pr-2"
+                data-testid="lock-amount-input"
               />
               <button
                 onClick={onMaxPressed}
@@ -244,6 +245,7 @@ export const EnterAmountStep = ({
           disabled={shouldDisableButton}
           className="w-full"
           variant="rounded"
+          data-testid="lock-review-btn"
         >
           Review
         </UpdatedButton>

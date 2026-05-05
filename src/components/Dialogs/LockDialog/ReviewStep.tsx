@@ -461,6 +461,7 @@ export const ReviewStep = memo(
               }
               className="w-full mt-4"
               variant="rounded"
+              data-testid="confirm-lock-btn"
             >
               Lock tokens
             </UpdatedButton>

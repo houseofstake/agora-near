@@ -4,11 +4,21 @@ interface RadioButtonProps {
   title: string;
   checked: boolean;
   onClick: () => void;
+  "data-testid"?: string;
 }
 
-export function RadioButton({ title, checked, onClick }: RadioButtonProps) {
+export function RadioButton({
+  title,
+  checked,
+  onClick,
+  "data-testid": testId,
+}: RadioButtonProps) {
   return (
-    <div className="py-2 cursor-pointer relative" onClick={onClick}>
+    <div
+      className="py-2 cursor-pointer relative"
+      onClick={onClick}
+      data-testid={testId}
+    >
       <p
         className={cn(
           "transition-all max-w-[calc(100%-24px)]",

@@ -133,6 +133,7 @@ export function DelegateDialog({
               type={isDelegating || error ? "secondary" : "primary"}
               onClick={handleDelegate}
               disabled={isDelegating}
+              data-testid="delegate-submit-button"
             >
               {isDelegating
                 ? "Submitting your delegation..."
