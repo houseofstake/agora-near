@@ -9,6 +9,7 @@ type Props = {
   onChange: (value: string) => void;
   tooltipMessage?: string;
   defaultValue?: string;
+  value?: string;
 };
 
 export function TextInputWithTooltip({
@@ -18,6 +19,7 @@ export function TextInputWithTooltip({
   placeholder,
   tooltipMessage,
   defaultValue,
+  value,
 }: Props) {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
@@ -36,6 +38,7 @@ export function TextInputWithTooltip({
         placeholder={placeholder}
         inputRef={inputRef}
         defaultValue={defaultValue}
+        value={value}
         onChange={onChange}
         onClick={handleInputClick}
         onBlur={handleInputBlur}
@@ -54,6 +57,7 @@ type TextInputTooltipProps = {
   placeholder?: string;
   inputRef?: MutableRefObject<HTMLInputElement | null>;
   defaultValue?: string;
+  value?: string;
   onChange: (value: string) => void;
   onClick?: () => void;
   onBlur?: () => void;
@@ -65,6 +69,7 @@ export function TextInputTooltip({
   placeholder,
   inputRef,
   defaultValue,
+  value,
   onClick,
   onBlur,
 }: TextInputTooltipProps) {
@@ -74,7 +79,7 @@ export function TextInputTooltip({
       type="text"
       ref={inputRef}
       placeholder={placeholder}
-      defaultValue={defaultValue}
+      {...(value !== undefined ? { value } : { defaultValue })}
       onChange={(event) => onChange(event.target.value)}
       onClick={onClick}
       onBlur={onBlur}

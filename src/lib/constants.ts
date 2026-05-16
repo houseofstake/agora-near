@@ -22,9 +22,33 @@ export const delegatesSortOptions = {
     sort: "most_voting_power",
     value: "Most voting power",
   },
-  mostDelegators: {
+  leastVotingPower: {
     sort: "least_voting_power",
     value: "Least voting power",
+  },
+  mostRecentVote: {
+    sort: "most_recent_vote",
+    value: "Most recent vote",
+  },
+  leastRecentVote: {
+    sort: "least_recent_vote",
+    value: "Least recent vote",
+  },
+  mostRecentDelegation: {
+    sort: "most_recent_delegation",
+    value: "Most recent delegation",
+  },
+  leastRecentDelegation: {
+    sort: "least_recent_delegation",
+    value: "Least recent delegation",
+  },
+  mostAligned: {
+    sort: "most_aligned",
+    value: "Most aligned with herd",
+  },
+  leastAligned: {
+    sort: "least_aligned",
+    value: "Least aligned with herd",
   },
 };
 

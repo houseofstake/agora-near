@@ -1,8 +1,10 @@
 "use client";
 
 import { useDelegates } from "@/hooks/useDelegates";
+import { useDelegateSearch } from "@/hooks/useDelegateSearch";
+import { searchResultToDelegateProfile } from "@/lib/api/delegates/types";
 import { useQueryState } from "nuqs";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import DelegateCardList from "./DelegateCardList";
 import DelegateTable from "./DelegateTable";
 import { DelegateCardLoadingState } from "./DelegateCardWrapper";
@@ -22,17 +24,40 @@ export default function DelegateContent({
 }) {
   const [orderByParam] = useQueryState("order_by");
   const [filterParam] = useQueryState("filter");
+  const [searchQuery] = useQueryState("q", { defaultValue: "", clearOnDefault: true });
+  const [issuesParam] = useQueryState("issues", { defaultValue: "", clearOnDefault: true });
 
   const [layout] = useQueryState("layout", {
     defaultValue: "grid",
   });
 
-  const { data, hasNextPage, fetchNextPage, isLoading, isFetchingNextPage } =
+  const isSearchMode = !!searchQuery?.trim();
+
+  const { data: browseData, hasNextPage, fetchNextPage, isLoading: isBrowseLoading, isFetchingNextPage } =
     useDelegates({
       pageSize: 10,
       orderBy: orderByParam,
       filter: filterParam,
     });
+
+  const { data: searchData, isLoading: isSearchLoading } = useDelegateSearch(
+    searchQuery?.trim() ?? "",
+    {
+      orderBy: orderByParam,
+      filterParam,
+      issuesParam: issuesParam || null,
+      limit: 50,
+    }
+  );
+
+  const delegates = useMemo(() => {
+    if (isSearchMode && searchData) {
+      return searchData.delegates.map(searchResultToDelegateProfile);
+    }
+    return browseData ?? [];
+  }, [isSearchMode, searchData, browseData]);
+
+  const isLoading = isSearchMode ? isSearchLoading : isBrowseLoading;
 
   const { signedAccountId } = useNear();
   const [showDialog, setShowDialog] = useState(false);
@@ -68,23 +93,24 @@ export default function DelegateContent({
   const hasTrackedInitialLoad = useRef(false);
 
   useEffect(() => {
-    if (!isLoading && data && !hasTrackedInitialLoad.current) {
+    if (!isLoading && delegates.length >= 0 && !hasTrackedInitialLoad.current) {
       hasTrackedInitialLoad.current = true;
       trackDelegatePageViewed({
-        delegates_count: data.length,
+        delegates_count: delegates.length,
         filter_applied: filterParam || "all",
         sort_by: orderByParam || "default",
       });
     }
-  }, [isLoading, data, filterParam, orderByParam, trackDelegatePageViewed]);
+  }, [isLoading, delegates, filterParam, orderByParam, trackDelegatePageViewed]);
 
   const onLoadMore = useCallback(() => {
-    if (!hasNextPage || isLoading || isFetchingNextPage) {
+    if (isSearchMode || !hasNextPage || isLoading || isFetchingNextPage) {
       return;
     }
-
     fetchNextPage();
-  }, [hasNextPage, isLoading, isFetchingNextPage, fetchNextPage]);
+  }, [isSearchMode, hasNextPage, isLoading, isFetchingNextPage, fetchNextPage]);
+
+  const hasMore = isSearchMode ? false : hasNextPage;
 
   if (isLoading) {
     return <DelegateCardLoadingState />;
@@ -92,8 +118,8 @@ export default function DelegateContent({
 
   return layout === "grid" ? (
     <DelegateCardList
-      delegates={data}
-      hasMore={hasNextPage}
+      delegates={delegates}
+      hasMore={hasMore}
       onLoadMore={onLoadMore}
       isDelegatesFiltering={isPendingFilter || isPendingSort}
       orderByParam={orderByParam}
@@ -101,8 +127,8 @@ export default function DelegateContent({
     />
   ) : (
     <DelegateTable
-      delegates={data}
-      hasMore={hasNextPage}
+      delegates={delegates}
+      hasMore={hasMore}
       onLoadMore={onLoadMore}
       isDelegatesFiltering={isPendingFilter || isPendingSort}
       orderByParam={orderByParam}

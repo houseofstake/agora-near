@@ -99,6 +99,39 @@ export type GetDelegatesResponse = {
   delegates: DelegateProfile[];
 };
 
+export type DelegateSearchResult = {
+  id: string;
+  address: string;
+  statement: string | null;
+  topIssuesText: string;
+  endorsed: boolean;
+  issueTypes: string[];
+  votingPower: number;
+  participationRate: number;
+  lastVoteTimestamp: number | null;
+  lastDelegationTimestamp: number | null;
+  herdAlignmentRate: number | null;
+};
+
+export type DelegateSearchResponse = {
+  delegates: DelegateSearchResult[];
+  total: number;
+  query: string;
+};
+
+export function searchResultToDelegateProfile(
+  d: DelegateSearchResult
+): DelegateProfile {
+  return {
+    address: d.address,
+    statement: d.statement,
+    endorsed: d.endorsed,
+    votingPower: String(d.votingPower),
+    participationRate: String(d.participationRate),
+    topIssues: d.issueTypes.map((type) => ({ type, value: "" })),
+  };
+}
+
 export type VoteHistory = {
   voteOption: string;
   votingPower: string;
