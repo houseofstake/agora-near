@@ -97,7 +97,7 @@ export const VENEAR_TOKEN_METADATA: TokenMetadata = {
 
 export const RNEAR_TOKEN_METADATA: TokenMetadata = {
   name: "rNEAR",
-  symbol: "RNEAR",
+  symbol: "rNEAR",
   decimals: NEAR_NOMINATION_EXP,
   icon: rnearAssetIcon,
 };
