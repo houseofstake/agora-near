@@ -21,6 +21,7 @@ const stages = [
   {
     number: 2,
     title: "Screening Committee",
+    route: "/info/screening-committee",
     duration: "7 days",
     lineBg: "bg-violet-400",
     circleClass: "bg-violet-100 text-violet-500",
@@ -28,11 +29,7 @@ const stages = [
       "The Screening Committee reviews the final proposal. Approval is required to proceed to an onchain vote.",
     outcomes: [
       { text: "Approved → proceeds to vote", success: true, icon: "check" },
-      {
-        text: "Rejected → Proposal requires higher quorum to pass",
-        success: false,
-        icon: "x",
-      },
+      { text: "Rejected → proposal ends", success: false, icon: "x" },
     ],
   },
   {
@@ -51,6 +48,7 @@ const stages = [
   {
     number: 4,
     title: "Security Council Check",
+    route: "/info/security-council",
     duration: "7 days",
     lineBg: "bg-red-400",
     circleClass: "bg-red-100 text-red-500",
@@ -107,7 +105,16 @@ export const GovernanceProcess = () => (
             </div>
             <div className="p-6 pt-20 flex flex-col flex-1">
               <h3 className="text-base font-bold text-primary mb-3">
-                {stage.title}
+                {stage.route ? (
+                  <Link
+                    href={stage.route}
+                    className="hover:underline focus-visible:underline"
+                  >
+                    {stage.title}
+                  </Link>
+                ) : (
+                  stage.title
+                )}
               </h3>
               <p className="text-sm text-secondary mb-6 leading-relaxed flex-1">
                 {stage.description}

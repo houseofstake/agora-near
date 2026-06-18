@@ -3,8 +3,8 @@ import { GovernanceProcess } from "@/app/info/components/GovernanceProcess";
 import InfoVideos from "@/app/info/components/InfoVideos";
 import { InfoScopeAndParams } from "@/app/info/components/InfoScopeAndParams";
 import Tenant from "@/lib/tenant/tenant";
-import { InfoHero } from "./components/InfoHero";
-import InfoRoadmap from "./components/InfoRoadmap";
+import { InfoHero } from "@/app/info/components/InfoHero";
+import InfoRoadmap from "@/app/info/components/InfoRoadmap";
 
 export async function generateMetadata() {
   const tenant = Tenant.current();
