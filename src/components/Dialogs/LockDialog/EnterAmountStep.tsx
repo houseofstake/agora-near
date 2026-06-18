@@ -210,7 +210,7 @@ export const EnterAmountStep = ({
 
       <div className="flex flex-col gap-1 text-sm">
         <div className="flex flex-row justify-between">
-          <span className="text-secondary">Voting Power Growth</span>
+          <span className="text-secondary">Annual Voting Power Growth</span>
           <span className="text-primary font-bold">{annualAPY}%</span>
         </div>
         <div className="flex flex-row justify-between">
